@@ -286,7 +286,7 @@
 <!--                <h3 style="color:#238057;">-->
 <!--                    BE RELAX-->
 <!--                </h3>-->
-                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="80px" height="80px" alt='Logo'/>
+                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="150px" height="150px" alt='Logo'/>
             </div>
         </div>
         <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"
