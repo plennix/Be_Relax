@@ -13,11 +13,11 @@
                 </style>
 
                 <t t-foreach="docs" t-as="doc">
-                    <table style="width: 100%;font-size:12px;">
+                    <table style="width: 100%;">
                         <!--                        first tr for logo -->
 
                         <tr>
-                            <td style="text-decoration: underline;">
+                            <td class="header_text" style="text-decoration: underline;">
                                 <strong>PURCHASE ORDER</strong>
                             </td>
                             <td class="text-right">
@@ -25,9 +25,9 @@
                             </td>
                         </tr>
                     </table>
-                    <table style="width: 100%;font-size:12px;">
+                    <table style="width: 100%;">
                         <td style="width: 60%;">
-                            <table>
+                            <table class="content_text">
                                 <tr>
                                     <td>DATE:</td>
                                     <td>
@@ -55,47 +55,46 @@
                                 <tr>
                                     <td>PAYMENT TERM:</td>
                                     <td>
-                                        <span t-esc="doc.partner_id.property_payment_term_id.name"/>
+                                        <span t-esc="doc.payment_term_id.name"/>
                                     </td>
                                 </tr>
                             </table>
                         </td>
 
                         <td style="width: 40%;">
-                            <table style="border: 1px solid ;width: 100%;height:100px">
+                            <table style="border: 1px solid ;width: 100%;">
                                 <tr>
-                                    <td style="text-decoration: underline;"><strong>Buyer:</strong></td>
+                                    <td class="header_text" style="text-decoration: underline;vertical-align:top;"><strong>Buyer:</strong></td>
                                 </tr>
                                 <tr>
-                                    <td>
-                                        <tr><td><span t-esc="doc.company_id.street"/>
-                                        <span t-esc="doc.company_id.street2"/></td></tr>
-                                        <tr><td><span t-esc="doc.company_id.city"/> <span t-esc="doc.company_id.state_id.name"/>
-                                      <span t-esc="doc.company_id.zip"/></td></tr>
-
+                                    <td class="content_text">
+                                        <span t-esc="doc.company_id.street"/><br/>
+                                        <span t-esc="doc.company_id.street2"/><br/>
+                                       <span t-esc="doc.company_id.city"/> <span t-esc="doc.company_id.state_id.name"/>
+                                      <span t-esc="doc.company_id.zip"/>
                                     </td>
                                 </tr>
                             </table>
                         </td>
 
-                        <table style="width: 100%;font-size:12px;">
+                        <table style="width: 100%;">
                             <td style="width: 60%;">
-                                <table>
+                                <table class="content_text">
                                     <tr>
                                         <td>DELIVERY REQUEST FOR: ASAP</td>
                                     </tr>
                                 </table>
                             </td>
                             <td style="width: 40%; border: 1px solid">
-                                <table>
+                                <table style="width:100%">
                                     <tr>
-                                        <td style="text-decoration: underline;height:80px"><strong>Purchased From:</strong></td>
+                                        <td class="header_text" style="text-decoration: underline;vertical-align:top;"><strong>Purchased From:</strong></td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td class="content_text" style="vertical-align:top;">
                                             <span t-esc="doc.partner_id.street"/>
-                                            <span t-esc="doc.partner_id.street2"/>
-                                            <span t-esc="doc.partner_id.city"/>
+                                            <span t-esc="doc.partner_id.street2"/><br/>
+                                            <span t-esc="doc.partner_id.city"/><br/>
                                             <span t-esc="doc.partner_id.state_id.name"/>
                                             <span t-esc="doc.partner_id.zip"/>
                                             <span t-esc="doc.partner_id.country_id.name"/>
@@ -105,11 +104,11 @@
                             </td>
                         </table>
                         <br/>
-                        <table style="width: 100%;font-size:12px;">
+                        <table style="width: 100%;">
                             <td style="width: 60%;">
                                 <table>
                                     <tr>
-                                        <td style="text-decoration: underline;"><strong>Instructions</strong></td>
+                                        <td class="header_text" style="text-decoration: underline;"><strong>Instructions</strong></td>
                                     </tr>
                                     <tr>
                                         <td><span t-esc="doc.notes"/> </td>
@@ -120,16 +119,16 @@
                             <td style="width: 40%; border: 1px solid">
                                 <table style="height:100px">
                                     <tr>
-                                        <td style="text-decoration: underline;"><strong>Delivery Address:</strong></td>
+                                        <td class="header_text" style="text-decoration: underline;vertical-align:top;"><strong>Delivery Address:</strong></td>
                                     </tr>
                                     <tr>
-                                        <td>
+                                        <td class="content_text" style="vertical-align:top;">
                                             <!--<span t-esc="doc.partner_id.child_ids"/>-->
                                             <t t-foreach="doc.partner_id.child_ids" t-as="o">
                                                 <t t-if="o.type=='delivery'">
                                                     <span t-esc="o.street"/>
                                                     <span t-esc="o.street2"/>
-                                                    <span t-esc="o.city"/>
+                                                    <span t-esc="o.city"/><br/>
                                                     <span t-esc="o.state_id.name"/>
                                                     <span t-esc="o.country_id.name"/>
                                                     <span t-esc="o.zip"/>
@@ -148,34 +147,34 @@
                     <br/>
 
 
-                    <table class="table table-bordered" style="width: 100%; font-size:12px; border: 1px solid black;">
+                    <table class="table table-bordered" style="width: 100%; border: 1px solid black;">
                         <tr>
-                            <th class="text-center">BR CODE</th>
-                            <th class="text-center">DESCRIPTION</th>
-                            <th class="text-center">BAR CODE</th>
-                            <th class="text-center">QUNATITY</th>
-                            <th class="text-center">UNIT PRICE</th>
-                            <th class="text-center">TOTAL PRICE</th>
+                            <th class="text-center header_text">BR CODE</th>
+                            <th class="text-center header_text">DESCRIPTION</th>
+                            <th class="text-center header_text">BAR CODE</th>
+                            <th class="text-center header_text">QUNATITY</th>
+                            <th class="text-center header_text">UNIT PRICE</th>
+                            <th class="text-center header_text">TOTAL PRICE</th>
                         </tr>
                         <t t-set="total_qty" t-value="0"/>
                         <t t-foreach="doc.order_line" t-as="line">
 
                             <tr>
-                                <td class="text-center"><span t-esc="line.product_id.default_code"/></td>
+                                <td class="text-center content_text"><span t-esc="line.product_id.default_code"/></td>
                                 <td>
                                     <span t-esc="line.product_id.name"/>
                                 </td>
-                                <td class="text-center">
+                                <td class="text-cente content_textr">
                                     <span t-esc="line.product_id.barcode"/>
                                 </td>
-                                <td class="text-center">
+                                <td class="text-center content_text">
                                     <span t-esc="line.product_qty" />
                                     <t t-set="total_qty" t-value="line.product_qty + total_qty"/>
                                 </td>
-                                <td class="text-right">
+                                <td class="text-right content_text">
                                     <span t-esc="line.price_unit"/>
                                 </td>
-                                <td class="text-right">
+                                <td class="text-right content_text">
                                     <span t-esc="line.product_qty * line.price_unit"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                 </td>
                             </tr>
@@ -183,9 +182,9 @@
 
                         <tr>
                             <td></td>
-                            <td style="text-align:right">TOTAL:</td>
+                            <td class="header_text" style="text-align:right">TOTAL:</td>
                             <td></td>
-                            <td style="text-align:right">
+                            <td class="content_text" style="text-align:right">
                                 <span t-esc="total_qty"/>
                             </td>
                             <td></td>
@@ -193,18 +192,18 @@
                         </tr>
                     </table>
 
-                    <table class="table table-bordered" style="width: 100%; font-size:12px; border: 1px solid black;">
+                    <table class="table table-bordered" style="width: 100%;border: 1px solid black;">
 
                         <tr>
-                            <td style="text-align:center;width:81.3%">TOTAL VALUE IN <span t-field="doc.currency_id.name"/>:</td>
-                            <td style="text-align:right">
+                            <td class="header_text" style="text-align:center;width:81.3%">TOTAL VALUE IN <span t-field="doc.currency_id.name"/>:</td>
+                            <td class="content_text" style="text-align:right">
                                 <span t-esc="doc.amount_total"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                             </td>
                         </tr>
 
                         <tr>
-                            <td style="text-align:center;">NET TO PAY IN <span t-field="doc.currency_id.name"/>:</td>
-                            <td style="text-align:right">
+                            <td class="header_text" style="text-align:center;">NET TO PAY IN <span t-field="doc.currency_id.name"/>:</td>
+                            <td class="content_text" style="text-align:right">
                                 <span t-esc="doc.amount_total"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                             </td>
                         </tr>
@@ -222,7 +221,7 @@
 <!--                <h3 style="color:#238057;">-->
 <!--                    BE RELAX<br/></h3>-->
 <!--                <h6 style="color:black;">S P A</h6>-->
-                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="100px" height="100px" alt='Logo'/>
+                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="120px" height="120px" alt='Logo'/>
             </div>
         </div>
         <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"
