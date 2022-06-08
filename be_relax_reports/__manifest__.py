@@ -7,9 +7,11 @@
     'data': [
         # 'security/ir.models.access.csv',
         'report/invoice_report_inherit.xml',
+        'report/report.xml',
         'report/purchase_order_inherit.xml',
+
         'views/inherit_field.xml'
-        ],
+    ],
     'installable': True,
     'auto_install': False,
 

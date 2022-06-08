@@ -1,34 +1,8 @@
 <odoo>
-<!--        <odoo>-->
-<!--&lt;!&ndash;     paperformat&ndash;&gt;-->
-<!--    <record id="paperformat_arabic_tax_invoice" models="report.paperformat">-->
-<!--        <field name="name">sales_invoice_arabic_report</field>-->
-<!--        <field name="default" eval="True"/>-->
-<!--        <field name="format">A4</field>-->
-<!--        <field name="page_height">0</field>-->
-<!--        <field name="page_width">0</field>-->
-<!--        <field name="orientation">Portrait</field>-->
-<!--        <field name="margin_top">5</field>-->
-<!--        <field name="margin_bottom">20</field>-->
-<!--        <field name="margin_left">5</field>-->
-<!--        <field name="margin_right">5</field>-->
-<!--        <field name="header_line" eval="False"/>-->
-<!--        <field name="header_spacing">5</field>-->
-<!--        <field name="dpi">90</field>-->
-<!--    </record>-->
 
-<!--    <record id="customized_arabic_tax_invoice" models="ir.actions.report">-->
-<!--        <field name="name">Arabic Report</field>-->
-<!--        <field name="models">account.move</field>-->
-<!--        <field name="report_type">qweb-html</field>-->
-<!--        <field name="report_name">qr_code_invoice_app.tax_invoice_arabic_bill</field>-->
-<!--        <field name="report_file">qr_code_invoice_app.tax_invoice_arabic_bill</field>-->
-<!--        <field name="print_report_name">'Reports'</field>-->
-<!--        <field name="binding_model_id" ref="account.model_account_move"/>-->
-<!--        <field name="binding_type">report</field>-->
-<!--        <field name="paperformat_id" ref="qr_code_invoice_app.paperformat_arabic_tax_invoice"/>-->
-<!--    </record>-->
-<!--</odoo>-->
+    <record id="purchase.action_report_purchase_order" model="ir.actions.report">
+        <field name="report_type" eval="'qweb-html'"/>
 
+    </record>
 
 </odoo>

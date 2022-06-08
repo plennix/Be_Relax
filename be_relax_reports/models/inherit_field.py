@@ -1,4 +1,5 @@
 from odoo import api, fields, models, _
+from datetime import  datetime,timedelta
 
 class Customer(models.Model):
     _inherit = 'res.partner'
@@ -20,3 +21,22 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     status = fields.Selection([('active','ACTIVE'),('eol','EOL'),('dev','DEV')])
+
+class StockQuant(models.Model):
+    _inherit = 'stock.quant'
+
+    default_code=fields.Char('Internal Ref', related='product_id.default_code')
+    product_name=fields.Char('Product', related='product_id.name')
+
+class Purchase_order(models.Model):
+    _inherit = 'purchase.order'
+
+    @api.onchange('date_order')
+    def _check_change(self):
+        if self.date_order:
+            date_planned = self.date_order + timedelta(days=45)
+            print(date_planned)
+            self.date_planned = date_planned
+        else:
+             self.date_planned = False
+
