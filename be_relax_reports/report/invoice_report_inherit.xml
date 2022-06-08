@@ -1,6 +1,6 @@
 <!--This XML file does not appear to have any style information associated with it. The document tree is shown below.-->
 <odoo>
-    <template id="account.report_invoice_with_payments">
+    <template id="tax_invoice_inherited_report">
         <t t-call="web.html_container">
             <t t-call="be_relax_reports.report_account_invoice">
                <style>
@@ -293,9 +293,10 @@
 <!--            <t t-raw="0"/>-->
 <!--        </div>-->
         <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"
-             t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id"
-             t-att-data-oe-lang="o and o.env.context.get('lang')">
+             t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
+<!--             t-att-data-oe-lang="o and o.env.context.get('lang')">-->
             <div class="o_boxed_header"/>
+            <t t-call="web.address_layout"/>
             <t t-raw="0"/>
         </div>
 

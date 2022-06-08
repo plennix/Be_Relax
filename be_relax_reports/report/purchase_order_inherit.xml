@@ -218,10 +218,8 @@
         <div t-attf-class="header o_company_#{company.id}_layout">
             <div class="o_boxed_header"/>
             <div class="col-md-12" style="text-align:center">
-<!--                <h3 style="color:#238057;">-->
-<!--                    BE RELAX<br/></h3>-->
-<!--                <h6 style="color:black;">S P A</h6>-->
-                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="80px" height="80px" alt='Logo'/>
+
+                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="120px" height="80px" alt='Logo'/>
             </div>
         </div>
         <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"
