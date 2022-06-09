@@ -5,15 +5,15 @@
 
     </record>
 
-     <record id="action_report_tax_invoice" model="ir.actions.report">
-            <field name="name">Tax Invoice</field>
-            <field name="model">account.move</field>
-            <field name="report_type">qweb-pdf</field>
-            <field name="report_name">be_relax_reports.tax_invoice_inherited_report</field>
-            <field name="report_file">praxis_with_custom.tax_invoice_inherited_report</field>
-            <field name="print_report_name">object.name</field>
-            <field name="binding_model_id" ref="account.model_account_move"/>
-            <field name="binding_type">report</field>
-        </record>
+<!--    <record id="action_report_tax_invoice" model="ir.actions.report">-->
+<!--        <field name="name">Invoice</field>-->
+<!--        <field name="model">account.move</field>-->
+<!--        <field name="report_type">qweb-pdf</field>-->
+<!--        <field name="report_name">be_relax_reports.report_invoice_tax</field>-->
+<!--        <field name="report_file">be_relax_reports.report_invoice_tax</field>-->
+<!--        <field name="print_report_name">object.name</field>-->
+<!--        <field name="binding_model_id" ref="account.model_account_move"/>-->
+<!--        <field name="binding_type">report</field>-->
+<!--    </record>-->
 
 </odoo>

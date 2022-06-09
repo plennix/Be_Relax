@@ -1,8 +1,8 @@
 <!--This XML file does not appear to have any style information associated with it. The document tree is shown below.-->
 <odoo>
-    <template id="tax_invoice_inherited_report">
+    <template id="account.report_invoice_with_payments">
         <t t-call="web.html_container">
-            <t t-call="be_relax_reports.report_account_invoice">
+            <t t-call="be_relax_reports.report_tax_invoice">
                <style>
                     .header_text{
                     font-size: 14px;
@@ -18,7 +18,6 @@
                 </style>
 
                 <t t-foreach="docs" t-as="doc">
-
                     <table class="content_text" style="width: 100%;">
                         <td style="width: 50%;">
                             <table>
@@ -77,20 +76,23 @@
                                     <td class="text-left">
                                         <strong>BILLING ADDRESS</strong><br/>
                                         <span t-esc="doc.partner_id.name"/><br/>
-                                        <t t-foreach="doc.partner_id.child_ids" t-as="o">
-                                            <t t-if="o.type =='invoice'">
-                                                <span t-esc="o.street"/>
-                                                <span t-esc="o.street2"/>
-                                                <span t-esc="o.city"/><br/>
-                                                <span t-esc="o.state_id.name"/>
-                                                <span t-esc="o.country_id.name"/>
-                                                <span t-esc="o.zip"/><br/>
-                                                Tel n&#160;<span t-esc="o.mobile"/><br/>
+
+<!--                                        <t t-foreach="doc.partner_id" t-as="o">-->
+                                            <t t-foreach="doc.partner_id.child_ids" t-as="l">
+                                            <t t-if="l.type =='invoice'">
+                                                <span t-esc="l.street"/>
+                                                <span t-esc="l.street2"/>
+                                                <span t-esc="l.city"/><br/>
+                                                <span t-esc="l.state_id.name"/>
+                                                <span t-esc="l.country_id.name"/>
+                                                <span t-esc="l.zip"/><br/>
+                                                Tel n&#160;<span t-esc="l.mobile"/><br/>
                                                 VAT N&#160;<span t-esc="doc.partner_id.vat"/>
                                             </t>
                                             <t t-else="">
                                             </t>
                                         </t>
+<!--                                        </t>-->
                                     </td>
                                 </tr>
                             </table>
@@ -102,19 +104,33 @@
                                     <td class="text-right">
                                         <strong>DELIVERY ADDRESS</strong><br/>
                                         <span t-esc="doc.partner_id.name"/><br/>
-                                        <t t-foreach="doc.partner_id.child_ids" t-as="o">
-                                            <t t-if="o.type =='delivery'">
-                                                <span t-esc="o.street"/>
-                                                <span t-esc="o.street2"/>
-                                                <span t-esc="o.city"/><br/>
-                                                <span t-esc="o.state_id.name"/>
-                                                <span t-esc="o.country_id.name"/>
-                                                <span t-esc="o.zip"/><br/>
-                                                Tel n&#160;<span t-esc="o.mobile"/>
+<!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="o">-->
+<!--                                            <t t-if="o.type =='delivery'">-->
+<!--                                                <span t-esc="o.street"/>-->
+<!--                                                <span t-esc="o.street2"/>-->
+<!--                                                <span t-esc="o.city"/><br/>-->
+<!--                                                <span t-esc="o.state_id.name"/>-->
+<!--                                                <span t-esc="o.country_id.name"/>-->
+<!--                                                <span t-esc="o.zip"/><br/>-->
+<!--                                                Tel n&#160;<span t-esc="o.mobile"/>-->
+<!--                                            </t>-->
+
+<!--                                            <t t-else="">-->
+
+<!--                                            </t>-->
+<!--                                        </t>-->
+                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">
+                                            <t t-if="l.type =='delivery'">
+                                                <span t-esc="l.street"/>
+                                                <span t-esc="l.street2"/>
+                                                <span t-esc="l.city"/><br/>
+                                                <span t-esc="l.state_id.name"/>
+                                                <span t-esc="l.country_id.name"/>
+                                                <span t-esc="l.zip"/><br/>
+                                                Tel n&#160;<span t-esc="l.mobile"/><br/>
+                                                VAT N&#160;<span t-esc="doc.partner_id.vat"/>
                                             </t>
-
                                             <t t-else="">
-
                                             </t>
                                         </t>
                                     </td>
@@ -154,8 +170,10 @@
                                     <span t-esc="line.product_id.barcode"/>
                                 </td>
                                 <td class="td1">
+                                    <t t-if="line.product_id.hs_code">
+                                        <span t-esc="line.product_id.hs_code"/>
+                                    </t>
                                     <!--                                    <span t-esc="line.product_id.l10n_in_hsn_code"/>-->
-                                    <span t-esc="line.product_id.hs_code"/>
                                 </td>
                                 <td class="td1"><span t-esc="doc.partner_id.country_id.name"/></td>
                                 <td class="td1">
@@ -274,52 +292,44 @@
     </template>
 
 
-    <template id="external_layout_standard_account_tax_invoice">
+       <template id="external_layout_standard_tax_invoice">
         <div t-attf-class="header o_company_#{company.id}_layout">
             <div class="o_boxed_header"/>
-            <div class="col-md-12" style="text-align:left">
-                <!--                        first tr for logo -->
-                <!--                <h3 style="color:#238057;">-->
-                <!--                    BE RELAX-->
-                <!--                </h3>-->
-                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="80px" height="80px" alt='Logo'/>
+            <div class="col-md-12" style="text-align:center">
+
+                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="120px" height="80px" alt='Logo'/>
             </div>
         </div>
-<!--        <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"-->
-<!--             t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id"-->
-<!--             t-att-data-oe-lang="o and o.env.context.get('lang')">-->
-<!--            <div class="o_boxed_header"/>-->
-<!--            <t t-call="web.address_layout"/>-->
-<!--            <t t-raw="0"/>-->
-<!--        </div>-->
         <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"
-             t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id">
-<!--             t-att-data-oe-lang="o and o.env.context.get('lang')">-->
+             t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id"
+             t-att-data-oe-lang="o and o.env.context.get('lang')">
             <div class="o_boxed_header"/>
             <t t-call="web.address_layout"/>
             <t t-raw="0"/>
         </div>
 
         <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
-            <p style="text-align:center">
-                <strong>BE RELAX DESTRIBUTION</strong>
-                <br/>
+            <div class="text-center" style="background-color:cyan">
+                <p>
                 <span t-esc="doc.company_id.street"/>
                 <span t-esc="doc.company_id.street2"/>
                 <br/>
                 <span t-esc="doc.company_id.city"/>
                 <span t-esc="doc.company_id.state_id.name"/>
+
                 <span t-esc="doc.company_id.zip"/>
                 <span t-esc="doc.company_id.country_id.name"/>
                 <br/>
                 VAT N
                 <span t-esc="doc.company_id.vat"/>
-            </p>
+
+                </p>
+            </div>
         </div>
     </template>
 
     <!--    header part is here -->
-    <template id="report_account_invoice">
+    <template id="report_tax_invoice">
         <t t-if="not o" t-set="o" t-value="doc"/>
         <t t-if="not company">
             <!--  Multicompany  -->
@@ -333,7 +343,7 @@
                 <t t-set="company" t-value="res_company"/>
             </t>
         </t>
-        <t t-call="be_relax_reports.external_layout_standard_account_tax_invoice">
+        <t t-call="be_relax_reports.external_layout_standard_tax_invoice">
             <t t-raw="0"/>
         </t>
     </template>
