@@ -50,7 +50,7 @@
                                 </tr>
                                 <tr>
                                     <td>SHIPMENT TERM</td>
-                                        <td><span t-esc="doc.incoterm_id.name"/></td>
+                                    <td><span t-esc="doc.incoterm_id.name"/></td>
                                 </tr>
                                 <tr>
                                     <td>PAYMENT TERM:</td>
@@ -68,10 +68,11 @@
                                 </tr>
                                 <tr>
                                     <td class="content_text">
+                                        <span t-esc="doc.company_id.name"/>
                                         <span t-esc="doc.company_id.street"/><br/>
                                         <span t-esc="doc.company_id.street2"/><br/>
-                                       <span t-esc="doc.company_id.city"/> <span t-esc="doc.company_id.state_id.name"/>
-                                      <span t-esc="doc.company_id.zip"/>
+                                        <span t-esc="doc.company_id.city"/> <span t-esc="doc.company_id.state_id.name"/>
+                                        <span t-esc="doc.company_id.zip"/>
                                     </td>
                                 </tr>
                             </table>
@@ -124,6 +125,7 @@
                                     <tr>
                                         <td class="content_text" style="vertical-align:top;">
                                             <!--<span t-esc="doc.partner_id.child_ids"/>-->
+                                            <span t-esc="doc.partner_id"/>
                                             <t t-foreach="doc.partner_id.child_ids" t-as="o">
                                                 <t t-if="o.type=='delivery'">
                                                     <span t-esc="o.street"/>
@@ -152,7 +154,7 @@
                             <th class="text-center header_text">BR CODE</th>
                             <th class="text-center header_text">DESCRIPTION</th>
                             <th class="text-center header_text">BAR CODE</th>
-                            <th class="text-center header_text">QUNATITY</th>
+                            <th class="text-center header_text">QUANTITY</th>
                             <th class="text-center header_text">UNIT PRICE</th>
                             <th class="text-center header_text">TOTAL PRICE</th>
                         </tr>
@@ -233,17 +235,18 @@
         <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
             <div class="text-center" style="background-color:cyan">
                 <p>
-                <span t-esc="doc.company_id.street"/>
-                <span t-esc="doc.company_id.street2"/>
-                <br/>
-                <span t-esc="doc.company_id.city"/>
-                <span t-esc="doc.company_id.state_id.name"/>
+                    <span t-esc="doc.company_id.name"/>
+                    <span t-esc="doc.company_id.street"/>
+                    <span t-esc="doc.company_id.street2"/>
+                    <br/>
+                    <span t-esc="doc.company_id.city"/>
+                    <span t-esc="doc.company_id.state_id.name"/>
 
-                <span t-esc="doc.company_id.zip"/>
-                <span t-esc="doc.company_id.country_id.name"/>
-                <br/>
-                VAT N
-                <span t-esc="doc.company_id.vat"/>
+                    <span t-esc="doc.company_id.zip"/>
+                    <span t-esc="doc.company_id.country_id.name"/>
+                    <br/>
+                    VAT N
+                    <span t-esc="doc.company_id.vat"/>
 
                 </p>
             </div>
