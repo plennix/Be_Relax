@@ -68,7 +68,7 @@
                                 </tr>
                                 <tr>
                                     <td class="content_text">
-                                        <span t-esc="doc.company_id.name"/>
+                                        <span t-esc="doc.company_id.name"/><br/>
                                         <span t-esc="doc.company_id.street"/><br/>
                                         <span t-esc="doc.company_id.street2"/><br/>
                                         <span t-esc="doc.company_id.city"/> <span t-esc="doc.company_id.state_id.name"/>
@@ -93,6 +93,7 @@
                                     </tr>
                                     <tr>
                                         <td class="content_text" style="vertical-align:top;">
+                                            <span t-esc="doc.partner_id.name"/><br/>
                                             <span t-esc="doc.partner_id.street"/>
                                             <span t-esc="doc.partner_id.street2"/><br/>
                                             <span t-esc="doc.partner_id.city"/><br/>
@@ -125,7 +126,7 @@
                                     <tr>
                                         <td class="content_text" style="vertical-align:top;">
                                             <!--<span t-esc="doc.partner_id.child_ids"/>-->
-                                            <span t-esc="doc.partner_id"/>
+                                            <span t-esc="doc.partner_id.name"/><br/>
                                             <t t-foreach="doc.partner_id.child_ids" t-as="o">
                                                 <t t-if="o.type=='delivery'">
                                                     <span t-esc="o.street"/>
@@ -134,7 +135,6 @@
                                                     <span t-esc="o.state_id.name"/>
                                                     <span t-esc="o.country_id.name"/>
                                                     <span t-esc="o.zip"/>
-
                                                 </t>
                                                 <t t-else="">
 
@@ -235,7 +235,7 @@
         <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
             <div class="text-center" style="background-color:cyan">
                 <p>
-                    <span t-esc="doc.company_id.name"/>
+                    <span t-esc="doc.company_id.name"/><br/>
                     <span t-esc="doc.company_id.street"/>
                     <span t-esc="doc.company_id.street2"/>
                     <br/>
