@@ -72,7 +72,9 @@
                                         <span t-esc="doc.company_id.street"/><br/>
                                         <span t-esc="doc.company_id.street2"/><br/>
                                         <span t-esc="doc.company_id.city"/> <span t-esc="doc.company_id.state_id.name"/>
-                                        <span t-esc="doc.company_id.zip"/>
+                                        <span t-esc="doc.company_id.zip"/><br/>
+                                        <span t-esc="doc.company_id.mobile"/>
+
                                     </td>
                                 </tr>
                             </table>
@@ -99,7 +101,9 @@
                                             <span t-esc="doc.partner_id.city"/><br/>
                                             <span t-esc="doc.partner_id.state_id.name"/>
                                             <span t-esc="doc.partner_id.zip"/>
-                                            <span t-esc="doc.partner_id.country_id.name"/>
+                                            <span t-esc="doc.partner_id.country_id.name"/><br/>
+                                            <span t-esc="doc.partner_id.mobile"/>
+
                                         </td>
                                     </tr>
                                 </table>
