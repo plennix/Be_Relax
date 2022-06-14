@@ -128,7 +128,8 @@
                                                 <span t-esc="l.country_id.name"/>
                                                 <span t-esc="l.zip"/><br/>
                                                 Tel n&#160;<span t-esc="l.mobile"/><br/>
-                                                VAT N&#160;<span t-esc="doc.partner_id.vat"/>
+<!--                                                VAT N&#160;<span t-esc="doc.partner_id.vat"/>-->
+
                                             </t>
                                             <t t-else="">
                                             </t>
@@ -267,7 +268,7 @@
                         <tr>
                             <td colspan="4">Dutch VAT Rep BV PO Box 7003 9605 JA Eindhoven,The Netherland</td>
 
-                            <td class="text-right" colspan="4">0% Dutch VAT intraa community supply art 138 VAT
+                            <td class="text-right" colspan="4" style="font-size:9px">0% Dutch VAT intraa community supply art 138 VAT
                                 Directive/ Table II,post a 6 Dutch VAT act
                             </td>
                             <!--                            <td style="border-right:1px solid;"></td>-->
