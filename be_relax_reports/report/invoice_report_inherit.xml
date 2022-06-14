@@ -194,7 +194,7 @@
                             <td style="border-right:1px solid;"></td>
                             <td style="border-right:1px solid;"></td>
                             <td style="text-align:right;border-right:1px solid;" colspan="2">TOTAL NUMBER OF UNITS:</td>
-                            <td style="text-align:right; border-right:1px solid;">
+                            <td style="text-align:center; border-right:1px solid;">
                                 <span t-esc="total_quantity"/>
                             </td>
                             <td style="border-right:1px solid;">Subtotal</td>
@@ -310,7 +310,7 @@
         </div>
 
         <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
-            <div class="text-center" style="background-color:cyan">
+            <div class="text-center" style="background-color:#063970;color:white">
                 <p>
                 <span t-esc="doc.company_id.street"/>
                 <span t-esc="doc.company_id.street2"/>

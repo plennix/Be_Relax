@@ -192,7 +192,7 @@
                             <td></td>
                             <td class="header_text" style="text-align:right">TOTAL:</td>
                             <td></td>
-                            <td class="content_text" style="text-align:right">
+                            <td class="content_text" style="text-align:center">
                                 <span t-esc="total_qty"/>
                             </td>
                             <td></td>
@@ -239,7 +239,7 @@
         </div>
 
         <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
-            <div class="text-center" style="background-color:cyan">
+            <div class="text-center" style="background-color:#063970;color:white">
                 <p>
                     <span t-esc="doc.company_id.name"/><br/>
                     <span t-esc="doc.company_id.street"/>
