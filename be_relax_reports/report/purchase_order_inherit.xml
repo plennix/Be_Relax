@@ -241,17 +241,17 @@
         <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
             <div class="text-center" style="background-color:#063970;color:white">
                 <p>
-                    <span t-esc="doc.company_id.name"/><br/>
+                    <span t-esc="doc.company_id.name"/>
                     <span t-esc="doc.company_id.street"/>
                     <span t-esc="doc.company_id.street2"/>
-                    <br/>
+
                     <span t-esc="doc.company_id.city"/>
                     <span t-esc="doc.company_id.state_id.name"/>
-
+                    <br/>
                     <span t-esc="doc.company_id.zip"/>
                     <span t-esc="doc.company_id.country_id.name"/>
-                    <br/>
-                    VAT N
+
+                    VAT Number
                     <span t-esc="doc.company_id.vat"/>
 
                 </p>
