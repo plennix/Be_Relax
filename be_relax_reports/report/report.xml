@@ -2,8 +2,12 @@
 
     <record id="purchase.action_report_purchase_order" model="ir.actions.report">
         <field name="report_type" eval="'qweb-html'"/>
-
     </record>
+
+    <record id="account.account_invoices" model="ir.actions.report">
+        <field name="report_type" eval="'qweb-html'"/>
+    </record>
+
 
 <!--    <record id="action_report_tax_invoice" model="ir.actions.report">-->
 <!--        <field name="name">Invoice</field>-->
