@@ -3,17 +3,23 @@
     <template id="account.report_invoice_with_payments">
         <t t-call="web.html_container">
             <t t-call="be_relax_reports.report_tax_invoice">
-               <style>
+                <style>
                     .header_text{
                     font-size: 14px;
                     }
 
                     .content_text{
-                   font-size: 13px;
-                   }
-                   .td1{
-                   border-right:1px solid;
-                   text-align:center
+                    font-size: 13px;
+                    }
+                    .td1{
+                    border-right:1px solid;
+                    text-align:center
+                    }
+                    .label{
+                    padding-left:10px;
+                    }
+                    .label1{
+                    padding-right:10px;
                     }
                 </style>
 
@@ -23,7 +29,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <strong>BE RELAX DESTRIBUTION</strong>
+                                        <strong>BE RELAX DISTRIBUTION</strong>
                                     </td>
                                 </tr>
                                 <tr>
@@ -77,8 +83,8 @@
                                         <strong>BILLING ADDRESS</strong><br/>
                                         <span t-esc="doc.partner_id.name"/><br/>
 
-<!--                                        <t t-foreach="doc.partner_id" t-as="o">-->
-                                            <t t-foreach="doc.partner_id.child_ids" t-as="l">
+                                        <!--                                        <t t-foreach="doc.partner_id" t-as="o">-->
+                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">
                                             <t t-if="l.type =='invoice'">
                                                 <span t-esc="l.street"/>
                                                 <span t-esc="l.street2"/>
@@ -92,7 +98,7 @@
                                             <t t-else="">
                                             </t>
                                         </t>
-<!--                                        </t>-->
+                                        <!--                                        </t>-->
                                     </td>
                                 </tr>
                             </table>
@@ -104,21 +110,21 @@
                                     <td class="text-right">
                                         <strong>DELIVERY ADDRESS</strong><br/>
                                         <span t-esc="doc.partner_id.name"/><br/>
-<!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="o">-->
-<!--                                            <t t-if="o.type =='delivery'">-->
-<!--                                                <span t-esc="o.street"/>-->
-<!--                                                <span t-esc="o.street2"/>-->
-<!--                                                <span t-esc="o.city"/><br/>-->
-<!--                                                <span t-esc="o.state_id.name"/>-->
-<!--                                                <span t-esc="o.country_id.name"/>-->
-<!--                                                <span t-esc="o.zip"/><br/>-->
-<!--                                                Tel n&#160;<span t-esc="o.mobile"/>-->
-<!--                                            </t>-->
+                                        <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="o">-->
+                                        <!--                                            <t t-if="o.type =='delivery'">-->
+                                        <!--                                                <span t-esc="o.street"/>-->
+                                        <!--                                                <span t-esc="o.street2"/>-->
+                                        <!--                                                <span t-esc="o.city"/><br/>-->
+                                        <!--                                                <span t-esc="o.state_id.name"/>-->
+                                        <!--                                                <span t-esc="o.country_id.name"/>-->
+                                        <!--                                                <span t-esc="o.zip"/><br/>-->
+                                        <!--                                                Tel n&#160;<span t-esc="o.mobile"/>-->
+                                        <!--                                            </t>-->
 
-<!--                                            <t t-else="">-->
+                                        <!--                                            <t t-else="">-->
 
-<!--                                            </t>-->
-<!--                                        </t>-->
+                                        <!--                                            </t>-->
+                                        <!--                                        </t>-->
                                         <t t-foreach="doc.partner_id.child_ids" t-as="l">
                                             <t t-if="l.type =='delivery'">
                                                 <span t-esc="l.street"/>
@@ -128,7 +134,7 @@
                                                 <span t-esc="l.country_id.name"/>
                                                 <span t-esc="l.zip"/><br/>
                                                 Tel n&#160;<span t-esc="l.mobile"/><br/>
-<!--                                                VAT N&#160;<span t-esc="doc.partner_id.vat"/>-->
+                                                <!--                                                VAT N&#160;<span t-esc="doc.partner_id.vat"/>-->
 
                                             </t>
                                             <t t-else="">
@@ -181,10 +187,10 @@
                                     <span t-esc="line.quantity"/>
                                     <t t-set="total_quantity" t-value="line.quantity + total_quantity"/>
                                 </td>
-                                <td style="border-right:1px solid; text-align:right;">
+                                <td class="label1" style="border-right:1px solid; text-align:right;">
                                     <span t-esc="line.price_unit"/>
                                 </td>
-                                <td style="border-right:1px solid; text-align:right;">
+                                <td class="label1" style="border-right:1px solid; text-align:right;">
                                     <span t-esc="line.price_subtotal"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                 </td>
                             </tr>
@@ -193,95 +199,95 @@
                             <td style="border-right:1px solid;"></td>
                             <td style="border-right:1px solid;"></td>
                             <td style="border-right:1px solid;"></td>
-                            <td style="text-align:right;border-right:1px solid;" colspan="2">TOTAL NUMBER OF UNITS:</td>
+                            <td class="label1" style="text-align:right;border-right:1px solid" colspan="2">TOTAL NUMBER OF UNITS:</td>
                             <td style="text-align:center; border-right:1px solid;">
                                 <span t-esc="total_quantity"/>
                             </td>
-                            <td style="border-right:1px solid;">Subtotal</td>
-                            <td style="border-right:1px solid; text-align:right;">
+                            <td class="label" style="border-right:1px solid;">Subtotal</td>
+                            <td class="label1" style="border-right:1px solid; text-align:right;">
                                 <span t-esc="sum(l.price_subtotal for l in doc.invoice_line_ids)"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                             </td>
                         </tr>
 
                         <tr>
-                            <td colspan="6" style="text-decoration: underline;">
+                            <td class="label" colspan="6" style="text-decoration: underline;">
                                 BANK ACCOUNT INFORMATION
-                                <td style="border:1px solid;">Delivery</td>
-                                <td style="border:1px solid;"></td>
+                                <td class="label" style="border:1px solid;">Delivery</td>
+                                <td class="label1" style="border:1px solid;"></td>
                             </td>
 
                         </tr>
 
                         <tr>
-                            <td colspan="6">BANK:
+                            <td class="label" colspan="6">BANK:
                                 <span t-esc="doc.partner_id.bank_ids.bank_id.name"/>
                             </td>
-                            <td style="border:1px solid;">Discount</td>
-                            <td style="border:1px solid;text-align:right"><span t-esc="total_discount"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/></td>
+                            <td class="label" style="border:1px solid;">Discount</td>
+                            <td class="label1" style="border:1px solid;text-align:right"><span t-esc="total_discount"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/></td>
                         </tr>
 
                         <tr>
-                            <td colspan="6">ACCOUNT NAME:<span t-esc="doc.company_id.name"/></td>
+                            <td class="label" colspan="6">ACCOUNT NAME:<span t-esc="doc.company_id.name"/></td>
                             <td style="border:1px solid;"></td>
                             <td style="border:1px solid;"></td>
                         </tr>
                         <tr>
-                            <td colspan="6">
+                            <td class="label" colspan="6">
                                 IBAN: <span t-esc="doc.partner_id.iban"/>
                             </td>
-                            <td style="border:1px solid;">Total</td>
-                            <td style="border:1px solid;text-align:right">
+                            <td class="label" style="border:1px solid;">Total</td>
+                            <td class="label1" style="border:1px solid;text-align:right">
                                 <span t-esc="doc.amount_total"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="6">
+                            <td class="label" colspan="6">
                                 SWIFT/BIC:  <span t-esc="doc.partner_id.swift"/>
                             </td>
-                            <td style="border:1px solid;">Pre Payment</td>
+                            <td class="label" style="border:1px solid;">Pre Payment</td>
+                            <td class="label1" style="border:1px solid;"></td>
+                        </tr>
+                        <tr style="height:22px;">
+                            <td class="label" colspan="6">Please indicate the invoice number on you settlement remittance</td>
+                            <td style="border:1px solid;"></td>
                             <td style="border:1px solid;"></td>
                         </tr>
                         <tr style="height:22px;">
-                            <td colspan="6">Please indicate the invoice number on you settlement remittance</td>
-                            <td style="border:1px solid;"></td>
-                            <td style="border:1px solid;"></td>
-                        </tr>
-                        <tr style="height:22px;">
-                            <td colspan="6">Payment terms:
+                            <td class="label" colspan="6">Payment terms:
                                 <span t-esc="doc.partner_id.property_supplier_payment_term_id.name"/>
                             </td>
                             <td style="border:1px solid;"></td>
                             <td style="border:1px solid;"></td>
                         </tr>
                         <tr>
-                            <td colspan="6">Shipment terms:
+                            <td class="label" colspan="6">Shipment terms:
                                 <span t-esc="doc.invoice_incoterm_id.name"/>
                             </td>
-                            <td style="border:1px solid;">NET TO PAY</td>
-                            <td style="border:1px solid; text-align:right"><span t-esc="doc.amount_total"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/></td>
+                            <td class="label" style="border:1px solid;">NET TO PAY</td>
+                            <td class="label1" style="border:1px solid; text-align:right"><span t-esc="doc.amount_total"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/></td>
                         </tr>
                         <tr>
-                            <td colspan="6">Dutch VAT representative</td>
+                            <td class="label" colspan="6">Dutch VAT representative</td>
                             <td></td>
                             <td style="border-right:1px solid;"></td>
                         </tr>
                         <tr>
-                            <td colspan="4">Dutch VAT Rep BV PO Box 7003 9605 JA Eindhoven,The Netherland</td>
+                            <td class="label" colspan="4">Dutch VAT Rep BV PO Box 7003 9605 JA Eindhoven,The Netherland</td>
 
-                            <td class="text-right" colspan="4" style="font-size:9px">0% Dutch VAT intraa community supply art 138 VAT
+                            <td class="text-right label1" colspan="4" style="font-size:10px;">0% Dutch VAT intraa community supply art 138 VAT
                                 Directive/ Table II,post a 6 Dutch VAT act
                             </td>
                             <!--                            <td style="border-right:1px solid;"></td>-->
                         </tr>
                         <tr>
-                            <td colspan="6">VAT Number
+                            <td class="label" colspan="6">VAT Number
                                 <span t-esc="doc.partner_id.vat"/>
                             </td>
                             <td></td>
                             <td style="border-right:1px solid;"></td>
                         </tr>
                         <tr>
-                            <td colspan="6">(not for sales correspondence od delivers of goods.)</td>
+                            <td class="label" colspan="6">(not for sales correspondence od delivers of goods.)</td>
                             <td></td>
                             <td style="border-right:1px solid;"></td>
                         </tr>
@@ -293,18 +299,22 @@
     </template>
 
 
-       <template id="external_layout_standard_tax_invoice">
+    <template id="external_layout_standard_tax_invoice">
         <div t-attf-class="header o_company_#{company.id}_layout">
-            <div class="o_boxed_header"/>
-            <div class="col-md-12" style="text-align:center">
-
-                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="120px" height="80px" alt='Logo'/>
-            </div>
+            <!--            <div class="o_boxed_header"/>-->
+            <table style="width:100%;">
+                <tr>
+                    <td style="text-align:center;padding-top:15px">
+                        <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="120px" height="100px" alt='Logo'/>
+                    </td>
+                </tr>
+            </table>
         </div>
+
         <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"
              t-att-data-oe-model="o and o._name" t-att-data-oe-id="o and o.id"
              t-att-data-oe-lang="o and o.env.context.get('lang')">
-            <div class="o_boxed_header"/>
+            <!--            <div class="o_boxed_header"/>-->
             <t t-call="web.address_layout"/>
             <t t-raw="0"/>
         </div>
@@ -312,17 +322,17 @@
         <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
             <div class="text-center" style="background-color:#063970;color:white">
                 <p>
-                <span t-esc="doc.company_id.street"/>
-                <span t-esc="doc.company_id.street2"/>
+                    <span t-esc="doc.company_id.street"/>
+                    <span t-esc="doc.company_id.street2"/>
 
-                <span t-esc="doc.company_id.city"/>
-                <span t-esc="doc.company_id.state_id.name"/>
+                    <span t-esc="doc.company_id.city"/>
+                    <span t-esc="doc.company_id.state_id.name"/>
 
-                <span t-esc="doc.company_id.zip"/>
-                <span t-esc="doc.company_id.country_id.name"/>
-                <br/>
-                VAT Number
-                <span t-esc="doc.company_id.vat"/>
+                    <span t-esc="doc.company_id.zip"/>
+                    <span t-esc="doc.company_id.country_id.name"/>
+                    <br/>
+                    VAT Number
+                    <span t-esc="doc.company_id.vat"/>
 
                 </p>
             </div>
