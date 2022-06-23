@@ -227,7 +227,7 @@
                         </tr>
 
                         <tr>
-                            <td class="label" colspan="6">ACCOUNT NAME:<span t-esc="doc.company_id.name"/></td>
+                            <td class="label" colspan="6">ACCOUNT NAME:<span t-esc="doc.company_id.br_alias_company_name"/></td>
                             <td style="border:1px solid;"></td>
                             <td style="border:1px solid;"></td>
                         </tr>
@@ -322,6 +322,8 @@
         <div t-attf-class="footer o_standard_footer o_company_#{company.id}_layout">
             <div class="text-center" style="background-color:#063970;color:white">
                 <p>
+
+                    <span t-esc="doc.company_id.br_alias_company_name"/>
                     <span t-esc="doc.company_id.street"/>
                     <span t-esc="doc.company_id.street2"/>
 
