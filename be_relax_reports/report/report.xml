@@ -1,0 +1,40 @@
+<odoo>
+    <record id="paperformat_tax_invoice" model="report.paperformat">
+        <field name="name">A4</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">22</field>
+        <field name="margin_bottom">32</field>
+        <field name="margin_left">7</field>
+        <field name="margin_right">7</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">25</field>
+        <field name="dpi">90</field>
+    </record>
+
+    <record id="purchase.action_report_purchase_order" model="ir.actions.report">
+        <field name="report_type" eval="'qweb-html'"/>
+    </record>
+
+    <record id="account.account_invoices" model="ir.actions.report">
+        <field name="report_type" eval="'qweb-html'"/>
+<!--        <field name="paperformat_id" ref="paperformat_tax_invoice"/>-->
+
+    </record>
+
+
+    <!--    <record id="action_report_tax_invoice" model="ir.actions.report">-->
+    <!--        <field name="name">Invoice</field>-->
+    <!--        <field name="model">account.move</field>-->
+    <!--        <field name="report_type">qweb-pdf</field>-->
+    <!--        <field name="report_name">be_relax_reports.report_invoice_tax</field>-->
+    <!--        <field name="report_file">be_relax_reports.report_invoice_tax</field>-->
+    <!--        <field name="print_report_name">object.name</field>-->
+    <!--        <field name="binding_model_id" ref="account.model_account_move"/>-->
+    <!--        <field name="binding_type">report</field>-->
+    <!--    </record>-->
+
+</odoo>

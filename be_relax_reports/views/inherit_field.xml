@@ -1,0 +1,89 @@
+<odoo>
+    <record id="res_partner_vendor_view" model="ir.ui.view">
+        <field name="name">res.partner.vendor.view</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="customer_incoterm_id"/>
+            </xpath>
+            <xpath expr="//field[@name='avatar_128']" position="before">
+                    <label for="vendor_code"/>
+                    <field name="vendor_code" style="width:30%%" />
+            </xpath>
+
+            <xpath expr="//h1" position="after">
+                <label for="alias_name"/>
+                    <field name="alias_name" string="Alias Name" style="width:40%%"/>
+            </xpath>
+            <xpath expr="//field[@name='property_account_payable_id']" position="after">
+                <field name="iban"/>
+                <field name="swift"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="res_partner_view_search_by_vendor_code" model="ir.ui.view">
+        <field name="name">res.partner.search.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_res_partner_filter"/>
+        <field name="arch" type="xml">
+            <!--            <xpath expr="//field[@name='email']" position="after">-->
+            <!--                <field name="vendor_code" string="Vendor" filter_domain="[('vendor_code','ilike',self), ]"/>-->
+            <!--            </xpath>-->
+            <xpath expr="//field[@name='name']" position="replace">
+                <field name="name"
+                       filter_domain="['|', '|', '|', ('display_name', 'ilike', self), ('ref', '=', self),('vendor_code', 'ilike', self), ('email', 'ilike', self)]"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="product_field_view" model="ir.ui.view">
+        <field name="name">product.field.view</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="status"/>
+                <field name="hs_code"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="product_add_field_view" model="ir.ui.view">
+        <field name="name">product.add.field.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='company_id']" position="after">
+                <field name="status"/>
+            </xpath>
+        </field>
+    </record>
+
+   <record id="add_inventory_ref_col_field_view" model="ir.ui.view">
+        <field name="name">add.inventory.ref.col.field.view</field>
+        <field name="model">stock.quant</field>
+        <field name="inherit_id" ref="stock.view_stock_quant_tree_inventory_editable"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='location_id']" position="after">
+                <field name="default_code"/>
+                <field name="product_name"/>
+            </xpath>
+            <xpath expr="//field[@name='product_id']" position="attributes">
+                    <attribute name="invisible">1</attribute>
+                </xpath>
+        </field>
+    </record>
+<!--    <record id="add_45_days_in_po_report" model="ir.ui.view">-->
+<!--       <field name="name">add.45.days.in.po.report</field>-->
+<!--        <field name="model">purchase.order</field>-->
+<!--        <field name="inherit_id" ref="purchase.purchase_order_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='date_planned']" position="after">-->
+<!--               <field name="check_date" invisible="1"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+
+</odoo>
