@@ -16,28 +16,25 @@
                             (<t t-out="object.partner_id.parent_id.name or ''">Azure Interior</t>)
                         </t>
                         <br/>
-                        <br/>
                         Please find attached a purchase order
                         <strong t-out="object.name or ''">P00015</strong>
                         <t t-if="object.partner_ref">
                             with reference:
                             <t t-out="object.partner_ref or ''">REF_XXX</t>
                         </t>
-                        amounting in
+                        of
                         <strong t-out="format_amount(object.amount_total, object.currency_id) or ''">$ 10.00</strong>
                         from <t t-out="object.company_id.name or ''">YourCompany</t>.
-                        <br/>
                         <br/>
                         <t t-if="object.date_planned">
                             The receipt is expected for <strong t-out="format_date(object.date_planned) or ''">
                             05/05/2021</strong>.
                             <br/>
                             <br/>
-                            Could you please acknowledge the receipt of this order?
+                            Could you please acknowledge this order?
                             <br/>
                             <br/>
                             Thank you,
-                            <br/>
                             <br/>
                             BE RELAX Supply Chain Department
                         </t>
