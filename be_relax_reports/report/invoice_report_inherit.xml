@@ -182,7 +182,7 @@
                                     </t>
                                     <!--                                    <span t-esc="line.product_id.l10n_in_hsn_code"/>-->
                                 </td>
-                                <td class="td1"><span t-esc="doc.partner_id.country_id.name"/></td>
+                                <td class="td1"><span t-esc="line.product_id.country_of_origin.name"/></td>
                                 <td class="td1">
                                     <span t-esc="line.quantity"/>
                                     <t t-set="total_quantity" t-value="line.quantity + total_quantity"/>
