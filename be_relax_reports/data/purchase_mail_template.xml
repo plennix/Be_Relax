@@ -24,7 +24,7 @@
                         </t>
                         of
                         <strong t-out="format_amount(object.amount_total, object.currency_id) or ''">$ 10.00</strong>
-                        from <t t-out="object.company_id.name or ''">YourCompany</t>.
+                        from <t t-out="object.company_id.br_alias_company_name or ''">YourCompany</t>.
                         <br/>
                         <t t-if="object.date_planned">
                             The receipt is expected for <strong t-out="format_date(object.date_planned) or ''">

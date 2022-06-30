@@ -51,6 +51,12 @@
                                         <span t-esc="doc.company_id.vat"/>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>EORI N
+                                        <span t-esc="doc.company_id.br_eori_number"/>
+                                    </td>
+                                </tr>
+
 
                                 <tr>
                                     <td>contact:</td>
@@ -97,7 +103,7 @@
                                                 VAT N&#160;<span t-esc="doc.partner_id.vat"/>
                                             </t>
                                             <t t-else="">
-                                                <br/>
+
                                             </t>
                                         </t>
                                         <!--                                        </t>-->
@@ -141,7 +147,7 @@
 
                                             </t>
                                             <t t-else="">
-                                                <br/>
+
                                             </t>
                                         </t>
                                     </td>

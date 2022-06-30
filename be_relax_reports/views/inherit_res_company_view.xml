@@ -10,6 +10,9 @@
                     <field name="br_alias_company_name" style="width: 30%;"/>
                 </group>
             </xpath>
+            <xpath expr="//field[@name='vat']" position="after">
+                <field name="br_eori_number"/>
+            </xpath>
         </field>
     </record>
 </odoo>
