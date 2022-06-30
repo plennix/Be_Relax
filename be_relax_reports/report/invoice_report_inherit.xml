@@ -81,11 +81,12 @@
                                 <tr>
                                     <td class="text-left">
                                         <strong>BILLING ADDRESS</strong><br/>
-                                        <span t-esc="doc.partner_id.name"/><br/>
+<!--                                        <span t-esc="doc.partner_id.name"/><br/>-->
 
                                         <!--                                        <t t-foreach="doc.partner_id" t-as="o">-->
                                         <t t-foreach="doc.partner_id.child_ids" t-as="l">
                                             <t t-if="l.type =='invoice'">
+                                                <span t-esc="l.name"/><br/>
                                                 <span t-esc="l.street"/>
                                                 <span t-esc="l.street2"/>
                                                 <span t-esc="l.city"/><br/>
@@ -96,6 +97,7 @@
                                                 VAT N&#160;<span t-esc="doc.partner_id.vat"/>
                                             </t>
                                             <t t-else="">
+                                                <br/>
                                             </t>
                                         </t>
                                         <!--                                        </t>-->
@@ -109,7 +111,7 @@
                                 <tr>
                                     <td class="text-right">
                                         <strong>DELIVERY ADDRESS</strong><br/>
-                                        <span t-esc="doc.partner_id.name"/><br/>
+<!--                                        <span t-esc="doc.partner_id.name"/><br/>-->
                                         <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="o">-->
                                         <!--                                            <t t-if="o.type =='delivery'">-->
                                         <!--                                                <span t-esc="o.street"/>-->
@@ -127,6 +129,7 @@
                                         <!--                                        </t>-->
                                         <t t-foreach="doc.partner_id.child_ids" t-as="l">
                                             <t t-if="l.type =='delivery'">
+                                                <span t-esc="l.name"/><br/>
                                                 <span t-esc="l.street"/>
                                                 <span t-esc="l.street2"/>
                                                 <span t-esc="l.city"/><br/>
@@ -138,6 +141,7 @@
 
                                             </t>
                                             <t t-else="">
+                                                <br/>
                                             </t>
                                         </t>
                                     </td>
