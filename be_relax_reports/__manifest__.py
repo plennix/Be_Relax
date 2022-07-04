@@ -3,13 +3,14 @@
     'version': '2.0',
     'category': 'Hidden',
     'summary': 'Invoice report',
-    'depends': ['purchase','account'],
+    'depends': ['sale', 'purchase', 'account'],
     'data': [
-        # 'security/ir.models.access.csv',
+        'security/ir.model.access.csv',
+        'data/purchase_mail_template.xml',
+        'data/sale_invoice_mail_template.xml',
         'report/invoice_report_inherit.xml',
         'report/report.xml',
         'report/purchase_order_inherit.xml',
-
         'views/inherit_field.xml',
         'views/inherit_res_company_view.xml'
     ],

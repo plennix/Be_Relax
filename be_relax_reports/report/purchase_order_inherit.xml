@@ -133,6 +133,7 @@
                                             <span t-esc="doc.partner_id.name"/><br/>
                                             <t t-foreach="doc.partner_id.child_ids" t-as="o">
                                                 <t t-if="o.type=='delivery'">
+                                                    <span t-esc="o.name"/><br/>
                                                     <span t-esc="o.street"/>
                                                     <span t-esc="o.street2"/>
                                                     <span t-esc="o.city"/><br/>
@@ -227,7 +228,7 @@
             <div class="o_boxed_header"/>
             <div class="col-md-12" style="text-align:center">
 
-                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="120px" height="80px" alt='Logo'/>
+                <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="180px" height="100px" alt='Logo'/>
             </div>
         </div>
         <div t-attf-class="article o_report_layout_standard o_company_#{company.id}_layout"

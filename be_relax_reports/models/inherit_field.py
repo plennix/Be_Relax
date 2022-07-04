@@ -21,6 +21,7 @@ class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
     status = fields.Selection([('active','ACTIVE'),('eol','EOL'),('dev','DEV')])
+    country_of_origin = fields.Many2one("res.country", string="Country of Origin")
 
 class StockQuant(models.Model):
     _inherit = 'stock.quant'
@@ -39,4 +40,13 @@ class Purchase_order(models.Model):
             self.date_planned = date_planned
         else:
              self.date_planned = False
+
+    @api.depends('date_order', 'currency_id', 'company_id', 'company_id.currency_id', 'partner_id', 'incoterm_id')
+    def _compute_currency_rate(self):
+        for order in self:
+            order.currency_rate = self.env['res.currency']._get_conversion_rate(order.company_id.currency_id,
+                                                                                order.currency_id, order.company_id,
+                                                                                order.date_order)
+        if self.partner_id.customer_incoterm_id.id:
+            self.incoterm_id = self.partner_id.customer_incoterm_id.id
 

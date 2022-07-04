@@ -51,6 +51,12 @@
                                         <span t-esc="doc.company_id.vat"/>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>EORI N
+                                        <span t-esc="doc.company_id.br_eori_number"/>
+                                    </td>
+                                </tr>
+
 
                                 <tr>
                                     <td>contact:</td>
@@ -81,11 +87,12 @@
                                 <tr>
                                     <td class="text-left">
                                         <strong>BILLING ADDRESS</strong><br/>
-                                        <span t-esc="doc.partner_id.name"/><br/>
+<!--                                        <span t-esc="doc.partner_id.name"/><br/>-->
 
                                         <!--                                        <t t-foreach="doc.partner_id" t-as="o">-->
                                         <t t-foreach="doc.partner_id.child_ids" t-as="l">
                                             <t t-if="l.type =='invoice'">
+                                                <span t-esc="l.name"/><br/>
                                                 <span t-esc="l.street"/>
                                                 <span t-esc="l.street2"/>
                                                 <span t-esc="l.city"/><br/>
@@ -96,6 +103,7 @@
                                                 VAT N&#160;<span t-esc="doc.partner_id.vat"/>
                                             </t>
                                             <t t-else="">
+
                                             </t>
                                         </t>
                                         <!--                                        </t>-->
@@ -109,7 +117,7 @@
                                 <tr>
                                     <td class="text-right">
                                         <strong>DELIVERY ADDRESS</strong><br/>
-                                        <span t-esc="doc.partner_id.name"/><br/>
+<!--                                        <span t-esc="doc.partner_id.name"/><br/>-->
                                         <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="o">-->
                                         <!--                                            <t t-if="o.type =='delivery'">-->
                                         <!--                                                <span t-esc="o.street"/>-->
@@ -127,6 +135,7 @@
                                         <!--                                        </t>-->
                                         <t t-foreach="doc.partner_id.child_ids" t-as="l">
                                             <t t-if="l.type =='delivery'">
+                                                <span t-esc="l.name"/><br/>
                                                 <span t-esc="l.street"/>
                                                 <span t-esc="l.street2"/>
                                                 <span t-esc="l.city"/><br/>
@@ -138,6 +147,7 @@
 
                                             </t>
                                             <t t-else="">
+
                                             </t>
                                         </t>
                                     </td>
@@ -182,7 +192,7 @@
                                     </t>
                                     <!--                                    <span t-esc="line.product_id.l10n_in_hsn_code"/>-->
                                 </td>
-                                <td class="td1"><span t-esc="doc.partner_id.country_id.name"/></td>
+                                <td class="td1"><span t-esc="line.product_id.country_of_origin.name"/></td>
                                 <td class="td1">
                                     <span t-esc="line.quantity"/>
                                     <t t-set="total_quantity" t-value="line.quantity + total_quantity"/>
@@ -305,7 +315,7 @@
             <table style="width:100%;">
                 <tr>
                     <td style="text-align:center;padding-top:15px">
-                        <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="120px" height="100px" alt='Logo'/>
+                        <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="180px" height="100px" alt='Logo'/>
                     </td>
                 </tr>
             </table>
