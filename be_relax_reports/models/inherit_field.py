@@ -9,6 +9,11 @@ class Customer(models.Model):
     customer_incoterm_id = fields.Many2one('account.incoterms', string='Incoterm')
     iban = fields.Char( string='IBAN')
     swift = fields.Char(string='SWIFT BIC')
+    br_vat_mentions = fields.Selection([
+        ('option_1', '0% Dutch VAT intra-community supply, art 138 VAT Directive/Table II, post a.6, Ducth VAT act'),
+        ('option_2', '0% Dutch VAT export supply, art 146 VAT Directive/Table II, post a.2, Ducth VAT act'),
+        ('option_3', 'VAT to be declare by customer due to reverse charge mechanism, article 12-3, Dutch'),
+                                        ], string="VAT mentions", default=" ")
 
 
 class Product(models.Model):

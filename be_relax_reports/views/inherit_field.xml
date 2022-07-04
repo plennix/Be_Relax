@@ -20,6 +20,9 @@
                 <field name="iban"/>
                 <field name="swift"/>
             </xpath>
+            <xpath expr="//field[@name='category_id']" position="after">
+                <field name="br_vat_mentions"/>
+            </xpath>
         </field>
     </record>
     <record id="res_partner_view_search_by_vendor_code" model="ir.ui.view">
