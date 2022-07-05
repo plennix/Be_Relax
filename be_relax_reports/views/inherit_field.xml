@@ -8,13 +8,10 @@
                 <field name="customer_incoterm_id"/>
             </xpath>
             <xpath expr="//field[@name='avatar_128']" position="before">
-                    <label for="vendor_code"/>
-                    <field name="vendor_code" style="width:30%%" />
-            </xpath>
-
-            <xpath expr="//h1" position="after">
-                <label for="alias_name"/>
-                    <field name="alias_name" string="Alias Name" style="width:40%%"/>
+                    <label for="vendor_code" style="width:67px"/>
+                    <field name="vendor_code" style="width:30%%" /><br/>
+                    <label for="alias_name"/>
+                    <field name="alias_name" string="Alias Name" style="width:30%%"/>
             </xpath>
             <xpath expr="//field[@name='property_account_payable_id']" position="after">
                 <field name="iban"/>
