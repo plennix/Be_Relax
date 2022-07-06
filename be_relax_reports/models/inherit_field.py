@@ -14,7 +14,7 @@ class Customer(models.Model):
         ('option_1', '0% Dutch VAT intra-community supply, art 138 VAT Directive/Table II, post a.6, Ducth VAT act'),
         ('option_2', '0% Dutch VAT export supply, art 146 VAT Directive/Table II, post a.2, Ducth VAT act'),
         ('option_3', 'VAT to be declare by customer due to reverse charge mechanism, article 12-3, Dutch'),
-                                        ], string="VAT mentions", default=" ")
+                                        ], string="VAT mentions")
 
 
 class Product(models.Model):
