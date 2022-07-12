@@ -1,6 +1,8 @@
 from odoo import api, fields, models, _
 from datetime import  datetime,timedelta
 
+from odoo.exceptions import ValidationError
+
 
 class Customer(models.Model):
     _inherit = 'res.partner'
@@ -35,6 +37,13 @@ class StockQuant(models.Model):
     default_code=fields.Char('Internal Ref', related='product_id.default_code')
     product_name=fields.Char('Product', related='product_id.name')
 
+
+class InheritProductSupplier(models.Model):
+    _inherit = 'product.supplierinfo'
+
+    br_moq = fields.Float(string="MOQ")
+
+
 class Purchase_order(models.Model):
     _inherit = 'purchase.order'
 
@@ -47,7 +56,7 @@ class Purchase_order(models.Model):
         else:
              self.date_planned = False
 
-    @api.depends('date_order', 'currency_id', 'company_id', 'company_id.currency_id', 'partner_id', 'incoterm_id')
+    @api.depends('date_order', 'currency_id', 'company_id', 'company_id.currency_id', 'partner_id', 'incoterm_id', 'order_line')
     def _compute_currency_rate(self):
         for order in self:
             order.currency_rate = self.env['res.currency']._get_conversion_rate(order.company_id.currency_id,
@@ -56,3 +65,10 @@ class Purchase_order(models.Model):
         if self.partner_id.customer_incoterm_id.id:
             self.incoterm_id = self.partner_id.customer_incoterm_id.id
 
+        for line in self.order_line:
+            search_vendor_pricelist = self.env["product.supplierinfo"].search([('name', '=', self.partner_id.id), ('product_id', '=', line.product_id.id)])
+            print(search_vendor_pricelist)
+            print(line)
+            if line.product_qty:
+                if line.product_qty <= search_vendor_pricelist.br_moq:
+                    raise ValidationError(f"Minimum Quantity of '{line.product_id.name}' must be {search_vendor_pricelist.br_moq}")

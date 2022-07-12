@@ -3,7 +3,7 @@
     'version': '2.0',
     'category': 'Hidden',
     'summary': 'Invoice report',
-    'depends': ['sale', 'purchase', 'account'],
+    'depends': ['sale', 'purchase', 'account', 'product'],
     'data': [
         'security/ir.model.access.csv',
         'data/purchase_mail_template.xml',

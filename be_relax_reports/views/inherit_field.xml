@@ -81,6 +81,17 @@
                 </xpath>
         </field>
     </record>
+
+    <record id="inherit_product_supplierinfo_view" model="ir.ui.view">
+        <field name="name">inherit.product.supplierinfo.view</field>
+        <field name="model">product.supplierinfo</field>
+        <field name="inherit_id" ref="product.product_supplierinfo_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//group/group[@name='vendor']/div" position="after">
+                <field name="br_moq"/>
+            </xpath>
+        </field>
+    </record>
 <!--    <record id="add_45_days_in_po_report" model="ir.ui.view">-->
 <!--       <field name="name">add.45.days.in.po.report</field>-->
 <!--        <field name="model">purchase.order</field>-->
