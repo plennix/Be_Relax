@@ -66,7 +66,7 @@ class Purchase_order(models.Model):
             self.incoterm_id = self.partner_id.customer_incoterm_id.id
 
         for line in self.order_line:
-            search_vendor_pricelist = self.env["product.supplierinfo"].search([('name', '=', self.partner_id.id), ('product_id', '=', line.product_id.id)])
+            search_vendor_pricelist = self.env["product.supplierinfo"].search([('name', '=', self.partner_id.id), ('product_id', '=', line.product_id.id)], limit=1)
             print(search_vendor_pricelist)
             print(line)
             if line.product_qty:
