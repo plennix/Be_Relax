@@ -91,7 +91,7 @@ class PurchaseOrderLine(models.Model):
                 'purchase')._find_suitable_product_packaging(self.product_qty, self.product_uom)
         for line in self:
             search_vendor_pricelist = self.env["product.supplierinfo"].search(
-                [('name', '=', self.partner_id.id), ('product_id', '=', line.product_id.id)], limit=1)
+                [('name', '=', self.partner_id.id), ('product_tmpl_id', '=', line.product_id.id)], limit=1)
             # print(search_vendor_pricelist)
             # print(line)
             if line.product_qty:
