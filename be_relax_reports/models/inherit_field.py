@@ -1,6 +1,11 @@
 from odoo import api, fields, models, _
 from datetime import  datetime,timedelta
 
+from odoo.exceptions import ValidationError
+# from odoo.osv.orm import except_orm
+
+from odoo.osv import osv
+
 
 class Customer(models.Model):
     _inherit = 'res.partner'
@@ -35,6 +40,13 @@ class StockQuant(models.Model):
     default_code=fields.Char('Internal Ref', related='product_id.default_code')
     product_name=fields.Char('Product', related='product_id.name')
 
+
+class InheritProductSupplier(models.Model):
+    _inherit = 'product.supplierinfo'
+
+    br_moq = fields.Float(string="MOQ")
+
+
 class Purchase_order(models.Model):
     _inherit = 'purchase.order'
 
@@ -47,7 +59,7 @@ class Purchase_order(models.Model):
         else:
              self.date_planned = False
 
-    @api.depends('date_order', 'currency_id', 'company_id', 'company_id.currency_id', 'partner_id', 'incoterm_id')
+    @api.depends('date_order', 'currency_id', 'company_id', 'company_id.currency_id', 'partner_id', 'incoterm_id', 'order_line')
     def _compute_currency_rate(self):
         for order in self:
             order.currency_rate = self.env['res.currency']._get_conversion_rate(order.company_id.currency_id,
@@ -56,3 +68,38 @@ class Purchase_order(models.Model):
         if self.partner_id.customer_incoterm_id.id:
             self.incoterm_id = self.partner_id.customer_incoterm_id.id
 
+        # for line in self.order_line:
+        #     search_vendor_pricelist = self.env["product.supplierinfo"].search([('name', '=', self.partner_id.id), ('product_id', '=', line.product_id.id)], limit=1)
+        #     # print(search_vendor_pricelist)
+        #     # print(line)
+        #     if line.product_qty:
+        #         if line.product_qty < search_vendor_pricelist.br_moq:
+                    # raise ValidationError(f"Minimum Quantity of '{line.product_id.name}' must be {search_vendor_pricelist.br_moq}")
+
+
+class PurchaseOrderLine(models.Model):
+    _inherit = 'purchase.order.line'
+
+    @api.onchange('product_id', 'product_qty', 'product_uom')
+    def _onchange_suggest_packaging(self):
+        # remove packaging if not match the product
+        if self.product_packaging_id.product_id != self.product_id:
+            self.product_packaging_id = False
+        # suggest biggest suitable packaging
+        if self.product_id and self.product_qty and self.product_uom:
+            self.product_packaging_id = self.product_id.packaging_ids.filtered(
+                'purchase')._find_suitable_product_packaging(self.product_qty, self.product_uom)
+        for line in self:
+            search_vendor_pricelist = self.env["product.supplierinfo"].search(
+                [('name', '=', self.partner_id.id), ('product_tmpl_id', '=', line.product_id.id)], limit=1)
+            # print(search_vendor_pricelist)
+            # print(line)
+            if line.product_qty:
+                if line.product_qty < search_vendor_pricelist.br_moq:
+                    return {
+                        'warning': {
+                            'title': _('Warning!'),
+                            'message': _(f"Minimum Quantity of '{line.product_id.name}' must "
+                                         f"be {search_vendor_pricelist.br_moq}")
+                        }
+                    }
