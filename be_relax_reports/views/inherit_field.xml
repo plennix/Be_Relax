@@ -20,7 +20,7 @@
             <xpath expr="//field[@name='category_id']" position="after">
                 <field name="br_vat_mentions"/>
             </xpath>
-            <xpath expr="//field[@name='user_id']" position="before">
+            <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='sale']" position="inside">
                 <field name="br_lead_time"/>
             </xpath>
         </field>
