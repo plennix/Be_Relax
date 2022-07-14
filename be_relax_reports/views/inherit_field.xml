@@ -20,6 +20,9 @@
             <xpath expr="//field[@name='category_id']" position="after">
                 <field name="br_vat_mentions"/>
             </xpath>
+            <xpath expr="//field[@name='user_id']" position="before">
+                <field name="br_lead_time"/>
+            </xpath>
         </field>
     </record>
     <record id="res_partner_view_search_by_vendor_code" model="ir.ui.view">
@@ -34,7 +37,6 @@
                 <field name="name"
                        filter_domain="['|', '|', '|', ('display_name', 'ilike', self), ('ref', '=', self),('vendor_code', 'ilike', self), ('email', 'ilike', self)]"/>
             </xpath>
-
         </field>
     </record>
 

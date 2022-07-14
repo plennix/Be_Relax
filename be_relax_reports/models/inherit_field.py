@@ -20,6 +20,7 @@ class Customer(models.Model):
         ('option_2', '0% Dutch VAT export supply, art 146 VAT Directive/Table II, post a.2, Ducth VAT act'),
         ('option_3', 'VAT to be declare by customer due to reverse charge mechanism, article 12-3, Dutch'),
                                         ], string="VAT mentions")
+    br_lead_time = fields.Char(string='Lead time')
 
 
 class Product(models.Model):
