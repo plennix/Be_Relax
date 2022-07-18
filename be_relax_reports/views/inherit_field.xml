@@ -62,6 +62,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="status"/>
+                <field name="hs_code"/>
             </xpath>
             <xpath expr="//field[@name='detailed_type']" position="before">
                 <field name="country_of_origin"/>
