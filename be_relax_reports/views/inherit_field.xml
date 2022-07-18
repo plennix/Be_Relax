@@ -20,6 +20,9 @@
             <xpath expr="//field[@name='category_id']" position="after">
                 <field name="br_vat_mentions"/>
             </xpath>
+            <xpath expr="//page[@name='sales_purchases']/group[@name='container_row_2']/group[@name='sale']" position="inside">
+                <field name="br_lead_time"/>
+            </xpath>
         </field>
     </record>
     <record id="res_partner_view_search_by_vendor_code" model="ir.ui.view">
@@ -34,7 +37,6 @@
                 <field name="name"
                        filter_domain="['|', '|', '|', ('display_name', 'ilike', self), ('ref', '=', self),('vendor_code', 'ilike', self), ('email', 'ilike', self)]"/>
             </xpath>
-
         </field>
     </record>
 
@@ -60,6 +62,7 @@
         <field name="arch" type="xml">
             <xpath expr="//field[@name='company_id']" position="after">
                 <field name="status"/>
+                <field name="hs_code"/>
             </xpath>
             <xpath expr="//field[@name='detailed_type']" position="before">
                 <field name="country_of_origin"/>
