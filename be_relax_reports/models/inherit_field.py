@@ -32,6 +32,7 @@ class Product(models.Model):
 class ProductTemplate(models.Model):
     _inherit = 'product.template'
 
+    hs_code = fields.Char(String='Hs Code')
     status = fields.Selection([('active','ACTIVE'),('eol','EOL'),('dev','DEV')])
     country_of_origin = fields.Many2one("res.country", string="Country of Origin")
 
