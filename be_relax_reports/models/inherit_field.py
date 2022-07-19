@@ -23,11 +23,11 @@ class Customer(models.Model):
     br_lead_time = fields.Char(string='Lead time')
 
 
-class Product(models.Model):
-    _inherit = 'product.product'
-
-    status = fields.Selection([('active','ACTIVE'),('eol','EOL'),('dev','DEV')])
-    hs_code =fields.Char(String='Hs Code')
+# class Product(models.Model):
+#     _inherit = 'product.product'
+#
+#     status = fields.Selection([('active','ACTIVE'),('eol','EOL'),('dev','DEV')])
+#     hs_code =fields.Char(String='Hs Code')
 
 class ProductTemplate(models.Model):
     _inherit = 'product.template'

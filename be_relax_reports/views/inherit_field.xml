@@ -40,20 +40,20 @@
         </field>
     </record>
 
-    <record id="product_field_view" model="ir.ui.view">
-        <field name="name">product.field.view</field>
-        <field name="model">product.product</field>
-        <field name="inherit_id" ref="product.product_normal_form_view"/>
-        <field name="arch" type="xml">
-            <xpath expr="//field[@name='company_id']" position="after">
-                <field name="status"/>
-                <field name="hs_code"/>
-            </xpath>
-            <xpath expr="//field[@name='detailed_type']" position="before">
-                <field name="country_of_origin"/>
-            </xpath>
-        </field>
-    </record>
+<!--    <record id="product_field_view" model="ir.ui.view">-->
+<!--        <field name="name">product.field.view</field>-->
+<!--        <field name="model">product.product</field>-->
+<!--        <field name="inherit_id" ref="product.product_normal_form_view"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//field[@name='company_id']" position="after">-->
+<!--                <field name="status"/>-->
+<!--                <field name="hs_code"/>-->
+<!--            </xpath>-->
+<!--            <xpath expr="//field[@name='detailed_type']" position="before">-->
+<!--                <field name="country_of_origin"/>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
 
     <record id="product_add_field_view" model="ir.ui.view">
         <field name="name">product.add.field.view</field>
