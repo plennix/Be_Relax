@@ -12,7 +12,8 @@
         'report/report.xml',
         'report/purchase_order_inherit.xml',
         'views/inherit_field.xml',
-        'views/inherit_res_company_view.xml'
+        'views/inherit_res_company_view.xml',
+        'views/inherit_stock_quant_view.xml'
     ],
     'installable': True,
     'auto_install': False,
