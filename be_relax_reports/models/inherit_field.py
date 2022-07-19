@@ -36,6 +36,7 @@ class ProductTemplate(models.Model):
     status = fields.Selection([('active','ACTIVE'),('eol','EOL'),('dev','DEV')])
     country_of_origin = fields.Many2one("res.country", string="Country of Origin")
 
+
 class StockQuant(models.Model):
     _inherit = 'stock.quant'
 
