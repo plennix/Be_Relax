@@ -96,14 +96,14 @@
 <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
                                             <t t-if="doc.partner_id">
                                                 <span t-esc="doc.partner_id.parent_id.alias_name"/><br/>
-                                                <span t-esc="doc.partner_id.street"/>
-                                                <span t-esc="doc.partner_id.street2"/>
-                                                <span t-esc="doc.partner_id.city"/><br/>
-                                                <span t-esc="doc.partner_id.state_id.name"/>
-                                                <span t-esc="doc.partner_id.country_id.name"/>
-                                                <span t-esc="doc.partner_id.zip"/><br/>
-                                                Email..&#160;<span t-esc="doc.partner_id.email"/><br/>
-                                                VAT N&#160;<span t-esc="doc.partner_id.vat"/>
+                                                <span t-esc="doc.partner_id.parent_id.street"/>
+                                                <span t-esc="doc.partner_id.parent_id.street2"/>
+                                                <span t-esc="doc.partner_id.parent_id.city"/><br/>
+                                                <span t-esc="doc.partner_id.parent_id.state_id.name"/>
+                                                <span t-esc="doc.partner_id.parent_id.country_id.name"/>
+                                                <span t-esc="doc.partner_id.parent_id.zip"/><br/>
+                                                Email:&#160;<span t-esc="doc.partner_id.parent_id.email"/><br/>
+                                                VAT N&#160;<span t-esc="doc.partner_id.parent_id.vat"/>
                                             </t>
                                             <t t-else="">
 
@@ -145,7 +145,7 @@
                                                 <span t-esc="doc.partner_shipping_id.state_id.name"/>
                                                 <span t-esc="doc.partner_shipping_id.country_id.name"/>
                                                 <span t-esc="doc.partner_shipping_id.zip"/><br/>
-                                                Email..&#160;<span t-esc="doc.partner_shipping_id.email"/><br/>
+                                                Email:&#160;<span t-esc="doc.partner_shipping_id.email"/><br/>
                                                 <!--                                                VAT N&#160;<span t-esc="doc.partner_id.vat"/>-->
 
                                             </t>
