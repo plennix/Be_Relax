@@ -13,7 +13,7 @@
                     <label for="alias_name"/>
                     <field name="alias_name" string="Alias Name" style="width:30%%"/>
             </xpath>
-            <xpath expr="//field[@name='property_account_payable_id']" position="after">
+            <xpath expr="//field[@name='bank_ids']" position="after">
                 <field name="iban"/>
                 <field name="swift"/>
             </xpath>
