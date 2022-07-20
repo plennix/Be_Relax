@@ -13,9 +13,11 @@
                     <label for="alias_name"/>
                     <field name="alias_name" string="Alias Name" style="width:30%%"/>
             </xpath>
-            <xpath expr="//field[@name='bank_ids']" position="after">
-                <field name="iban"/>
-                <field name="swift"/>
+            <xpath expr="//page[@name='accounting']" position="inside">
+                <group style="width:60%%">
+                    <field name="iban"/>
+                    <field name="swift"/>
+                </group>
             </xpath>
             <xpath expr="//field[@name='category_id']" position="after">
                 <field name="br_vat_mentions"/>
