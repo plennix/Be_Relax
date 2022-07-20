@@ -26,3 +26,4 @@ class InheritStockInventoryAdjust(models.TransientModel):
         # print(self.quant_ids)
         for id in self.quant_ids.ids:
             self._cr.execute(f"""UPDATE stock_quant SET create_date='{self.forced_date}' WHERE id={id}""")
+            print(self.quant_ids.product_id.property_stock_inventory.id)

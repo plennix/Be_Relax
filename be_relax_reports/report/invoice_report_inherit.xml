@@ -29,7 +29,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <strong>BE RELAX DISTRIBUTION</strong>
+                                        <strong><span t-esc="doc.company_id.br_alias_company_name"/></strong>
                                     </td>
                                 </tr>
                                 <tr>
@@ -57,21 +57,24 @@
                                     </td>
                                 </tr>
 
-
+                                <br/>
                                 <tr>
-                                    <td>contact:</td>
+                                    <td>contact: Jean-Pierre BOMBET</td>
                                 </tr>
                                 <tr>
                                     <td style="padding-left:20px">Tel:
-                                        <span t-esc="doc.partner_id.mobile"/>
+<!--                                        <span t-esc="doc.partner_id.mobile"/>-->
+                                        +33 6 82 82 82 44
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td style="padding-left:20px">Email:
-                                        <span t-esc="doc.partner_id.email"/>
+<!--                                        <span t-esc="doc.partner_id.email"/>-->
+                                        jp.bombet@berelax.com
                                     </td>
                                 </tr>
+                                <br/>
                             </table>
                         </td>
                         <td class="text-center">
@@ -82,7 +85,8 @@
                     </table>
 
                     <table class="content_text" style="width:100%;">
-                        <td style="width:50%;">
+                        <tr>
+                        <td style="width:50%;vertical-align:top">
                             <table>
                                 <tr>
                                     <td class="text-left">
@@ -90,22 +94,22 @@
 <!--                                        <span t-esc="doc.partner_id.name"/><br/>-->
 
                                         <!--                                        <t t-foreach="doc.partner_id" t-as="o">-->
-                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">
-                                            <t t-if="l.type =='invoice'">
-                                                <span t-esc="l.name"/><br/>
-                                                <span t-esc="l.street"/>
-                                                <span t-esc="l.street2"/>
-                                                <span t-esc="l.city"/><br/>
-                                                <span t-esc="l.state_id.name"/>
-                                                <span t-esc="l.country_id.name"/>
-                                                <span t-esc="l.zip"/><br/>
-                                                Tel n&#160;<span t-esc="l.mobile"/><br/>
-                                                VAT N&#160;<span t-esc="doc.partner_id.vat"/>
+<!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
+                                            <t t-if="doc.partner_id">
+                                                <span t-esc="doc.partner_id.parent_id.alias_name"/><br/>
+                                                <span t-esc="doc.partner_id.parent_id.street"/>
+                                                <span t-esc="doc.partner_id.parent_id.street2"/>
+                                                <span t-esc="doc.partner_id.parent_id.city"/><br/>
+                                                <span t-esc="doc.partner_id.parent_id.state_id.name"/>
+                                                <span t-esc="doc.partner_id.parent_id.country_id.name"/>
+                                                <span t-esc="doc.partner_id.parent_id.zip"/><br/>
+                                                Email:&#160;<span t-esc="doc.partner_id.parent_id.email"/><br/>
+                                                VAT N&#160;<span t-esc="doc.partner_id.parent_id.vat"/>
                                             </t>
                                             <t t-else="">
 
                                             </t>
-                                        </t>
+<!--                                        </t>-->
                                         <!--                                        </t>-->
                                     </td>
                                 </tr>
@@ -133,29 +137,29 @@
 
                                         <!--                                            </t>-->
                                         <!--                                        </t>-->
-                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">
-                                            <t t-if="l.type =='delivery'">
-                                                <span t-esc="l.name"/><br/>
-                                                <span t-esc="l.street"/>
-                                                <span t-esc="l.street2"/>
-                                                <span t-esc="l.city"/><br/>
-                                                <span t-esc="l.state_id.name"/>
-                                                <span t-esc="l.country_id.name"/>
-                                                <span t-esc="l.zip"/><br/>
-                                                Tel n&#160;<span t-esc="l.mobile"/><br/>
+<!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
+                                            <t t-if="doc.partner_shipping_id">
+                                                <span t-esc="doc.partner_shipping_id.alias_name"/><br/>
+                                                <span t-esc="doc.partner_shipping_id.street"/>
+                                                <span t-esc="doc.partner_shipping_id.street2"/>
+                                                <span t-esc="doc.partner_shipping_id.city"/><br/>
+                                                <span t-esc="doc.partner_shipping_id.state_id.name"/>
+                                                <span t-esc="doc.partner_shipping_id.country_id.name"/>
+                                                <span t-esc="doc.partner_shipping_id.zip"/><br/>
+                                                Email:&#160;<span t-esc="doc.partner_shipping_id.email"/><br/>
                                                 <!--                                                VAT N&#160;<span t-esc="doc.partner_id.vat"/>-->
 
                                             </t>
                                             <t t-else="">
 
                                             </t>
-                                        </t>
+<!--                                        </t>-->
                                     </td>
                                 </tr>
 
                             </table>
                         </td>
-
+                        </tr>
                     </table>
 
                     <table class="content_text" style="width: 100%;border:1px solid;">
