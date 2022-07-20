@@ -90,22 +90,22 @@
 <!--                                        <span t-esc="doc.partner_id.name"/><br/>-->
 
                                         <!--                                        <t t-foreach="doc.partner_id" t-as="o">-->
-                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">
-                                            <t t-if="l.type =='invoice'">
-                                                <span t-esc="l.name"/><br/>
-                                                <span t-esc="l.street"/>
-                                                <span t-esc="l.street2"/>
-                                                <span t-esc="l.city"/><br/>
-                                                <span t-esc="l.state_id.name"/>
-                                                <span t-esc="l.country_id.name"/>
-                                                <span t-esc="l.zip"/><br/>
-                                                Tel n&#160;<span t-esc="l.mobile"/><br/>
+<!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
+                                            <t t-if="doc.partner_id">
+                                                <span t-esc="doc.partner_id.name"/><br/>
+                                                <span t-esc="doc.partner_id.street"/>
+                                                <span t-esc="doc.partner_id.street2"/>
+                                                <span t-esc="doc.partner_id.city"/><br/>
+                                                <span t-esc="doc.partner_id.state_id.name"/>
+                                                <span t-esc="doc.partner_id.country_id.name"/>
+                                                <span t-esc="doc.partner_id.zip"/><br/>
+                                                Tel n&#160;<span t-esc="doc.partner_id.mobile"/><br/>
                                                 VAT N&#160;<span t-esc="doc.partner_id.vat"/>
                                             </t>
                                             <t t-else="">
 
                                             </t>
-                                        </t>
+<!--                                        </t>-->
                                         <!--                                        </t>-->
                                     </td>
                                 </tr>
@@ -133,23 +133,23 @@
 
                                         <!--                                            </t>-->
                                         <!--                                        </t>-->
-                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">
-                                            <t t-if="l.type =='delivery'">
-                                                <span t-esc="l.name"/><br/>
-                                                <span t-esc="l.street"/>
-                                                <span t-esc="l.street2"/>
-                                                <span t-esc="l.city"/><br/>
-                                                <span t-esc="l.state_id.name"/>
-                                                <span t-esc="l.country_id.name"/>
-                                                <span t-esc="l.zip"/><br/>
-                                                Tel n&#160;<span t-esc="l.mobile"/><br/>
+<!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
+                                            <t t-if="doc.partner_shipping_id">
+                                                <span t-esc="doc.partner_shipping_id.name"/><br/>
+                                                <span t-esc="doc.partner_shipping_id.street"/>
+                                                <span t-esc="doc.partner_shipping_id.street2"/>
+                                                <span t-esc="doc.partner_shipping_id.city"/><br/>
+                                                <span t-esc="doc.partner_shipping_id.state_id.name"/>
+                                                <span t-esc="doc.partner_shipping_id.country_id.name"/>
+                                                <span t-esc="doc.partner_shipping_id.zip"/><br/>
+                                                Tel n&#160;<span t-esc="doc.partner_shipping_id.mobile"/><br/>
                                                 <!--                                                VAT N&#160;<span t-esc="doc.partner_id.vat"/>-->
 
                                             </t>
                                             <t t-else="">
 
                                             </t>
-                                        </t>
+<!--                                        </t>-->
                                     </td>
                                 </tr>
 
