@@ -29,7 +29,7 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <strong>BE RELAX DISTRIBUTION</strong>
+                                        <strong><span t-esc="doc.company_id.br_alias_company_name"/></strong>
                                     </td>
                                 </tr>
                                 <tr>
