@@ -234,7 +234,7 @@
 
                         <tr>
                             <td class="label" colspan="6">BANK:
-                                <span t-esc="doc.partner_id.bank_ids.bank_id.name"/>
+                                <span t-esc="doc.company_id.partner_id.bank_ids.bank_id.name"/>
                             </td>
                             <td class="label" style="border:1px solid;">Discount</td>
                             <td class="label1" style="border:1px solid;text-align:right"><span t-esc="total_discount"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/></td>
@@ -247,7 +247,7 @@
                         </tr>
                         <tr>
                             <td class="label" colspan="6">
-                                IBAN: <span t-esc="doc.partner_id.iban"/>
+                                IBAN: <span t-esc="doc.company_id.partner_id.iban"/>
                             </td>
                             <td class="label" style="border:1px solid;">Total</td>
                             <td class="label1" style="border:1px solid;text-align:right">
@@ -256,7 +256,7 @@
                         </tr>
                         <tr>
                             <td class="label" colspan="6">
-                                SWIFT/BIC:  <span t-esc="doc.partner_id.swift"/>
+                                SWIFT/BIC:  <span t-esc="doc.company_id.partner_id.swift"/>
                             </td>
                             <td class="label" style="border:1px solid;">Pre Payment</td>
                             <td class="label1" style="border:1px solid;"></td>
