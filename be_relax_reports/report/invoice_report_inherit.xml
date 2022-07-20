@@ -82,6 +82,7 @@
                     </table>
 
                     <table class="content_text" style="width:100%;">
+                        <tr>
                         <td style="width:50%;">
                             <table>
                                 <tr>
@@ -155,7 +156,7 @@
 
                             </table>
                         </td>
-
+                        </tr>
                     </table>
 
                     <table class="content_text" style="width: 100%;border:1px solid;">
