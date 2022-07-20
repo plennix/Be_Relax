@@ -59,17 +59,19 @@
 
 
                                 <tr>
-                                    <td>contact:</td>
+                                    <td>contact: Jean-Pierre BOMBET</td>
                                 </tr>
                                 <tr>
                                     <td style="padding-left:20px">Tel:
-                                        <span t-esc="doc.partner_id.mobile"/>
+<!--                                        <span t-esc="doc.partner_id.mobile"/>-->
+                                        +33 6 82 82 82 44
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td style="padding-left:20px">Email:
-                                        <span t-esc="doc.partner_id.email"/>
+<!--                                        <span t-esc="doc.partner_id.email"/>-->
+                                        jp.bombet@berelax.com
                                     </td>
                                 </tr>
                             </table>
