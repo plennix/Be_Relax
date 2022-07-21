@@ -288,8 +288,8 @@
                         <tr>
                             <td class="label" colspan="4">Dutch VAT Rep BV PO Box 7003 9605 JA Eindhoven,The Netherland</td>
 
-                            <td class="text-right label1" colspan="4" style="font-size:10px;">0% Dutch VAT intraa community supply art 138 VAT
-                                Directive/ Table II,post a 6 Dutch VAT act
+                            <td class="text-right label1" colspan="4" style="font-size:10px;">
+                                <span t-esc="doc.partner_id.br_vat_mentions"/>
                             </td>
                             <!--                            <td style="border-right:1px solid;"></td>-->
                         </tr>
