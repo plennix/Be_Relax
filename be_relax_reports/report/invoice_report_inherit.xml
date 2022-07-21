@@ -268,7 +268,7 @@
                         </tr>
                         <tr style="height:22px;">
                             <td class="label" colspan="6">Payment terms:
-                                <span t-esc="doc.partner_id.property_supplier_payment_term_id.name"/>
+                                <span t-esc="doc.partner_id.property_payment_term_id.name"/>
                             </td>
                             <td style="border:1px solid;"></td>
                             <td style="border:1px solid;"></td>
