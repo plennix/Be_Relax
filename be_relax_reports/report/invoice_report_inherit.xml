@@ -268,14 +268,14 @@
                         </tr>
                         <tr style="height:22px;">
                             <td class="label" colspan="6">Payment terms:
-                                <span t-esc="doc.partner_id.property_payment_term_id.name"/>
+                                <span t-esc="doc.partner_id.parent_id.property_payment_term_id.name"/>
                             </td>
                             <td style="border:1px solid;"></td>
                             <td style="border:1px solid;"></td>
                         </tr>
                         <tr>
                             <td class="label" colspan="6">Shipment terms:
-                                <span t-esc="doc.partner_id.customer_incoterm_id.name"/>
+                                <span t-esc="doc.partner_id.parent_id.customer_incoterm_id.name"/>
                             </td>
                             <td class="label" style="border:1px solid;">NET TO PAY</td>
                             <td class="label1" style="border:1px solid; text-align:right"><span t-esc="doc.amount_total"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/></td>
@@ -289,7 +289,7 @@
                             <td class="label" colspan="4">Dutch VAT Rep BV PO Box 7003 9605 JA Eindhoven,The Netherland</td>
 
                             <td class="text-right label1" colspan="4" style="font-size:10px;">
-                                <span t-esc="doc.partner_id.br_vat_mentions"/>
+                                <span t-esc="doc.partner_id.parent_id.br_vat_mentions"/>
                             </td>
                             <!--                            <td style="border-right:1px solid;"></td>-->
                         </tr>
