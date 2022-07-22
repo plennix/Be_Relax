@@ -96,7 +96,7 @@
                                         <!--                                        <t t-foreach="doc.partner_id" t-as="o">-->
 <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
                                             <t t-if="doc.partner_id">
-                                                <span t-esc="doc.partner_id.parent_id.alias_name"/><br/>
+                                                <span t-esc="doc.partner_id.parent_id.company_id.br_alias_company_name"/><br/>
                                                 <span t-esc="doc.partner_id.street"/>
                                                 <span t-esc="doc.partner_id.street2"/>
                                                 <span t-esc="doc.partner_id.city"/><br/>
@@ -154,7 +154,7 @@
                                         <!--                                        </t>-->
 <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
                                             <t t-if="doc.partner_shipping_id">
-                                                <span t-esc="doc.partner_shipping_id.parent_id.alias_name"/><br/>
+                                                <span t-esc="doc.partner_shipping_id.parent_id..company_id.br_alias_company_name"/><br/>
                                                 <span t-esc="doc.partner_shipping_id.street"/>
                                                 <span t-esc="doc.partner_shipping_id.street2"/>
                                                 <span t-esc="doc.partner_shipping_id.city"/><br/>
