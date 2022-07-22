@@ -47,9 +47,16 @@
                                     <td><span t-esc="doc.company_id.country_id.name"/></td>
                                 </tr>
                                 <tr>
-                                    <td>VAT N
-                                        <span t-esc="doc.company_id.vat"/>
-                                    </td>
+                                    <t t-if="doc.partner_id.parent_id.alias_name=='BE RELAX DISTRIBUTION SARL'">
+                                        <td>VAT No. NL8265.10.504.B01
+<!--                                            <span t-esc="doc.company_id.vat"/>-->
+                                        </td>
+                                    </t>
+                                    <t t-if="doc.partner_id.parent_id.alias_name=='SPA DEVELOPPEMENT'">
+                                        <td>VAT No. NL826510541B01
+<!--                                            <span t-esc="doc.company_id.vat"/>-->
+                                        </td>
+                                    </t>
                                 </tr>
                                 <tr>
                                     <td>EORI N
@@ -298,9 +305,19 @@
                             <!--                            <td style="border-right:1px solid;"></td>-->
                         </tr>
                         <tr>
-                            <td class="label" colspan="6">VAT Number
-                                <span t-esc="doc.partner_id.vat"/>
-                            </td>
+                            <t t-if="doc.partner_id.parent_id.alias_name=='BE RELAX DISTRIBUTION SARL'">
+                                <td>VAT No. FR22847762317
+                                    <!--                                            <span t-esc="doc.company_id.vat"/>-->
+                                </td>
+                            </t>
+                            <t t-if="doc.partner_id.parent_id.alias_name=='SPA DEVELOPPEMENT'">
+                                <td>VAT No. FR09493766083
+                                    <!--                                            <span t-esc="doc.company_id.vat"/>-->
+                                </td>
+                            </t>
+<!--                            <td class="label" colspan="6">VAT No.-->
+<!--                                <span t-esc="doc.partner_id.parent_id.vat"/>-->
+<!--                            </td>-->
                             <td></td>
                             <td style="border-right:1px solid;"></td>
                         </tr>
