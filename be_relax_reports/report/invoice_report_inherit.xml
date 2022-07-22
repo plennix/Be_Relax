@@ -48,7 +48,7 @@
                                 </tr>
                                 <tr>
                                     <td>VAT No.
-                                        <span t-esc="doc.partner_id.parent_id.vat"/>
+                                        <span t-esc="doc.company_id.vat"/>
                                     </td>
                                 </tr>
                                 <tr>
@@ -104,22 +104,22 @@
                                                 <span t-esc="doc.partner_id.country_id.name"/>
                                                 <span t-esc="doc.partner_id.zip"/><br/>
                                                 Email:&#160;<span t-esc="doc.partner_id.parent_id.email"/><br/>
-                                                <t t-if="doc.partner_id.parent_id.alias_name=='BE RELAX DISTRIBUTION SARL'">
-                                                    <span>VAT No. NL8265.10.504.B01</span>
-<!--                                                    <td>VAT No. NL8265.10.504.B01-->
-<!--            &lt;!&ndash;                                            <span t-esc="doc.company_id.vat"/>&ndash;&gt;-->
-<!--                                                    </td>-->
-                                                </t>
-                                                <t t-if="doc.partner_id.parent_id.alias_name=='SPA DEVELOPPEMENT'">
-                                                    <span>VAT No. NL826510541B01</span>
-<!--                                                    <td>VAT No. NL826510541B01-->
-<!--            &lt;!&ndash;                                            <span t-esc="doc.company_id.vat"/>&ndash;&gt;-->
-<!--                                                    </td>-->
-                                                </t>
-                                                <t t-if="doc.partner_id.parent_id.alias_name!='BE RELAX DISTRIBUTION SARL' and doc.partner_id.parent_id.alias_name!='SPA DEVELOPPEMENT'">
-                                                    <span>VAT No.</span>
-                                                </t>
-<!--                                                VAT N&#160;<span t-esc="doc.partner_id.parent_id.vat"/>-->
+<!--                                                <t t-if="doc.partner_id.parent_id.alias_name=='BE RELAX DISTRIBUTION SARL'">-->
+<!--                                                    <span>VAT No. NL8265.10.504.B01</span>-->
+<!--&lt;!&ndash;                                                    <td>VAT No. NL8265.10.504.B01&ndash;&gt;-->
+<!--&lt;!&ndash;            &lt;!&ndash;                                            <span t-esc="doc.company_id.vat"/>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    </td>&ndash;&gt;-->
+<!--                                                </t>-->
+<!--                                                <t t-if="doc.partner_id.parent_id.alias_name=='SPA DEVELOPPEMENT'">-->
+<!--                                                    <span>VAT No. NL826510541B01</span>-->
+<!--&lt;!&ndash;                                                    <td>VAT No. NL826510541B01&ndash;&gt;-->
+<!--&lt;!&ndash;            &lt;!&ndash;                                            <span t-esc="doc.company_id.vat"/>&ndash;&gt;&ndash;&gt;-->
+<!--&lt;!&ndash;                                                    </td>&ndash;&gt;-->
+<!--                                                </t>-->
+<!--                                                <t t-if="doc.partner_id.parent_id.alias_name!='BE RELAX DISTRIBUTION SARL' and doc.partner_id.parent_id.alias_name!='SPA DEVELOPPEMENT'">-->
+<!--                                                    <span>VAT No.</span>-->
+<!--                                                </t>-->
+                                                VAT N&#160;<span t-esc="doc.partner_id.parent_id.vat"/>
                                             </t>
                                             <t t-else="">
 
