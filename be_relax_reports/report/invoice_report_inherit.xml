@@ -96,7 +96,7 @@
                                         <!--                                        <t t-foreach="doc.partner_id" t-as="o">-->
 <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
                                             <t t-if="doc.partner_id">
-                                                <span t-esc="doc.partner_id.parent_id.company_id.name"/><br/>
+                                                <span t-esc="doc.partner_id.parent_id.name"/><br/>
                                                 <span t-esc="doc.partner_id.street"/>
                                                 <span t-esc="doc.partner_id.street2"/>
                                                 <span t-esc="doc.partner_id.city"/><br/>
