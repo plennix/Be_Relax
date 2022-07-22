@@ -116,7 +116,7 @@
 <!--            &lt;!&ndash;                                            <span t-esc="doc.company_id.vat"/>&ndash;&gt;-->
 <!--                                                    </td>-->
                                                 </t>
-                                                <t t-else="doc.partner_id.parent_id.alias_name!='BE RELAX DISTRIBUTION SARL' and doc.partner_id.parent_id.alias_name!='SPA DEVELOPPEMENT'">
+                                                <t t-if="doc.partner_id.parent_id.alias_name!='BE RELAX DISTRIBUTION SARL' and doc.partner_id.parent_id.alias_name!='SPA DEVELOPPEMENT'">
                                                     <span>VAT No.</span>
                                                 </t>
 <!--                                                VAT N&#160;<span t-esc="doc.partner_id.parent_id.vat"/>-->
@@ -325,7 +325,7 @@
                                     <!--                                            <span t-esc="doc.company_id.vat"/>-->
                                 </td>
                             </t>
-                            <t t-else="doc.partner_id.parent_id.alias_name!='BE RELAX DISTRIBUTION SARL' and doc.partner_id.parent_id.alias_name!='SPA DEVELOPPEMENT'">
+                            <t t-if="doc.partner_id.parent_id.alias_name!='BE RELAX DISTRIBUTION SARL' and doc.partner_id.parent_id.alias_name!='SPA DEVELOPPEMENT'">
                                 <td colspan="2" class="label">
                                     <span>VAT No.</span>
                                 </td>
