@@ -42,8 +42,9 @@ class InheritStockInventoryAdjust(models.TransientModel):
             search_product_stock_quant._cr.execute(f"""UPDATE stock_quant SET create_date='{self.forced_date}' WHERE id={search_product_stock_quant.ids[-1]}""")
             search_product_stock_valuation._cr.execute(f"""UPDATE stock_valuation_layer SET create_date='{self.forced_date}' WHERE id={search_product_stock_valuation.ids[-1]}""")
 
-            # stock_move_line = self.env["stock.move.line"].search([('product_id', '=', search_product.id)])
-            # # print(list(stock_move_line.ids))
-            # stock_move_line._cr.execute(f"""UPDATE stock_move_line SET date='{self.forced_date}' WHERE id={list(stock_move_line.ids)[-1]}""")
-            # stock_move_line._cr.execute(f"""UPDATE stock_move_line SET write_date='{self.forced_date}' WHERE id={list(stock_move_line.ids)[-1]}""")
+            stock_move_line = self.env["stock.move.line"].search([('product_id', '=', search_product.id)])
+            print(list(stock_move_line.ids))
+            stock_move_line._cr.execute(f"""UPDATE stock_move_line SET date='{self.forced_date}' WHERE id={list(stock_move_line.ids)[-1]}""")
+            stock_move_line._cr.execute(f"""UPDATE stock_move_line SET write_date='{self.forced_date}' WHERE id={list(stock_move_line.ids)[-1]}""")
+            stock_move_line._cr.execute(f"""UPDATE stock_move_line SET create_date='{self.forced_date}' WHERE id={list(stock_move_line.ids)[-1]}""")
 

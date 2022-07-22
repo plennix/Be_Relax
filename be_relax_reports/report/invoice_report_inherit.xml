@@ -97,13 +97,13 @@
 <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
                                             <t t-if="doc.partner_id">
                                                 <span t-esc="doc.partner_id.parent_id.alias_name"/><br/>
-                                                <span t-esc="doc.partner_id.parent_id.street"/>
-                                                <span t-esc="doc.partner_id.parent_id.street2"/>
-                                                <span t-esc="doc.partner_id.parent_id.city"/><br/>
-                                                <span t-esc="doc.partner_id.parent_id.state_id.name"/>
-                                                <span t-esc="doc.partner_id.parent_id.country_id.name"/>
-                                                <span t-esc="doc.partner_id.parent_id.zip"/><br/>
-                                                Email:&#160;<span t-esc="doc.partner_id.parent_id.email"/><br/>
+                                                <span t-esc="doc.partner_id.street"/>
+                                                <span t-esc="doc.partner_id.street2"/>
+                                                <span t-esc="doc.partner_id.city"/><br/>
+                                                <span t-esc="doc.partner_id.state_id.name"/>
+                                                <span t-esc="doc.partner_id.country_id.name"/>
+                                                <span t-esc="doc.partner_id.zip"/><br/>
+                                                Email:&#160;<span t-esc="doc.partner_id.email"/><br/>
                                                 <t t-if="doc.partner_id.parent_id.alias_name=='BE RELAX DISTRIBUTION SARL'">
                                                     <span>VAT No. NL8265.10.504.B01</span>
 <!--                                                    <td>VAT No. NL8265.10.504.B01-->
@@ -154,7 +154,7 @@
                                         <!--                                        </t>-->
 <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
                                             <t t-if="doc.partner_shipping_id">
-                                                <span t-esc="doc.partner_shipping_id.alias_name"/><br/>
+                                                <span t-esc="doc.partner_shipping_id.parent_id.alias_name"/><br/>
                                                 <span t-esc="doc.partner_shipping_id.street"/>
                                                 <span t-esc="doc.partner_shipping_id.street2"/>
                                                 <span t-esc="doc.partner_shipping_id.city"/><br/>
