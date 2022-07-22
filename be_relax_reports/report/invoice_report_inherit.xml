@@ -110,8 +110,6 @@
 <!--            &lt;!&ndash;                                            <span t-esc="doc.company_id.vat"/>&ndash;&gt;-->
 <!--                                                    </td>-->
                                                 </t>
-                                                <t t-else="">
-                                                </t>
                                                 <t t-if="doc.partner_id.parent_id.alias_name=='SPA DEVELOPPEMENT'">
                                                     <span>VAT No. NL826510541B01</span>
 <!--                                                    <td>VAT No. NL826510541B01-->
@@ -119,6 +117,7 @@
 <!--                                                    </td>-->
                                                 </t>
                                                 <t t-else="">
+                                                    <span>VAT No.</span>
                                                 </t>
 <!--                                                VAT N&#160;<span t-esc="doc.partner_id.parent_id.vat"/>-->
                                             </t>
@@ -315,20 +314,21 @@
                         </tr>
                         <tr>
                             <t t-if="doc.partner_id.parent_id.alias_name=='BE RELAX DISTRIBUTION SARL'">
-                                <td>
+                                <td colspan="2" class="label">
                                     <span>VAT No. FR22847762317</span>
                                     <!--                                            <span t-esc="doc.company_id.vat"/>-->
                                 </td>
                             </t>
-                            <t t-else="">
-                            </t>
                             <t t-if="doc.partner_id.parent_id.alias_name=='SPA DEVELOPPEMENT'">
-                                <td>
+                                <td colspan="2" class="label">
                                     <span>VAT No. FR09493766083</span>
                                     <!--                                            <span t-esc="doc.company_id.vat"/>-->
                                 </td>
                             </t>
                             <t t-else="">
+                                <td colspan="2" class="label">
+                                    <span>VAT No.</span>
+                                </td>
                             </t>
 <!--&lt;!&ndash;                            <td class="label" colspan="6">VAT No.&ndash;&gt;-->
 <!--&lt;!&ndash;                                <span t-esc="doc.partner_id.parent_id.vat"/>&ndash;&gt;-->
