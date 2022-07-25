@@ -255,7 +255,7 @@
                                         <t t-set="diposite" t-value="doc.amount_total*20/100"/>
                                         <span t-esc="diposite" t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                     </t>
-                                    <t t-else="">
+                                    <t t-else="doc.payment_term_id.name[:3]!='30%' and doc.payment_term_id.name[:3]!='20%'">
                                         <span t-esc="diposite" t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                     </t>
                                 </t>
@@ -273,7 +273,7 @@
                                         <t t-set="balance" t-value="doc.amount_total - diposite"/>
                                         <span t-esc="balance" t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                     </t>
-                                    <t t-else="">
+                                    <t t-if="doc.payment_term_id.name[:3]!='30%' and doc.payment_term_id.name[:3]!='20%'">
                                         <span t-esc="doc.amount_total" t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                     </t>
                                 </t>
