@@ -247,15 +247,15 @@
                             <td class="content_text" style="text-align:right">ADVANCE PAYMENT</td>
                             <td class="content_text" style="text-align:right">
                                 <t t-if="doc.payment_term_id">
-                                    <t t-if="doc.payment_term_id.name[:2]=='30%'">
+                                    <t t-if="doc.payment_term_id.name[:3]=='30%'">
                                         <t t-set="diposite" t-value="doc.amount_total*30/100"/>
                                         <span t-esc="diposite" t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                     </t>
-                                    <t t-if="doc.payment_term_id.name[:2]=='20%'">
+                                    <t t-if="doc.payment_term_id.name[:3]=='20%'">
                                         <t t-set="diposite" t-value="doc.amount_total*20/100"/>
                                         <span t-esc="diposite" t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                     </t>
-                                    <t t-if="doc.payment_term_id.name[:2]!='30%' or doc.payment_term_id.name[:2]!='20%'">
+                                    <t t-if="doc.payment_term_id.name[:3]!='30%' or doc.payment_term_id.name[:3]!='20%'">
                                         <span t-esc="diposite"/>
                                     </t>
                                 </t>
@@ -269,11 +269,11 @@
                             <td class="content_text" style="text-align:right">BALANCE</td>
                             <td class="content_text" style="text-align:right">
                                 <t t-if="doc.payment_term_id">
-                                    <t t-if="doc.payment_term_id.name[:2]=='30%' or doc.payment_term_id.name[:2]=='20%'">
+                                    <t t-if="doc.payment_term_id.name[:3]=='30%' or doc.payment_term_id.name[:3]=='20%'">
                                         <t t-set="balance" t-value="doc.amount_total - diposite"/>
                                         <span t-esc="balance" t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                     </t>
-                                    <t t-if="doc.payment_term_id.name[:2]!='30%' or doc.payment_term_id.name[:2]!='20%'">
+                                    <t t-if="doc.payment_term_id.name[:3]!='30%' or doc.payment_term_id.name[:3]!='20%'">
                                         <span t-esc="doc.amount_total"/>
                                     </t>
                                 </t>
