@@ -68,7 +68,12 @@
                                 </tr>
                                 <tr>
                                     <td class="content_text">
-                                        <span t-esc="doc.company_id.br_alias_company_name"/><br/>
+                                        <t t-if="doc.company_id.name!='SPA DEV CENTRAL'">
+                                            <span t-esc="doc.partner_id.alias_name"/><br/>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-esc="doc.company_id.br_alias_company_name"/><br/>
+                                        </t>
                                         <span t-esc="doc.company_id.street"/><br/>
                                         <span t-esc="doc.company_id.street2"/><br/>
                                         <span t-esc="doc.company_id.city"/> <span t-esc="doc.company_id.state_id.name"/>
@@ -95,6 +100,12 @@
                                     </tr>
                                     <tr>
                                         <td class="content_text" style="vertical-align:top;">
+                                            <t t-if="doc.company_id.name!='SPA DEV CENTRAL'">
+                                                <span t-esc="doc.partner_id.alias_name"/><br/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="doc.partner_id.name"/><br/>
+                                            </t>
                                             <span t-esc="doc.partner_id.name"/><br/>
                                             <span t-esc="doc.partner_id.street"/>
                                             <span t-esc="doc.partner_id.street2"/><br/>
@@ -130,23 +141,43 @@
                                     <tr>
                                         <td class="content_text" style="vertical-align:top;">
                                             <!--<span t-esc="doc.partner_id.child_ids"/>-->
-                                            <span t-esc="doc.partner_id.name"/><br/>
-                                            <t t-foreach="doc.partner_id.child_ids" t-as="o">
-                                                <t t-if="o.type=='delivery'">
-                                                    <span t-esc="o.name"/><br/>
-                                                    <span t-esc="o.street"/>
-                                                    <span t-esc="o.street2"/>
-                                                    <span t-esc="o.city"/><br/>
-                                                    <span t-esc="o.state_id.name"/>
-                                                    <span t-esc="o.country_id.name"/>
-                                                    <span t-esc="o.zip"/><br/>
-                                                    Mobile:<span t-esc="doc.partner_id.mobile"/>
-
-                                                </t>
-                                                <t t-else="">
-
-                                                </t>
+                                            <t t-if="doc.company_id.name!='SPA DEV CENTRAL'">
+                                                <span t-esc="doc.company_id.br_alias_company_name"/><br/>
+                                                <span t-esc="doc.company_id.street"/>
+                                                <span t-esc="doc.company_id.street2"/>
+                                                <span t-esc="doc.company_id.city"/><br/>
+                                                <span t-esc="doc.company_id.state_id.name"/>
+                                                <span t-esc="doc.company_id.country_id.name"/>
+                                                <span t-esc="doc.company_id.zip"/><br/>
+                                                Mobile:<span t-esc="doc.company_id.mobile"/>
                                             </t>
+                                            <t t-else="">
+                                                <span t-esc="doc.partner_id.name"/><br/>
+                                                <span t-esc="doc.partner_id.street"/>
+                                                <span t-esc="doc.partner_id.street2"/>
+                                                <span t-esc="doc.partner_id.city"/><br/>
+                                                <span t-esc="doc.partner_id.state_id.name"/>
+                                                <span t-esc="doc.partner_id.country_id.name"/>
+                                                <span t-esc="doc.partner_id.zip"/><br/>
+                                                Mobile:<span t-esc="doc.partner_id.mobile"/>
+                                            </t>
+<!--                                            <span t-esc="doc.partner_id.name"/><br/>-->
+<!--                                            <t t-foreach="doc.partner_id.child_ids" t-as="o">-->
+<!--                                                <t t-if="o.type=='delivery'">-->
+<!--                                                    <span t-esc="o.name"/><br/>-->
+<!--                                                    <span t-esc="o.street"/>-->
+<!--                                                    <span t-esc="o.street2"/>-->
+<!--                                                    <span t-esc="o.city"/><br/>-->
+<!--                                                    <span t-esc="o.state_id.name"/>-->
+<!--                                                    <span t-esc="o.country_id.name"/>-->
+<!--                                                    <span t-esc="o.zip"/><br/>-->
+<!--                                                    Mobile:<span t-esc="doc.partner_id.mobile"/>-->
+
+<!--                                                </t>-->
+<!--                                                <t t-else="">-->
+
+<!--                                                </t>-->
+<!--                                            </t>-->
                                         </td>
                                     </tr>
                                 </table>
@@ -204,14 +235,23 @@
                     <table class="table table-bordered" style="width: 100%;border: 1px solid black;">
 
                         <tr>
-                            <td class="header_text" style="text-align:center;width:81.3%">TOTAL VALUE IN <span t-field="doc.currency_id.name"/>:</td>
+                            <td class="header_text" style="text-align:center;width:81.3%;" colspan="2">TOTAL VALUE IN <span t-field="doc.currency_id.name"/>:</td>
                             <td class="content_text" style="text-align:right">
                                 <span t-esc="doc.amount_total"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                             </td>
                         </tr>
-
                         <tr>
-                            <td class="header_text" style="text-align:center;">NET TO PAY IN <span t-field="doc.currency_id.name"/>:</td>
+                            <td style="width:65%;"></td>
+                            <td class="content_text" style="text-align:right">DEPOSITE</td>
+                            <td class="content_text" style="text-align:right"></td>
+                        </tr>
+                        <tr>
+                            <td style="width:65%;"></td>
+                            <td class="content_text" style="text-align:right">BALANCE</td>
+                            <td class="content_text" style="text-align:right"></td>
+                        </tr>
+                        <tr>
+                            <td class="header_text" style="text-align:center;" colspan="2">NET TO PAY IN <span t-field="doc.currency_id.name"/>:</td>
                             <td class="content_text" style="text-align:right">
                                 <span t-esc="doc.amount_total"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                             </td>
