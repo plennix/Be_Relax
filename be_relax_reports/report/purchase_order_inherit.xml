@@ -106,7 +106,7 @@
                                             <t t-else="">
                                                 <span t-esc="doc.partner_id.name"/><br/>
                                             </t>
-                                            <span t-esc="doc.partner_id.name"/><br/>
+<!--                                            <span t-esc="doc.partner_id.name"/><br/>-->
                                             <span t-esc="doc.partner_id.street"/>
                                             <span t-esc="doc.partner_id.street2"/><br/>
                                             <span t-esc="doc.partner_id.city"/><br/>
