@@ -29,25 +29,35 @@
                             <table>
                                 <tr>
                                     <td>
-                                        <strong><span t-esc="doc.company_id.br_alias_company_name"/></strong>
+                                        <strong>
+                                            <span t-esc="doc.company_id.br_alias_company_name"/>
+                                        </strong>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td><span t-esc="doc.company_id.street"/></td>
+                                    <td>
+                                        <span t-esc="doc.company_id.street"/>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><span t-esc="doc.company_id.street2"/></td>
+                                    <td>
+                                        <span t-esc="doc.company_id.street2"/>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><span t-esc="doc.company_id.city"/>
+                                    <td>
+                                        <span t-esc="doc.company_id.city"/>
                                         <span t-esc="doc.company_id.state_id.name"/>
-                                        <span t-esc="doc.company_id.zip"/></td>
+                                        <span t-esc="doc.company_id.zip"/>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td><span t-esc="doc.company_id.country_id.name"/></td>
+                                    <td>
+                                        <span t-esc="doc.company_id.country_id.name"/>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>VAT N
+                                    <td>VAT No.
                                         <span t-esc="doc.company_id.vat"/>
                                     </td>
                                 </tr>
@@ -63,14 +73,14 @@
                                 </tr>
                                 <tr>
                                     <td style="padding-left:20px">Tel:
-<!--                                        <span t-esc="doc.partner_id.mobile"/>-->
+                                        <!--                                        <span t-esc="doc.partner_id.mobile"/>-->
                                         +33 6 82 82 82 44
                                     </td>
                                 </tr>
 
                                 <tr>
                                     <td style="padding-left:20px">Email:
-<!--                                        <span t-esc="doc.partner_id.email"/>-->
+                                        <!--                                        <span t-esc="doc.partner_id.email"/>-->
                                         jp.bombet@berelax.com
                                     </td>
                                 </tr>
@@ -86,79 +96,104 @@
 
                     <table class="content_text" style="width:100%;">
                         <tr>
-                        <td style="width:50%;vertical-align:top">
-                            <table>
-                                <tr>
-                                    <td class="text-left">
-                                        <strong>BILLING ADDRESS</strong><br/>
-<!--                                        <span t-esc="doc.partner_id.name"/><br/>-->
+                            <td style="width:50%;vertical-align:top">
+                                <table>
+                                    <tr>
+                                        <td class="text-left">
+                                            <strong>BILLING ADDRESS</strong>
+                                            <br/>
+                                            <!--                                        <span t-esc="doc.partner_id.name"/><br/>-->
 
-                                        <!--                                        <t t-foreach="doc.partner_id" t-as="o">-->
-<!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
+                                            <!--                                        <t t-foreach="doc.partner_id" t-as="o">-->
+                                            <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
                                             <t t-if="doc.partner_id">
-                                                <span t-esc="doc.partner_id.parent_id.alias_name"/><br/>
-                                                <span t-esc="doc.partner_id.parent_id.street"/>
-                                                <span t-esc="doc.partner_id.parent_id.street2"/>
-                                                <span t-esc="doc.partner_id.parent_id.city"/><br/>
-                                                <span t-esc="doc.partner_id.parent_id.state_id.name"/>
-                                                <span t-esc="doc.partner_id.parent_id.country_id.name"/>
-                                                <span t-esc="doc.partner_id.parent_id.zip"/><br/>
-                                                Email:&#160;<span t-esc="doc.partner_id.parent_id.email"/><br/>
+                                                <span t-esc="doc.partner_id.parent_id.name"/>
+                                                <br/>
+                                                <span t-esc="doc.partner_id.street"/>
+                                                <span t-esc="doc.partner_id.street2"/>
+                                                <span t-esc="doc.partner_id.city"/>
+                                                <br/>
+                                                <span t-esc="doc.partner_id.state_id.name"/>
+                                                <span t-esc="doc.partner_id.country_id.name"/>
+                                                <span t-esc="doc.partner_id.zip"/>
+                                                <br/>
+                                                Email:&#160;<span t-esc="doc.partner_id.parent_id.email"/>
+                                                <br/>
+                                                <!--                                                <t t-if="doc.partner_id.parent_id.alias_name=='BE RELAX DISTRIBUTION SARL'">-->
+                                                <!--                                                    <span>VAT No. NL8265.10.504.B01</span>-->
+                                                <!--&lt;!&ndash;                                                    <td>VAT No. NL8265.10.504.B01&ndash;&gt;-->
+                                                <!--&lt;!&ndash;            &lt;!&ndash;                                            <span t-esc="doc.company_id.vat"/>&ndash;&gt;&ndash;&gt;-->
+                                                <!--&lt;!&ndash;                                                    </td>&ndash;&gt;-->
+                                                <!--                                                </t>-->
+                                                <!--                                                <t t-if="doc.partner_id.parent_id.alias_name=='SPA DEVELOPPEMENT'">-->
+                                                <!--                                                    <span>VAT No. NL826510541B01</span>-->
+                                                <!--&lt;!&ndash;                                                    <td>VAT No. NL826510541B01&ndash;&gt;-->
+                                                <!--&lt;!&ndash;            &lt;!&ndash;                                            <span t-esc="doc.company_id.vat"/>&ndash;&gt;&ndash;&gt;-->
+                                                <!--&lt;!&ndash;                                                    </td>&ndash;&gt;-->
+                                                <!--                                                </t>-->
+                                                <!--                                                <t t-if="doc.partner_id.parent_id.alias_name!='BE RELAX DISTRIBUTION SARL' and doc.partner_id.parent_id.alias_name!='SPA DEVELOPPEMENT'">-->
+                                                <!--                                                    <span>VAT No.</span>-->
+                                                <!--                                                </t>-->
                                                 VAT N&#160;<span t-esc="doc.partner_id.parent_id.vat"/>
                                             </t>
                                             <t t-else="">
 
                                             </t>
-<!--                                        </t>-->
-                                        <!--                                        </t>-->
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
+                                            <!--                                        </t>-->
+                                            <!--                                        </t>-->
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
 
-                        <td style="width:50%;">
-                            <table style="float:right">
-                                <tr>
-                                    <td class="text-right">
-                                        <strong>DELIVERY ADDRESS</strong><br/>
-<!--                                        <span t-esc="doc.partner_id.name"/><br/>-->
-                                        <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="o">-->
-                                        <!--                                            <t t-if="o.type =='delivery'">-->
-                                        <!--                                                <span t-esc="o.street"/>-->
-                                        <!--                                                <span t-esc="o.street2"/>-->
-                                        <!--                                                <span t-esc="o.city"/><br/>-->
-                                        <!--                                                <span t-esc="o.state_id.name"/>-->
-                                        <!--                                                <span t-esc="o.country_id.name"/>-->
-                                        <!--                                                <span t-esc="o.zip"/><br/>-->
-                                        <!--                                                Tel n&#160;<span t-esc="o.mobile"/>-->
-                                        <!--                                            </t>-->
+                            <td style="width:50%;">
+                                <table style="float:right">
+                                    <tr>
+                                        <td class="text-right">
+                                            <strong>DELIVERY ADDRESS</strong>
+                                            <br/>
+                                            <!--                                        <span t-esc="doc.partner_id.name"/><br/>-->
+                                            <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="o">-->
+                                            <!--                                            <t t-if="o.type =='delivery'">-->
+                                            <!--                                                <span t-esc="o.street"/>-->
+                                            <!--                                                <span t-esc="o.street2"/>-->
+                                            <!--                                                <span t-esc="o.city"/><br/>-->
+                                            <!--                                                <span t-esc="o.state_id.name"/>-->
+                                            <!--                                                <span t-esc="o.country_id.name"/>-->
+                                            <!--                                                <span t-esc="o.zip"/><br/>-->
+                                            <!--                                                Tel n&#160;<span t-esc="o.mobile"/>-->
+                                            <!--                                            </t>-->
 
-                                        <!--                                            <t t-else="">-->
+                                            <!--                                            <t t-else="">-->
 
-                                        <!--                                            </t>-->
-                                        <!--                                        </t>-->
-<!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
+                                            <!--                                            </t>-->
+                                            <!--                                        </t>-->
+                                            <!--                                        <t t-foreach="doc.partner_id.child_ids" t-as="l">-->
                                             <t t-if="doc.partner_shipping_id">
-                                                <span t-esc="doc.partner_shipping_id.alias_name"/><br/>
+                                                <span t-esc="doc.partner_shipping_id.parent_id.name"/>
+                                                <br/>
                                                 <span t-esc="doc.partner_shipping_id.street"/>
                                                 <span t-esc="doc.partner_shipping_id.street2"/>
-                                                <span t-esc="doc.partner_shipping_id.city"/><br/>
+                                                <span t-esc="doc.partner_shipping_id.city"/>
+                                                <br/>
                                                 <span t-esc="doc.partner_shipping_id.state_id.name"/>
                                                 <span t-esc="doc.partner_shipping_id.country_id.name"/>
-                                                <span t-esc="doc.partner_shipping_id.zip"/><br/>
-                                                Email:&#160;<span t-esc="doc.partner_shipping_id.email"/><br/>
+                                                <span t-esc="doc.partner_shipping_id.zip"/>
+                                                <br/>
+                                                Email:&#160;<span t-esc="doc.partner_shipping_id.parent_id.email"/>
+                                                <br/>
                                                 <!--                                                VAT N&#160;<span t-esc="doc.partner_id.vat"/>-->
 
                                             </t>
                                             <t t-else="">
 
                                             </t>
-<!--                                        </t>-->
-                                    </td>
-                                </tr>
+                                            <!--                                        </t>-->
+                                        </td>
+                                    </tr>
 
-                            </table>
-                        </td>
+                                </table>
+                            </td>
                         </tr>
                     </table>
 
@@ -196,7 +231,9 @@
                                     </t>
                                     <!--                                    <span t-esc="line.product_id.l10n_in_hsn_code"/>-->
                                 </td>
-                                <td class="td1"><span t-esc="line.product_id.country_of_origin.name"/></td>
+                                <td class="td1">
+                                    <span t-esc="line.product_id.country_of_origin.name"/>
+                                </td>
                                 <td class="td1">
                                     <span t-esc="line.quantity"/>
                                     <t t-set="total_quantity" t-value="line.quantity + total_quantity"/>
@@ -205,7 +242,8 @@
                                     <span t-esc="line.price_unit"/>
                                 </td>
                                 <td class="label1" style="border-right:1px solid; text-align:right;">
-                                    <span t-esc="line.price_subtotal"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
+                                    <span t-esc="line.price_subtotal"
+                                          t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                 </td>
                             </tr>
                         </t>
@@ -213,13 +251,16 @@
                             <td style="border-right:1px solid;"></td>
                             <td style="border-right:1px solid;"></td>
                             <td style="border-right:1px solid;"></td>
-                            <td class="label1" style="text-align:right;border-right:1px solid" colspan="2">TOTAL NUMBER OF UNITS:</td>
+                            <td class="label1" style="text-align:right;border-right:1px solid" colspan="2">TOTAL NUMBER
+                                OF UNITS:
+                            </td>
                             <td style="text-align:center; border-right:1px solid;">
                                 <span t-esc="total_quantity"/>
                             </td>
                             <td class="label" style="border-right:1px solid;">Subtotal</td>
                             <td class="label1" style="border-right:1px solid; text-align:right;">
-                                <span t-esc="sum(l.price_subtotal for l in doc.invoice_line_ids)"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
+                                <span t-esc="sum(l.price_subtotal for l in doc.invoice_line_ids)"
+                                      t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                             </td>
                         </tr>
 
@@ -237,74 +278,116 @@
                                 <span t-esc="doc.company_id.partner_id.bank_ids.bank_id.name"/>
                             </td>
                             <td class="label" style="border:1px solid;">Discount</td>
-                            <td class="label1" style="border:1px solid;text-align:right"><span t-esc="total_discount"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/></td>
+                            <td class="label1" style="border:1px solid;text-align:right">
+                                <span t-esc="total_discount"
+                                      t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
+                            </td>
                         </tr>
 
                         <tr>
-                            <td class="label" colspan="6">ACCOUNT NAME:<span t-esc="doc.company_id.br_alias_company_name"/></td>
+                            <td class="label" colspan="6">ACCOUNT NAME:
+                                <span t-esc="doc.company_id.br_alias_company_name"/>
+                            </td>
                             <td style="border:1px solid;"></td>
                             <td style="border:1px solid;"></td>
                         </tr>
                         <tr>
                             <td class="label" colspan="6">
-                                IBAN: <span t-esc="doc.company_id.partner_id.iban"/>
+                                IBAN:
+                                <span t-esc="doc.company_id.partner_id.iban"/>
                             </td>
                             <td class="label" style="border:1px solid;">Total</td>
                             <td class="label1" style="border:1px solid;text-align:right">
-                                <span t-esc="doc.amount_total"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
+                                <span t-esc="doc.amount_total"
+                                      t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                             </td>
                         </tr>
                         <tr>
                             <td class="label" colspan="6">
-                                SWIFT/BIC:  <span t-esc="doc.company_id.partner_id.swift"/>
+                                SWIFT/BIC:
+                                <span t-esc="doc.company_id.partner_id.swift"/>
                             </td>
                             <td class="label" style="border:1px solid;">Pre Payment</td>
                             <td class="label1" style="border:1px solid;"></td>
                         </tr>
                         <tr style="height:22px;">
-                            <td class="label" colspan="6">Please indicate the invoice number on you settlement remittance</td>
+                            <td class="label" colspan="6">Please indicate the invoice number on you settlement
+                                remittance
+                            </td>
                             <td style="border:1px solid;"></td>
                             <td style="border:1px solid;"></td>
                         </tr>
                         <tr style="height:22px;">
                             <td class="label" colspan="6">Payment terms:
-                                <span t-esc="doc.partner_id.property_supplier_payment_term_id.name"/>
+                                <span t-esc="doc.partner_id.parent_id.property_payment_term_id.name"/>
                             </td>
                             <td style="border:1px solid;"></td>
                             <td style="border:1px solid;"></td>
                         </tr>
                         <tr>
                             <td class="label" colspan="6">Shipment terms:
-                                <span t-esc="doc.invoice_incoterm_id.name"/>
+                                <span t-esc="doc.partner_id.parent_id.customer_incoterm_id.name"/>
                             </td>
                             <td class="label" style="border:1px solid;">NET TO PAY</td>
-                            <td class="label1" style="border:1px solid; text-align:right"><span t-esc="doc.amount_total"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/></td>
+                            <td class="label1" style="border:1px solid; text-align:right">
+                                <span t-esc="doc.amount_total"
+                                      t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
+                            </td>
                         </tr>
-                        <tr>
-                            <td class="label" colspan="6">Dutch VAT representative</td>
-                            <td></td>
-                            <td style="border-right:1px solid;"></td>
-                        </tr>
-                        <tr>
-                            <td class="label" colspan="4">Dutch VAT Rep BV PO Box 7003 9605 JA Eindhoven,The Netherland</td>
+                        <t t-if="doc.company_id.name=='BR DISTRIBUTION EU' or doc.company_id.name=='SPA DEV EU'">
+                            <tr>
+                                <td class="label" colspan="6">Dutch VAT representative</td>
+                                <td></td>
+                                <td style="border-right:1px solid;"></td>
+                            </tr>
+                            <tr>
+                                <td class="label" colspan="4">Dutch VAT Rep BV PO Box 7003 9605 JA Eindhoven,The
+                                    Netherland
+                                </td>
 
-                            <td class="text-right label1" colspan="4" style="font-size:10px;">0% Dutch VAT intraa community supply art 138 VAT
-                                Directive/ Table II,post a 6 Dutch VAT act
-                            </td>
-                            <!--                            <td style="border-right:1px solid;"></td>-->
-                        </tr>
-                        <tr>
-                            <td class="label" colspan="6">VAT Number
-                                <span t-esc="doc.partner_id.vat"/>
-                            </td>
-                            <td></td>
-                            <td style="border-right:1px solid;"></td>
-                        </tr>
-                        <tr>
-                            <td class="label" colspan="6">(not for sales correspondence od delivers of goods.)</td>
-                            <td></td>
-                            <td style="border-right:1px solid;"></td>
-                        </tr>
+                                <td class="text-right label1" colspan="4" style="font-size:10px;">
+                                    <t t-set="values" t-value="dict([('option_1','0% Dutch VAT intra-community supply, art 138 VAT Directive/Table II, post a.6, Ducth VAT act'),
+                                ('option_2','0% Dutch VAT export supply, art 146 VAT Directive/Table II, post a.2, Ducth VAT act'),
+                                ('option_3','VAT to be declare by customer due to reverse charge mechanism, article 12-3, Dutch'),
+                                (False,False)])"/>
+                                    <span t-esc="values[doc.partner_id.parent_id.br_vat_mentions]"/>
+                                </td>
+                                <!--                            <td style="border-right:1px solid;"></td>-->
+                            </tr>
+                            <tr>
+                                <!--                            <t t-if="doc.partner_id.parent_id.alias_name=='BE RELAX DISTRIBUTION SARL'">-->
+                                <!--                                <td colspan="2" class="label">-->
+                                <!--                                    <span>VAT No. FR22847762317</span>-->
+                                <!--                                    &lt;!&ndash;                                            <span t-esc="doc.company_id.vat"/>&ndash;&gt;-->
+                                <!--                                </td>-->
+                                <!--                            </t>-->
+                                <!--                            <t t-if="doc.partner_id.parent_id.alias_name=='SPA DEVELOPPEMENT'">-->
+                                <!--                                <td colspan="2" class="label">-->
+                                <!--                                    <span>VAT No. FR09493766083</span>-->
+                                <!--                                    &lt;!&ndash;                                            <span t-esc="doc.company_id.vat"/>&ndash;&gt;-->
+                                <!--                                </td>-->
+                                <!--                            </t>-->
+                                <!--                            <t t-if="doc.partner_id.parent_id.alias_name!='BE RELAX DISTRIBUTION SARL' and doc.partner_id.parent_id.alias_name!='SPA DEVELOPPEMENT'">-->
+                                <!--                                <td colspan="2" class="label">-->
+                                <!--                                    <span>VAT No.</span>-->
+                                <!--                                </td>-->
+                                <!--                            </t>-->
+                                <!--&lt;!&ndash;                            <td class="label" colspan="6">VAT No.&ndash;&gt;-->
+                                <!--&lt;!&ndash;                                <span t-esc="doc.partner_id.parent_id.vat"/>&ndash;&gt;-->
+                                <!--&lt;!&ndash;                            </td>&ndash;&gt;-->
+                                <!--                            <td></td>-->
+                                <!--                            <td style="border-right:1px solid;"></td>-->
+                            </tr>
+                            <tr>
+                                <td class="label" colspan="6">(not for sales correspondence od delivers of goods.)</td>
+                                <td></td>
+                                <td style="border-right:1px solid;"></td>
+                            </tr>
+                        </t>
+                        <t t-else="">
+
+                        </t>
+
 
                     </table>
                 </t>
@@ -319,7 +402,8 @@
             <table style="width:100%;">
                 <tr>
                     <td style="text-align:center;padding-top:15px">
-                        <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="180px" height="100px" alt='Logo'/>
+                        <img t-if="doc.company_id.logo" t-att-src="image_data_uri(doc.company_id.logo)" width="180px"
+                             height="100px" alt='Logo'/>
                     </td>
                 </tr>
             </table>
