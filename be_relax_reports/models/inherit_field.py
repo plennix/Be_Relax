@@ -22,7 +22,6 @@ class Customer(models.Model):
                                         ], string="VAT mentions")
     br_lead_time = fields.Char(string='Lead time')
 
-
 # class Product(models.Model):
 #     _inherit = 'product.product'
 #
@@ -78,6 +77,14 @@ class Purchase_order(models.Model):
         #     if line.product_qty:
         #         if line.product_qty < search_vendor_pricelist.br_moq:
                     # raise ValidationError(f"Minimum Quantity of '{line.product_id.name}' must be {search_vendor_pricelist.br_moq}")
+
+    @api.model
+    def default_get(self, fields):
+        # print("default get executed")
+        res = super(Purchase_order, self).default_get(fields)
+        res['notes'] = '1 : Order should be acknowledged within 48 Hours  with Confirmed delivery date.<br/>' \
+                       '2 : Delivery should be on pallets / same quantity per carton.'
+        return res
 
 
 class PurchaseOrderLine(models.Model):
