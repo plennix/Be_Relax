@@ -240,15 +240,37 @@
                                 <span t-esc="doc.amount_total"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                             </td>
                         </tr>
+                        <t t-set="diposite" t-value="0"/>
+                        <t t-set="balance" t-value="0"/>
                         <tr>
                             <td style="width:65%;"></td>
                             <td class="content_text" style="text-align:right">DEPOSITE</td>
-                            <td class="content_text" style="text-align:right"></td>
+                            <td class="content_text" style="text-align:right">
+                                <t t-if="doc.payment_term_id.name[:2]=='30'">
+                                    <t t-set="diposite" t-value="doc.amount_total*30/100"/>
+                                    <span t-esc="diposite"/>
+                                </t>
+                                <t t-if="doc.payment_term_id.name[:2]=='20'">
+                                    <t t-set="diposite" t-value="doc.amount_total*20/100"/>
+                                    <span t-esc="diposite"/>
+                                </t>
+                                <t t-else="">
+
+                                </t>
+                            </td>
                         </tr>
                         <tr>
                             <td style="width:65%;"></td>
                             <td class="content_text" style="text-align:right">BALANCE</td>
-                            <td class="content_text" style="text-align:right"></td>
+                            <td class="content_text" style="text-align:right">
+                                <t t-if="doc.payment_term_id.name[:2]=='30' or doc.payment_term_id.name[:2]=='20'">
+                                    <t t-set="balance" t-value="doc.amount_total - diposite"/>
+                                    <span t-esc="balance"/>
+                                </t>
+                                <t t-else="">
+
+                                </t>
+                            </td>
                         </tr>
                         <tr>
                             <td class="header_text" style="text-align:center;" colspan="2">NET TO PAY IN <span t-field="doc.currency_id.name"/>:</td>
