@@ -69,7 +69,7 @@
                                 <tr>
                                     <td class="content_text">
                                         <t t-if="doc.company_id.name!='SPA DEV CENTRAL'">
-                                            <span t-esc="doc.partner_id.alias_name"/><br/>
+                                            <span t-esc="doc.company_id.partner_id.alias_name"/><br/>
                                         </t>
                                         <t t-else="">
                                             <span t-esc="doc.company_id.br_alias_company_name"/><br/>
@@ -142,14 +142,29 @@
                                         <td class="content_text" style="vertical-align:top;">
                                             <!--<span t-esc="doc.partner_id.child_ids"/>-->
                                             <t t-if="doc.company_id.name!='SPA DEV CENTRAL'">
-                                                <span t-esc="doc.company_id.br_alias_company_name"/><br/>
-                                                <span t-esc="doc.company_id.street"/>
-                                                <span t-esc="doc.company_id.street2"/>
-                                                <span t-esc="doc.company_id.city"/><br/>
-                                                <span t-esc="doc.company_id.state_id.name"/>
-                                                <span t-esc="doc.company_id.country_id.name"/>
-                                                <span t-esc="doc.company_id.zip"/><br/>
-                                                Mobile:<span t-esc="doc.company_id.mobile"/>
+                                                <span t-esc="doc.company_id.partner_id.alias_name"/><br/>
+                                                <t t-foreach="doc.company_id.partner_id.child_ids" t-as="o">
+                                                    <t t-if="o.type=='delivery'">
+                                                        <span t-esc="o.name"/><br/>
+                                                        <span t-esc="o.street"/>
+                                                        <span t-esc="o.street2"/>
+                                                        <span t-esc="o.city"/><br/>
+                                                        <span t-esc="o.state_id.name"/>
+                                                        <span t-esc="o.country_id.name"/>
+                                                        <span t-esc="o.zip"/><br/>
+                                                        Mobile:<span t-esc="doc.partner_id.mobile"/>
+                                                    </t>
+                                                    <t t-else="">
+
+                                                    </t>
+                                                </t>
+<!--                                                <span t-esc="doc.company_id.street"/>-->
+<!--                                                <span t-esc="doc.company_id.street2"/>-->
+<!--                                                <span t-esc="doc.company_id.city"/><br/>-->
+<!--                                                <span t-esc="doc.company_id.state_id.name"/>-->
+<!--                                                <span t-esc="doc.company_id.country_id.name"/>-->
+<!--                                                <span t-esc="doc.company_id.zip"/><br/>-->
+<!--                                                Mobile:<span t-esc="doc.company_id.mobile"/>-->
                                             </t>
                                             <t t-else="">
                                                 <span t-esc="doc.partner_id.name"/><br/>
