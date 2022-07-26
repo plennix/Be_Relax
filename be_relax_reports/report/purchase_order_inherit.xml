@@ -168,7 +168,7 @@
                                             </t>
                                             <t t-else="">
                                                 <span t-esc="doc.partner_id.name"/><br/>
-                                                <t t-foreach="doc.company_id.partner_id.child_ids" t-as="o">
+                                                <t t-foreach="doc.partner_id.child_ids" t-as="o">
                                                     <t t-if="o.type=='delivery'">
                                                         <span t-esc="o.street"/>
                                                         <span t-esc="o.street2"/>
