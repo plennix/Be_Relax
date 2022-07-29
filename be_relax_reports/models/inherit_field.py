@@ -52,7 +52,7 @@ class InheritProductSupplier(models.Model):
 class PurchaseOrderInherit(models.Model):
     _inherit = 'purchase.order'
 
-    set_incoterm = fields.Boolean(compute='set_incoterm')
+    incoterm_id = fields.Many2one('account.incoterms', 'Incoterm', states={'done': [('readonly', True)]}, help="International Commercial Terms are a series of predefined commercial terms used in international transactions.", related="partner_id.customer_incoterm_id")
 
     @api.onchange('date_order')
     def _check_change(self):
@@ -62,17 +62,17 @@ class PurchaseOrderInherit(models.Model):
         else:
              self.date_planned = False
 
-    @api.depends('date_order', 'currency_id', 'company_id', 'company_id.currency_id', 'partner_id', 'incoterm_id',)
+    @api.depends('date_order', 'currency_id', 'company_id', 'company_id.currency_id', 'partner_id', 'incoterm_id')
     def _compute_currency_rate(self):
         for order in self:
             order.currency_rate = self.env['res.currency']._get_conversion_rate(order.company_id.currency_id,
                                                                                 order.currency_id, order.company_id,
                                                                                 order.date_order)
 
-    @api.depends('partner_id')
-    def set_incoterm(self):
-        if self.partner_id.customer_incoterm_id:
-            self.incoterm_id = self.partner_id.customer_incoterm_id.id
+    # @api.depends('partner_id')
+    # def set_incoterm(self):
+    #     if self.partner_id.customer_incoterm_id:
+    #         self.incoterm_id = self.partner_id.customer_incoterm_id.id
 
     @api.model
     def default_get(self, fields):
