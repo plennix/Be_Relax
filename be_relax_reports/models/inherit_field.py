@@ -3,7 +3,7 @@ from datetime import  datetime,timedelta
 
 from odoo.exceptions import ValidationError
 # from odoo.osv.orm import except_orm
-
+import logging
 from odoo.osv import osv
 
 
@@ -67,6 +67,8 @@ class Purchase_order(models.Model):
             order.currency_rate = self.env['res.currency']._get_conversion_rate(order.company_id.currency_id,
                                                                                 order.currency_id, order.company_id,
                                                                                 order.date_order)
+        logging.info(self.patner_id.name)
+        logging.info(self.partner_id.customer_incoterm_id)
         if self.partner_id.customer_incoterm_id.id:
             self.incoterm_id = self.partner_id.customer_incoterm_id.id
 
