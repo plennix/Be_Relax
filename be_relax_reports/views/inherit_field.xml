@@ -53,6 +53,7 @@
             </xpath>
             <xpath expr="//field[@name='detailed_type']" position="before">
                 <field name="country_of_origin"/>
+                <field name="dont_show_on_invoice_report"/>
             </xpath>
         </field>
     </record>
@@ -68,6 +69,7 @@
             </xpath>
             <xpath expr="//field[@name='detailed_type']" position="before">
                 <field name="country_of_origin"/>
+                <field name="dont_show_on_invoice_report"/>
             </xpath>
         </field>
     </record>

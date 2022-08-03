@@ -212,6 +212,7 @@
                         <t t-set="total_discount" t-value="0"/>
 
                         <t t-foreach="doc.invoice_line_ids" t-as="line">
+                            <t t-if="line.product_id.dont_show_on_invoice_report">
                             <tr style="border:1px solid;">
                                 <td class="td1">
                                     <span t-esc="line.product_id.default_code"/>
@@ -246,6 +247,7 @@
                                           t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                 </td>
                             </tr>
+                            </t>
                         </t>
                         <tr style="border:1px solid;">
                             <td style="border-right:1px solid;"></td>
