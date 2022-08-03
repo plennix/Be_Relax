@@ -278,7 +278,6 @@
                                         <span t-esc="delivery_cost" t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                     </t>
                                     <t t-else="">
-                                        <span t-esc="delivery_cost" t-vlaue="0.0" t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                     </t>
                                 </td>
                             </td>
