@@ -34,6 +34,7 @@ class ProductTemplate(models.Model):
     hs_code = fields.Char(String='Hs Code')
     status = fields.Selection([('active','ACTIVE'),('eol','EOL'),('dev','DEV')])
     country_of_origin = fields.Many2one("res.country", string="Country of Origin")
+    dont_show_on_invoice_report = fields.Boolean(string="Dont show on invoice report", default=False)
 
 
 class StockQuant(models.Model):

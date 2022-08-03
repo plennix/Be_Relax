@@ -212,6 +212,7 @@
                         <t t-set="total_discount" t-value="0"/>
 
                         <t t-foreach="doc.invoice_line_ids" t-as="line">
+                            <t t-if="line.product_id.dont_show_on_invoice_report==False">
                             <tr style="border:1px solid;">
                                 <td class="td1">
                                     <span t-esc="line.product_id.default_code"/>
@@ -246,6 +247,10 @@
                                           t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                 </td>
                             </tr>
+                            </t>
+                            <t t-else="">
+                                <t t-set="delivery_cost" t-value="line.price_subtotal"/>
+                            </t>
                         </t>
                         <tr style="border:1px solid;">
                             <td style="border-right:1px solid;"></td>
@@ -268,7 +273,9 @@
                             <td class="label" colspan="6" style="text-decoration: underline;">
                                 BANK ACCOUNT INFORMATION
                                 <td class="label" style="border:1px solid;">Delivery</td>
-                                <td class="label1" style="border:1px solid;"></td>
+                                <td class="label1" style="border:1px solid;">
+                                    <span t-esc="delivery_cost" t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
+                                </td>
                             </td>
 
                         </tr>
