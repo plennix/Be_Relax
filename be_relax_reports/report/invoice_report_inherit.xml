@@ -274,7 +274,7 @@
                                 BANK ACCOUNT INFORMATION
                                 <td class="label" style="border:1px solid;">Delivery</td>
                                 <td class="label1" style="border:1px solid;">
-                                    <span t-esc="delivery_cost"/>
+                                    <span t-esc="delivery_cost" t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                 </td>
                             </td>
 
