@@ -248,6 +248,9 @@
                                 </td>
                             </tr>
                             </t>
+                            <t t-else="">
+                                <t t-set="delivery_cost" t-value="line.price_subtotal"/>
+                            </t>
                         </t>
                         <tr style="border:1px solid;">
                             <td style="border-right:1px solid;"></td>
@@ -270,7 +273,9 @@
                             <td class="label" colspan="6" style="text-decoration: underline;">
                                 BANK ACCOUNT INFORMATION
                                 <td class="label" style="border:1px solid;">Delivery</td>
-                                <td class="label1" style="border:1px solid;"></td>
+                                <td class="label1" style="border:1px solid;">
+                                    <span t-esc="delivery_cost"/>
+                                </td>
                             </td>
 
                         </tr>
