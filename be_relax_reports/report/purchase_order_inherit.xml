@@ -214,6 +214,7 @@
                             <th class="text-center header_text">BR CODE</th>
                             <th class="text-center header_text">DESCRIPTION</th>
                             <th class="text-center header_text">BAR CODE</th>
+                            <th class="text-center header_text">HS CODE</th>
                             <th class="text-center header_text">QUANTITY</th>
                             <th class="text-center header_text">UNIT PRICE</th>
                             <th class="text-center header_text">TOTAL PRICE</th>
@@ -228,6 +229,9 @@
                                 </td>
                                 <td class="text-cente content_textr">
                                     <span t-esc="line.product_id.barcode"/>
+                                </td>
+                                <td class="text-cente content_textr">
+                                    <span t-esc="line.product_id.hs_code"/>
                                 </td>
                                 <td class="text-center content_text">
                                     <span t-esc="line.product_qty" />
@@ -245,6 +249,7 @@
                         <tr>
                             <td></td>
                             <td class="header_text" style="text-align:right">TOTAL:</td>
+                            <td></td>
                             <td></td>
                             <td class="content_text" style="text-align:center">
                                 <span t-esc="total_qty"/>
