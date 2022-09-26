@@ -243,7 +243,7 @@
                                     <span t-esc="line.price_unit"/>
                                 </td>
                                 <td class="label1" style="border-right:1px solid; text-align:right;">
-                                    <span t-esc="line.price_subtotal"/><span t-esc="currency_id.symbol"/>
+                                    <span t-esc="line.price_subtotal"/><span t-esc="doc.currency_id.symbol"/>
                                 </td>
                             </tr>
                             </t>
@@ -263,7 +263,7 @@
                             </td>
                             <td class="label" style="border-right:1px solid;">Subtotal</td>
                             <td class="label1" style="border-right:1px solid; text-align:right;">
-                                <span t-esc="sum(l.price_subtotal for l in doc.invoice_line_ids)"/><span t-esc="currency_id.symbol"/>
+                                <span t-esc="sum(l.price_subtotal for l in doc.invoice_line_ids)"/><span t-esc="doc.currency_id.symbol"/>
                             </td>
                         </tr>
 
@@ -273,7 +273,7 @@
                                 <td class="label" style="border:1px solid;">Delivery</td>
                                 <td class="label1" style="border:1px solid;">
                                     <t t-if="delivery_cost">
-                                        <span t-esc="delivery_cost"/><span t-esc="currency_id.symbol"/>
+                                        <span t-esc="delivery_cost"/><span t-esc="doc.currency_id.symbol"/>
                                     </t>
                                     <t t-else="">
                                     </t>
@@ -288,7 +288,7 @@
                             </td>
                             <td class="label" style="border:1px solid;">Discount</td>
                             <td class="label1" style="border:1px solid;text-align:right">
-                                <span t-esc="total_discount"/><span t-esc="currency_id.symbol"/>
+                                <span t-esc="total_discount"/><span t-esc="doc.currency_id.symbol"/>
                             </td>
                         </tr>
 
@@ -306,7 +306,7 @@
                             </td>
                             <td class="label" style="border:1px solid;">Total</td>
                             <td class="label1" style="border:1px solid;text-align:right">
-                                <span t-esc="doc.amount_total"/><span t-esc="currency_id.symbol"/>
+                                <span t-esc="doc.amount_total"/><span t-esc="doc.currency_id.symbol"/>
                             </td>
                         </tr>
                         <tr>
@@ -337,7 +337,7 @@
                             </td>
                             <td class="label" style="border:1px solid;">NET TO PAY</td>
                             <td class="label1" style="border:1px solid; text-align:right">
-                                <span t-esc="doc.amount_total"/><span t-esc="currency_id.symbol"/>
+                                <span t-esc="doc.amount_total"/><span t-esc="doc.currency_id.symbol"/>
                             </td>
                         </tr>
                         <t t-if="doc.company_id.name=='BR DISTRIBUTION EU' or doc.company_id.name=='SPA DEV EU'">
