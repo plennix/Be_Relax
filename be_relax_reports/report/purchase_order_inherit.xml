@@ -31,7 +31,7 @@
                                 <tr>
                                     <td>DATE:</td>
                                     <td>
-                                        <span t-esc="doc.date_planned"/>
+                                        <span t-esc="doc.date_order"/>
                                     </td>
                                 </tr>
                                 <tr>
@@ -46,7 +46,7 @@
                                 </tr>
                                 <tr>
                                     <td>TO BE DELIVERED BEFORE:</td>
-                                    <td>ASAP</td>
+                                    <td><span t-esc="doc.date_planned"/></td>
                                 </tr>
                                 <tr>
                                     <td>SHIPMENT TERM</td>
@@ -168,20 +168,21 @@
                                             </t>
                                             <t t-else="">
                                                 <span t-esc="doc.partner_id.name"/><br/>
-                                                <t t-foreach="doc.partner_id.child_ids" t-as="o">
-                                                    <t t-if="o.type=='delivery'">
-                                                        <span t-esc="o.street"/>
-                                                        <span t-esc="o.street2"/>
-                                                        <span t-esc="o.city"/><br/>
-                                                        <span t-esc="o.state_id.name"/>
-                                                        <span t-esc="o.country_id.name"/>
-                                                        <span t-esc="o.zip"/><br/>
-                                                        Mobile:<span t-esc="o.mobile"/>
-                                                    </t>
-                                                    <t t-else="">
+<!--                                                commented this below block on 9 jan 2023 -->
+<!--                                                <t t-foreach="doc.partner_id.child_ids" t-as="o">-->
+<!--                                                    <t t-if="o.type=='delivery'">-->
+<!--                                                        <span t-esc="o.street"/>-->
+<!--                                                        <span t-esc="o.street2"/>-->
+<!--                                                        <span t-esc="o.city"/><br/>-->
+<!--                                                        <span t-esc="o.state_id.name"/>-->
+<!--                                                        <span t-esc="o.country_id.name"/>-->
+<!--                                                        <span t-esc="o.zip"/><br/>-->
+<!--                                                        Mobile:<span t-esc="o.mobile"/>-->
+<!--                                                    </t>-->
+<!--                                                    <t t-else="">-->
 
-                                                    </t>
-                                                </t>
+<!--                                                    </t>-->
+<!--                                                </t>-->
                                             </t>
 <!--                                            <span t-esc="doc.partner_id.name"/><br/>-->
 <!--                                            <t t-foreach="doc.partner_id.child_ids" t-as="o">-->
