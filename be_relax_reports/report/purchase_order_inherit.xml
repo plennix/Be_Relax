@@ -45,7 +45,7 @@
                                     <td>W04</td>
                                 </tr>
                                 <tr>
-                                    <td>TO BE DELIVERED BEFORE:</td>
+                                    <td>TO BE DELIVERED ON:</td>
                                     <td><span t-esc="doc.date_planned"/></td>
                                 </tr>
                                 <tr>
@@ -89,7 +89,6 @@
                             <td style="width: 60%;">
                                 <table class="content_text">
                                     <tr>
-                                        <td>DELIVERY REQUEST FOR: ASAP</td>
                                     </tr>
                                 </table>
                             </td>
