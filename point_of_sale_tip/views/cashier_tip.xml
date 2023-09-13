@@ -1,0 +1,21 @@
+<odoo>
+    <record id="view_pos_pos_form_cashier_page" model="ir.ui.view">
+        <field name="name">pos.order.form.cashir.page</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//notebook" position="inside">
+                <page name="cashier_tip" string="Tips">
+                    <field name="cashier_tip_ids" readonly="1">
+                        <tree>
+                            <field name="cashier_id"/>
+                            <field name="tip" string="Amount"/>
+                        </tree>
+                    </field>
+                </page>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

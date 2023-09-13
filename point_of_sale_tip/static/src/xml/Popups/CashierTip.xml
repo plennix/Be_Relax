@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="CashierTip" owl="1">
+        <Draggable>
+            <div class="popup" t-att-class="{ 'popup-password': props.isPassword }">
+                <header class="title drag-handle">
+                    <t t-esc="props.title"/>
+                </header>
+                <center>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="text-align: left;">Name</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="cashiers" t-as="a" t-key="a.id">
+                                <tr>
+                                    <td><t t-esc="a.label"/></td>
+                                    <td style="padding-top: 10px;padding-left: 10px;"><input type="number" t-attf-value="{{a.defaultTip}}" t-attf-id="{{a.id}}"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+                </center>
+                <footer class="footer centered">
+                    <div class="button confirm highlight"
+                         t-on-click="confirm">
+                        <t t-esc="props.confirmText"/>
+                    </div>
+                </footer>
+            </div>
+        </Draggable>
+    </t>
+</templates>
