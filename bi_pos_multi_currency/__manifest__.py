@@ -3,7 +3,7 @@
 
 {
     "name": "POS Multi Currency payment in Odoo",
-    "version": "15.0.1.3",
+    "version": "16.0.0.2",
     "category": "point of sale",
     "depends": ['base', 'point_of_sale'],
     "author": "BrowseInfo",
@@ -30,16 +30,14 @@
         'point_of_sale.assets': [
             'bi_pos_multi_currency/static/src/js/pos_data.js',
             'bi_pos_multi_currency/static/src/js/BiPaymentScreen.js',
-            ('after', 'point_of_sale/static/src/css/pos.css', 'bi_pos_multi_currency/static/src/css/button.css'),
-        ],
-        'web.assets_qweb': [
+            'bi_pos_multi_currency/static/src/css/button.css',
             'bi_pos_multi_currency/static/src/xml/**/*',
         ],
     },
     "auto_install": False,
     "installable": True,
     'live_test_url': 'https://youtu.be/WfbpRH8sMUE',
-    "images": ['static/description/Banner.png'],
+    "images": ['static/description/Banner.gif'],
     'license': 'OPL-1',
 }
 # vim:expandtab:smartindent:tabstop=4:softtabstop=4:shiftwidth=4:

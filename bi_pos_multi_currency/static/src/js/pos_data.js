@@ -1,148 +1,124 @@
 odoo.define('bi_pos_multi_currency.pos_data', function (require) {
 "use strict";
 
-	var models = require('point_of_sale.models');
-	let core = require('web.core');
-	var QWeb = core.qweb;
-	var _t = core._t;
+	const { PosGlobalState, Order, Orderline, Payment } = require('point_of_sale.models');
+	const Registries = require('point_of_sale.Registries');
 
 
-	models.load_models({
-		model: 'res.currency',
-		fields: ['name','symbol','position','rounding','rate','rate_in_company_currency'],
-		domain: function(self) {
-			return [
-				['id', 'in', self.config.selected_currency]
-			];
-		},
-		loaded: function(self, poscurrency){
-			self.poscurrency = poscurrency;
-		},
-	});
+	const PosHomePosGlobalState = (PosGlobalState) => class PosHomePosGlobalState extends PosGlobalState {
+	    async _processData(loadedData) {
+	        await super._processData(...arguments);
+            this.poscurrency = loadedData['poscurrency'];
+	    }
+	}
+	Registries.Model.extend(PosGlobalState, PosHomePosGlobalState);
 
-	var OrderSuper = models.Order.prototype;
-	models.Order = models.Order.extend({
-		initialize: function(attributes, options) {
-			OrderSuper.initialize.apply(this, arguments);
+	const BiPosOrder = (Order) => class BiPosOrder extends Order {
+		constructor(obj, options) {
+			super(...arguments);
 			this.currency_amount = this.currency_amount || "";
 			this.currency_symbol = this.currency_symbol || "";
 			this.currency_name = this.currency_name || "";
-			this.recipet = this.recipet || "";
-		},
-
-		set_symbol: function(currency_symbol){
+		}
+		set_symbol(currency_symbol){
 			this.currency_symbol = currency_symbol;
-			this.trigger('change',this);
-		},
+		}
 
-		set_curamount: function(currency_amount){
+		set_curamount(currency_amount){
 			this.currency_amount = currency_amount;
-			this.trigger('change',this);
-		},
+		}
 
-		set_curname: function(currency_name){
+		set_curname(currency_name){
 			this.currency_name = currency_name;
-			this.trigger('change',this);
-		},
+		}
 
-		set_inrecipt: function(recipet){
-			this.recipet = recipet;
-			this.trigger('change',this);
-		},
-
-		get_curamount: function(currency_amount){
+		get_curamount(currency_amount){
 			return this.currency_amount;
-		},
+		}
 
-		get_symbol: function(currency_symbol){
+		get_symbol(currency_symbol){
 			return this.currency_symbol;
-		},
+		}
 
-		get_curname: function(currency_name){
+		get_curname(currency_name){
 			return this.currency_name;
-		},
+		}
 
-		get_inrecipt: function(recipet){
-			return this.recipet;
-		},
-
-		export_for_printing: function(){
-			var json = OrderSuper.export_for_printing.call(this);
-			json.currency_amount = this.get_curamount() || 0.0;
-			json.currency_symbol = this.get_symbol() || false;
-			json.currency_name = this.get_curname() || false;
-			json.recipet = this.get_inrecipt()|| false;
-			return json;
-		},
-
-		export_as_JSON: function() {
-			var self = this;
-			var loaded = OrderSuper.export_as_JSON.apply(this, arguments);
-			loaded.currency_amount = self.get_curamount() || 0.0;
-			loaded.currency_symbol = self.get_symbol() || false;
-			loaded.currency_name = self.get_curname() || false;
-			loaded.recipet = self.get_inrecipt()|| false;
-			return loaded;
-		},
-
-		init_from_JSON: function(json){
-			OrderSuper.init_from_JSON.apply(this,arguments);
+		init_from_JSON(json){
+			super.init_from_JSON(...arguments);
 			this.currency_amount = json.currency_amount || "";
 			this.currency_symbol = json.currency_symbol || "";
 			this.currency_name = json.currency_name || "";
-			this.recipet = json.recipet || "";
-		},
+		}
 
-	});
+		export_as_JSON(){
+			const json = super.export_as_JSON(...arguments);
+			json.currency_amount = this.get_curamount() || 0.0;
+			json.currency_symbol = this.get_symbol() || false;
+			json.currency_name = this.get_curname() || false;
+			return json;
+		}
 
-	var PaymentSuper = models.Paymentline.prototype;
-	models.Paymentline = models.Paymentline.extend({
-		initialize: function(attributes, options) {
-			PaymentSuper.initialize.apply(this, arguments);
+		export_for_printing() {
+			const json = super.export_for_printing(...arguments);
+			json.currency_amount = this.get_curamount() || 0.0;
+			json.currency_symbol = this.get_symbol() || false;
+			json.currency_name = this.get_curname() || false;
+			return json;
+		}
+
+	}
+
+	Registries.Model.extend(Order, BiPosOrder);
+
+
+	const PaymentLine = (Payment) => class PaymentLine extends Payment {
+		constructor(obj, options) {
+			super(...arguments);
 			this.currency_amount = this.currency_amount || 0.0;
-			this.currency_name = this.currency_name || this.pos.company_currency.name;
-			this.currency_symbol = this.currency_symbol || this.pos.company_currency.symbol;
-		},
+			this.currency_name = this.currency_name || this.pos.currency.name;
+			this.currency_symbol = this.currency_symbol || this.pos.currency.symbol;
+		}
 
-		export_as_JSON: function() {
-			var self = this;
-			var loaded = PaymentSuper.export_as_JSON.apply(this, arguments);
-			loaded.currency_amount = this.currency_amount || 0.0;
-			loaded.currency_name = this.currency_name || this.pos.company_currency.name;
-			loaded.currency_symbol = this.currency_symbol || this.pos.company_currency.symbol;
-			return loaded;
-		},
-
-		export_for_printing: function() {
-			var loaded = PaymentSuper.export_for_printing.apply(this,arguments);
-			loaded.currency_amount = this.currency_amount || 0.0;
-			loaded.currency_name = this.currency_name || this.pos.company_currency.name;
-			loaded.currency_symbol = this.currency_symbol || this.pos.company_currency.symbol;
-			return loaded;
-		},
-
-		init_from_JSON: function(json){
-			PaymentSuper.init_from_JSON.apply(this,arguments);
-			this.currency_amount = json.currency_amount || 0.0;
-			this.currency_name = json.currency_name || this.pos.company_currency.name;
-			this.currency_symbol = json.currency_symbol || this.pos.company_currency.symbol;
-		},
-
-		set_curname: function(currency_name){
+		set_curname(currency_name){
 			this.currency_name = currency_name;
-			this.trigger('change',this);
-		},
+		}
 
-		set_curamount: function(currency_amount){
+		set_curamount(currency_amount){
 			this.currency_amount = currency_amount;
-			this.trigger('change',this);
-		},
+		}
 
-		set_currency_symbol: function(currency_symbol){
+		set_currency_symbol(currency_symbol){
 			this.currency_symbol = currency_symbol;
-			this.trigger('change',this);
-		},
-	});
+		}
+		
+		init_from_JSON(json){
+			super.init_from_JSON(...arguments);
+			this.currency_amount = json.currency_amount || 0.0;
+			this.currency_name = json.currency_name || this.pos.currency.name;
+			this.currency_symbol = json.currency_symbol || this.pos.currency.symbol;
+		}
+
+		export_as_JSON(){
+			const json = super.export_as_JSON(...arguments);
+			json.currency_amount = this.currency_amount || 0.0;
+			json.currency_name = this.currency_name || this.pos.currency.name;
+			json.currency_symbol = this.currency_symbol || this.pos.currency.symbol;
+
+			return json;
+		}
+
+		export_for_printing() {
+			const json = super.export_for_printing(...arguments);
+			json.currency_amount = this.currency_amount || 0.0;
+			json.currency_name = this.currency_name || this.pos.currency.name;
+			json.currency_symbol = this.currency_symbol || this.pos.currency.symbol;
+			return json;
+		}
+
+	}
+
+	Registries.Model.extend(Payment, PaymentLine);
 
 		
 

@@ -1,87 +1,26 @@
 odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 
 	const PaymentScreen = require('point_of_sale.PaymentScreen');
-	const Registries = require('point_of_sale.Registries');
-	const NumberBuffer = require('point_of_sale.NumberBuffer');
-	const session = require('web.session');
-	const PosComponent = require('point_of_sale.PosComponent');
+    const Registries = require('point_of_sale.Registries');
+    const { useListener } = require("@web/core/utils/hooks");
 
-	const { useListener } = require('web.custom_hooks');
-	let core = require('web.core');
-	let _t = core._t;
-	var utils = require('web.utils');
-
-	var round_di = utils.round_decimals;
-	var round_pr = utils.round_precision;
+    const {onMounted} = owl;
 
 	const BiPaymentScreen = PaymentScreen => class extends PaymentScreen {
-		constructor() {
-			super(...arguments);
+
+		setup() {
+			super.setup();
 			this.mobile_multi = false
 			useListener('click-update_amount', this._UpdateAmountt);
 			useListener('click-cur-switch', this._UpdateDetails);
 			useListener('click-cur-switch-mobile', this._UpdateDetailsMobile);
+
+			onMounted(() => {
+               	$('#details_mobile').hide()
+				// $('#details').hide()
+            });
+
 		}
-
-		mounted() {
-			$('#details_mobile').hide()
-			$('#details').hide()
-		}
-
-		deletePaymentLine(event) {
-        	super.deletePaymentLine(event)
-        	var self = this;
-            let currencies = this.env.pos.poscurrency;
-			let cur = $('.drop-currency').val();
-			let curr_sym;
-			let order= this.env.pos.get_order();
-			let pos_currency = this.env.pos.currency;
-			for(var i=0;i<currencies.length;i++){
-				if(cur != pos_currency.id && cur==currencies[i].id){
-					$('.next').removeClass('highlight');
-					let currency_in_pos = (currencies[i].rate/self.env.pos.currency.rate).toFixed(6);
-					$('.currency_symbol').text(currencies[i].symbol);
-					$('.currency_rate').text(currency_in_pos);
-					curr_sym = currencies[i].symbol;
-					let curr_tot =order.get_due()*currency_in_pos;
-					$('.currency_cal').text(parseFloat(curr_tot.toFixed(6)));
-					order.set_curamount(parseFloat(curr_tot.toFixed(6)));
-					order.set_symbol(curr_sym);
-					order.set_curname(currencies[i].name);
-					return curr_tot;
-				}
-				if(cur == pos_currency.id && cur==currencies[i].id){
-					$('.currency_symbol').text(pos_currency.symbol);
-					$('.currency_rate').text(1);
-					curr_sym = pos_currency.symbol;
-
-					let curr_tot =order.get_due();
-					$('.currency_cal').text(parseFloat(curr_tot.toFixed(6)));
-					order.set_curamount(parseFloat(curr_tot.toFixed(6)));
-					order.set_symbol(curr_sym);
-					order.set_curname(pos_currency.name);
-					return curr_tot;
-				}
-			}
-        }
-
-        // addNewPaymentLine({ detail: paymentMethod }) {
-        //     // original function: click_paymentmethods
-        //     let result = this.currentOrder.add_paymentline(paymentMethod);
-        //     if (result){
-        //     	// this.currentOrder.is_paid()
-        //     	$('.next').addClass('highlight');
-        //         NumberBuffer.reset();
-        //         return true;
-        //     }
-        //     else{
-        //         this.showPopup('ErrorPopup', {
-        //             title: this.env._t('Error'),
-        //             body: this.env._t('There is already an electronic payment in progress.'),
-        //         });
-        //         return false;
-        //     }
-        // }
 
 		_UpdateDetails() {
 			if($("#cur-switch").prop('checked') == true){
@@ -93,6 +32,7 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 		}
 
 		_UpdateDetailsMobile() {
+			$(".js_multi").toggleClass("highlight");
 			if(this.mobile_multi == true){
 				$('#details_mobile').hide()
 				
@@ -101,6 +41,10 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 				$('#details_mobile').show()
 				this.mobile_multi = true
 			}
+		}
+
+		get check_mobile_multi(){
+			return this.mobile_multi;
 		}
 
 		_UpdateAmountt() {
@@ -119,13 +63,10 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 
 			for(var i=0;i<currency.length;i++){
 				if(cur==currency[i].id){
-					let c_rate = self.env.pos.company_currency.rate/currency[i].rate;
+					let c_rate = self.env.pos.currency.rate/currency[i].rate;
 					tot_amount = parseFloat(user_amt)*c_rate;
-					if(this.env.pos.cash_rounding.length > 0){
-					    selected_paymentline.amount =round_pr(tot_amount,this.env.pos.cash_rounding[0].rounding);
-					}
 					selected_paymentline.amount =parseFloat(tot_amount.toFixed(2));
-					selected_paymentline.amount_currency = parseFloat(parseFloat(user_amt).toFixed(2));
+					selected_paymentline.amount_currency =parseFloat(parseFloat(user_amt).toFixed(2)) ;
 					$('.show-payment').text(this.env.pos.format_currency_no_symbol(selected_paymentline.amount));
 					selected_paymentline.set_curname(currency[i].name);
 					selected_paymentline.set_curamount(selected_paymentline.amount_currency);
@@ -160,7 +101,7 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 					$('.currency_rate').text(currency_in_pos);
 					curr_sym = currencies[i].symbol;
 
-					let curr_tot = order.get_due()*currency_in_pos;
+					let curr_tot =order.get_due()*currency_in_pos;
 					$('.currency_cal').text(parseFloat(curr_tot.toFixed(6)));
 					order.set_curamount(parseFloat(curr_tot.toFixed(6)));
 					order.set_symbol(curr_sym);
@@ -173,8 +114,8 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 					curr_sym = pos_currency.symbol;
 
 					let curr_tot =order.get_due();
-					$('.currency_cal').text(parseFloat(curr_tot.toFixed(6)));
-					order.set_curamount(parseFloat(curr_tot.toFixed(6)));
+					$('.currency_cal').text(parseFloat(curr_tot.toFixed(2)));
+					order.set_curamount(parseFloat(curr_tot.toFixed(2)));
 					order.set_symbol(curr_sym);
 					order.set_curname(pos_currency.name);
 					return curr_tot;

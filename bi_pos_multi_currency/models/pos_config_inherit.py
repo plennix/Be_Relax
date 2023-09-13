@@ -13,6 +13,14 @@ class PosConfigInherit(models.Model):
 	selected_currency = fields.Many2many("res.currency", string="pos")
 
 
+class ResConfigSettings(models.TransientModel):
+	_inherit = 'res.config.settings'
+
+	multi_currency = fields.Boolean(related='pos_config_id.multi_currency',readonly=False)
+	curr_conv = fields.Boolean(related='pos_config_id.curr_conv',readonly=False)
+	selected_currency = fields.Many2many(related='pos_config_id.selected_currency',readonly=False)
+
+
 class CurrencyInherit(models.Model):
 	_inherit = "res.currency"
 
@@ -47,14 +55,14 @@ class ExchangeRate(models.Model):
 	_inherit = "pos.payment"
 
 	account_currency = fields.Float("Amount currency")
-	currency = fields.Char("currency")
+	currency_name = fields.Char("currency")
 
 
 class ExchangeRate(models.Model):
 	_inherit = "account.bank.statement.line"
 
 	account_currency = fields.Monetary("Amount currency")
-	currency = fields.Char("currency")
+	currency_name = fields.Char("currency")
 
 
 class PosOrder(models.Model):
@@ -68,10 +76,9 @@ class PosOrder(models.Model):
 		account_currency = ui_paymentline.get('currency_amount',0)
 		if ui_paymentline.get('amount',0) < 0 and  ui_paymentline.get('currency_amount',0) > 0 :
 			account_currency = - account_currency
-
 		res.update({
 			'account_currency': account_currency if account_currency != 0 else  ui_paymentline.get('amount',0),
-			'currency' : ui_paymentline.get('currency_name',False) or order.pricelist_id.currency_id.name,
+			'currency_name' : ui_paymentline['currency_name'] or order.pricelist_id.currency_id.name,
 		})
 		return res
 
@@ -118,6 +125,19 @@ class PosOrder(models.Model):
 				'payment_date': fields.Datetime.now(),
 				'payment_method_id': cash_payment_method.id,
 				'account_currency': -return_amount or 0.0,
-				'currency' : pos_order.get('currency_name',order.pricelist_id.currency_id.name),
+				'currency_name' : pos_order.get('currency_name',order.pricelist_id.currency_id.name),
 			}
 			order.add_payment(return_payment_vals)
+
+
+class POSSession(models.Model):
+	_inherit = 'pos.session'
+
+	def load_pos_data(self):
+		loaded_data = super(POSSession, self).load_pos_data()
+		poscurrency = self.env['res.currency'].search_read(
+			domain=[('id', 'in', self.config_id.selected_currency.ids)],
+			fields=['name','symbol','position','rounding','rate','rate_in_company_currency'],
+		)
+		loaded_data['poscurrency'] = poscurrency
+		return loaded_data
