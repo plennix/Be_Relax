@@ -1,0 +1,35 @@
+<odoo>
+
+    <record id="cashier_tip_view_pivot" model="ir.ui.view">
+        <field name="name">pivot</field>
+        <field name="model">cashier.tip</field>
+        <field name="arch" type="xml">
+            <pivot string="Pivot View">
+                <field name="pos_ref" type="row"/>
+                <field name="cashier_id" type="col"/>
+                <field name="tip" type="measure"/>
+                <field name="pos_date" type="col"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="tips_view_tree" model="ir.ui.view">
+        <field name="name">tips_view_tree</field>
+        <field name="model">cashier.tip</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="cashier_id"/>
+                <field name="pos_ref"/>
+                <field name="pos_date"/>
+                <field name="tip"/>
+            </tree>
+        </field>
+    </record>
+    <record id="tips_action" model="ir.actions.act_window">
+        <field name="name">Cashier Tips</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cashier.tip</field>
+        <field name="view_mode">tree,pivot</field>
+    </record>
+    <menuitem id="tips_menu" name="Cashier Tips" parent="point_of_sale.menu_point_of_sale" action="tips_action"/>
+</odoo>
