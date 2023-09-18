@@ -8,7 +8,7 @@
     'data':[
         # 'security/ir.model.access.csv',
         'views/cashier_tip.xml',
-        'views/tips.xml',
+        # 'views/tips.xml',
     ],
     'assets': {
         'point_of_sale.assets': [
