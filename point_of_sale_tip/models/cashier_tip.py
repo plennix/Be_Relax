@@ -20,3 +20,16 @@ class CashierTip(models.Model):
         string='Pos',
         required=False
     )
+    pos_ref = fields.Char(
+        related='pos_id.name',
+        readonly=False,
+        string='Pos Ref',
+        store=True,
+    )
+
+    pos_date = fields.Datetime(
+        related='pos_id.date_order',
+        string='Date',
+        required=False,
+        store=True
+    )

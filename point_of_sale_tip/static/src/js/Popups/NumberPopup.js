@@ -5,9 +5,6 @@ odoo.define('point_of_sale_tip.NumberPopuptip', function(require) {
     const Registries = require('point_of_sale.Registries');
     const NumberBuffer = require('point_of_sale.NumberBuffer');
 
-
-
-
     const NumberPopuptip = NumberPopup =>
         class extends NumberPopup {
          confirm(event) {

@@ -5,8 +5,6 @@ odoo.define('point_of_sale_tip.PaymentScreentip', function (require) {
     const Registries = require('point_of_sale.Registries');
     const { parse } = require('web.field_utils');
 
-
-
     const PaymentScreentip = PaymentScreen =>
         class extends PaymentScreen {
         async addTip() {

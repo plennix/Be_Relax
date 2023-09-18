@@ -3,11 +3,11 @@
 
     <t t-name="CashierTip" owl="1">
         <Draggable>
-            <div class="popup" t-att-class="{ 'popup-password': props.isPassword }">
+            <div class="popup">
                 <header class="title drag-handle">
                     <t t-esc="props.title"/>
                 </header>
-                <center>
+                <body style="background: white !important;overflow: auto;height: 70vh;">
                     <table>
                         <thead>
                             <tr>
@@ -24,7 +24,7 @@
                             </t>
                         </tbody>
                     </table>
-                </center>
+                </body>
                 <footer class="footer centered">
                     <div class="button confirm highlight"
                          t-on-click="confirm">

@@ -8,10 +8,14 @@ const PosSaleOrder = (Order) => class PosSaleOrder extends Order {
     export_as_JSON() {
         const json = super.export_as_JSON(...arguments);
         json['cashier_tip']= this.CashierTip
+        json['is_user']= this.IsUser
         return json;
     }
     set_cashier_tip(tip){
         this.CashierTip = tip
+    }
+    is_user(){
+        this.IsUser = true
     }
 }
 Registries.Model.extend(Order, PosSaleOrder);

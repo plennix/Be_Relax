@@ -8,57 +8,64 @@ odoo.define('point_of_sale_tip.CashierTip', function(require) {
     class CashierTip extends AbstractAwaitablePopup{
         async confirm(){
             var x = {};
-            var sum = 0;
+            var sum = 0.00;
 
             for(var i=0;i<this.cashiers.length;i++){
+                sum = Number(sum.toFixed(2))
                 x[this.cashiers[i].id] = $('#'+this.cashiers[i].id).val();
                 sum += Number($('#'+this.cashiers[i].id).val());
             }
             if(this.props.tipValue == sum) {
                 this.env.pos.get_order().set_cashier_tip(x);
+                if (! this.env.pos.employees){
+                    this.env.pos.get_order().is_user()
+                }
                 this.cancel();
             }
             else{
                 this.showPopup('ErrorPopup', {
                         title: this.env._t('Wrong value'),
                         body: this.env._t(
-                            'Divided value must be equals to tip.'
+                            'Assigned value must be equals to tip.'
                         ),
                     });
             }
         }
          get cashiers(){
-             var empCount =this.env.pos.employees
-                        .filter((employee) => employee.id !== this.env.pos.get_cashier().id).length;
-             var defTip = this.props.tipValue / empCount;
-             var firsttip = false;
+            if (! this.env.pos.employees){
+                const CashierList = [{
+
+                                id: this.env.pos.get_cashier().id,
+                                label: this.env.pos.get_cashier().name,
+                                defaultTip: this.props.tipValue.toFixed(2),
+
+                        }];
+
+
+                return CashierList;
+            }else{
+             var empCount =this.env.pos.employees.length;
+             var firsttip = true;
              var a = 0;
              const employeesList = this.env.pos.employees
-                        .filter((employee) => employee.id !== this.env.pos.get_cashier().id)
                         .map((employee) => {
-                            if(defTip.toFixed(2) * empCount == this.props.tipValue || firsttip){
-                                        a = Number(defTip)
-                                    }
-                            else{
-                                if (defTip.toFixed(2) * empCount <= this.props.tipValue){
-                                    a = Number(defTip) + 0.01
-                                    firsttip = true
-                                }
-                                else{
-                                    a = Number(defTip) - 0.01
-                                    firsttip = true
-                                }
+                            if (firsttip){
+                                a = a + Number(this.props.tipValue)
+                                firsttip = false
+                            }else{
+                                a = 0
                             }
                             return {
                                 id: employee.id,
                                 label: employee.name,
-                                defaultTip: a.toFixed(2),
+                                defaultTip: a   .toFixed(2),
 
                             };
                         });
 
 
              return employeesList;
+             }
          }
         }
     CashierTip.template = 'CashierTip';
