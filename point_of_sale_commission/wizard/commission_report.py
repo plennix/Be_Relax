@@ -10,7 +10,7 @@ class CommissionReport(models.TransientModel):
 
     employee_ids = fields.Many2many(
         comodel_name='hr.employee',
-        string='Employee',
+        string='Therapist',
     )
 
     start_date = fields.Datetime(

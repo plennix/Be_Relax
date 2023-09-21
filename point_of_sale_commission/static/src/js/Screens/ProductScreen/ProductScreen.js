@@ -23,18 +23,18 @@ odoo.define('point_of_sale_commission.ProductScreen', function (require) {
                                 id: employee.id,
                                 item: employee,
                                 label: employee.name,
+                                line_emp_pin: employee.line_emp_pin,
                                 isSelected: false,
                             };
                         });
                 let {confirmed, payload: employee} = await this.showPopup('SelectionPopup', {
-                    title: this.env._t('Change Cashier'),
+                    title: this.env._t('Therapist'),
                     list: employeesList,
                 });
                 if(confirmed){
                     options['employee_id']=employee.id;
+                    options['line_emp_pin']=employee.line_emp_pin || '';
                 }
-            }else{
-                options['line_emp']='0';
             }
             await this._addProduct(product, options);
             NumberBuffer.reset();

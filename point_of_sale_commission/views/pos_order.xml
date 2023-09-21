@@ -1,0 +1,13 @@
+<odoo>
+    <!-- Inherit Form View to Modify it -->
+    <record id="view_pos_pos_form_inherit_ext" model="ir.ui.view">
+        <field name="name">pos.order.form</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='lines']/tree/field[@name='full_product_name']" position="before">
+                <field name="employee_id"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

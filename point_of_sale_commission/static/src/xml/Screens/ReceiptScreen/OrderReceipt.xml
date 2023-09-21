@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-inherit="point_of_sale.OrderLinesReceipt" t-inherit-mode="extension" owl="1">
+        <xpath expr="//t[@t-if='isSimple(line)']" position="inside">
+            <div>
+                <t t-esc="line.line_emp_pin"/>
+            </div>
+        </xpath>
+    </t>
+</templates>

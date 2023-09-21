@@ -12,7 +12,8 @@
                     </group>
                     <field name="pos_commission_ids">
                         <tree editable="bottom">
-                            <field name="employee_ids" required="1" widget="many2many_tags"/>
+                            <field name="employee_ids" required="1" widget="many2many_tags"
+                                   context="{'is_employee': 1}"/>
                             <field name="commission" required="1"/>
                         </tree>
                     </field>

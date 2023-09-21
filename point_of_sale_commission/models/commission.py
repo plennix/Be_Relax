@@ -7,7 +7,7 @@ class Commission(models.Model):
 
     employee_ids = fields.Many2many(
         comodel_name='hr.employee',
-        string='Employee',
+        string='Therapist',
         required=False
     )
     commission = fields.Float(

@@ -19,6 +19,6 @@ class PosOrderLineEmp(models.Model):
 
     employee_id = fields.Many2one(
         comodel_name='hr.employee',
-        string='Employee',
+        string='Therapist',
         required=False
     )
