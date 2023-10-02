@@ -1,6 +1,6 @@
 {
     'name': 'POS Commission',
-    'version': '16.0.0',
+    'version': '16.0.1',
     'description': '',
     'category': 'Point of Sale',
     'author': '',

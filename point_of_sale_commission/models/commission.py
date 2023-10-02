@@ -28,6 +28,11 @@ class PosCommissionLine(models.Model):
 
     name = fields.Char(string='Name')
 
+    detailed_type = fields.Selection([
+        ('consu', 'Consumable'),
+        ('service', 'Service'),
+        ('product', 'Storable Product')], string='Product Type', default='consu')
+
     pos_commission_ids = fields.One2many(
         comodel_name='pos.commission',
         inverse_name='pos_commission_line_id',
