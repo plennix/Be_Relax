@@ -1,0 +1,38 @@
+<odoo>
+    <record id="view_sales_pos_report_form" model="ir.ui.view">
+        <field name="name">sales.pos.report</field>
+        <field name="model">sales.pos.report</field>
+        <field name="arch" type="xml">
+            <form string="Monthly Cash">
+                <group>
+                    <group>
+                        <field name="date_from"/>
+                    </group>
+                    <group>
+                        <field name="date_to"/>
+                    </group>
+                </group>
+
+                <footer>
+                    <button string="Generate Report" name="generate_xlsx_report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-default" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_sales_pos_report" model="ir.actions.act_window">
+        <field name="name">Sales Report</field>
+        <field name="res_model">sales.pos.report</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_sales_pos_report_form"/>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_sales_report"
+			name="Sales Report"
+			action="action_sales_pos_report"
+			parent="point_of_sale.menu_point_rep"
+			/>
+</odoo>
