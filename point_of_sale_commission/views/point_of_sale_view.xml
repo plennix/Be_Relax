@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <template id="report_saledetails_ext" inherit_id="point_of_sale.report_saledetails">
+        <xpath expr="//t[@t-if='date_start and date_stop']" position="replace">
+            <t t-if="date_start and date_stop">
+                <strong><t t-esc="date_start" t-options="{'widget': 'date'}"/> - <t t-esc="date_stop" t-options="{'widget': 'date'}"/></strong>
+            </t>
+        </xpath>
+    </template>
+</odoo>

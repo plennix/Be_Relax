@@ -10,6 +10,7 @@
         'wizard/commission_report.xml',
         'views/commission.xml',
         'views/pos_order.xml',
+        'views/point_of_sale_view.xml',
     ],
 
     'assets': {
