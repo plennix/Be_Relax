@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+     <t t-name="PartnerDetailsEdit" t-inherit="point_of_sale.PartnerDetailsEdit" t-inherit-mode="extension" owl="1">
+         <xpath expr="//section/div/div/div[1]" position="replace">
+         </xpath>
+         <xpath expr="//section/div/div/div[3]" position="replace">
+         </xpath>
+         <xpath expr="//section/div/div[2]/div[5]" position="replace">
+             <div class="partner-detail">
+             </div>
+         </xpath>
+         <xpath expr="//section/div/div[2]/div[6]" position="replace">
+             <div class="partner-detail">
+             </div>
+         </xpath>
+         <xpath expr="//section/div/div/div[last()]" position="inside">
+             <div class="partner-detail">
+                        <span class="label">Account Number</span>
+                        <input class="detail" name="acc_number"
+                               t-model="changes.acc_number"
+                               t-on-change="captureChange"
+                               placeholder="Account Number" />
+             </div>
+
+             <div class="partner-detail">
+                        <span class="label">Bank Details</span>
+                 <select class="detail" name="bank_id" t-model="changes.bank_id"
+                         t-on-change="captureChange">
+                            <option value="">None</option>
+                     <t t-foreach="env.pos.bank_id" t-as="bp" t-key="bp.id">
+                                <option t-att-value="bp.id">
+                                    <t t-esc="bp.name"/>
+                                </option>
+                            </t>
+                        </select>
+                    </div>
+<!--             <div class="partner-detail">-->
+<!--                        <span class="label">Send Money</span>-->
+<!--                        <input class="detail" type="checkbox" name="allow_out_payment"-->
+<!--                               t-model="changes.allow_out_payment"-->
+<!--                               t-on-change="captureChange"/>-->
+<!--             </div>-->
+         </xpath>
+     </t>
+</templates>
