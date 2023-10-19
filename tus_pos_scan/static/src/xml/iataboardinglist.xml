@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="IteaBoardingList" owl="1">
+        <Draggable>
+            <div class="popup custom_popup">
+                <header class="title drag-handle">
+                    <t t-esc="props.title"/>
+                </header>
+                <body style="background: white !important;overflow: auto;height: 70vh;">
+                    <table style="width:100% !important;">
+                        <tr style="border-bottom: 1px solid #CCC;" t-foreach="getiteaboarding" t-as="a" t-key="a_index">
+                            <td><t t-esc="a_index + 1"/></td>
+                            <td><center><t t-esc="a.passenger_name"/></center></td>
+                            <td><snap style="border-color: #017e84;border: none" class="button btn-primary fa fa-edit" value="a_index" t-on-click="() => this.selectForm(a_index)"></snap></td>
+                        </tr>
+                    </table>
+                </body>
+                <footer class="footer centered">
+                    <div class="button confirm highlight"
+                         t-on-click="confirm">
+                        <t t-esc="props.confirmText"/>
+                    </div>
+                    <div class="button confirm highlight"
+                         t-on-click="this.CreateBoardingPass">Create
+                    </div>
+                </footer>
+            </div>
+        </Draggable>
+    </t>
+
+</templates>

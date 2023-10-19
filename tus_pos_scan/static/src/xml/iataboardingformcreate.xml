@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="IataBoardingFormCreate" owl="1">
+        <Draggable>
+            <div class="popup">
+                <header class="title drag-handle">
+                    <t t-esc="props.title"/>
+                </header>
+                <body style="background: white !important;overflow: auto;height: 70vh;">
+                    <table style="width:100% !important;">
+                        <tr>
+                        <td style="text-align: left;">
+                            <span >
+                                <b>Passenger Name</b>
+                            </span>
+                        </td>
+                        <td>
+                            <input type="text" id="p_name"/>
+                        </td>
+                    </tr>
+                        <tr>
+                            <td style="text-align: left;">
+                                <span >
+                                    <b>Departure</b>
+                                </span>
+                            </td>
+                            <td>
+                                <input type="text" id="dep"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">
+                                <span >
+                                    <b>Destination</b>
+                                </span>
+                            </td>
+                            <td>
+                                <input type="text" id="des"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">
+                                <span >
+                                    <b>Flight Company</b>
+                                </span>
+                            </td>
+                            <td>
+                                <input type="text" id="f_company"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">
+                                <span>
+                                    <b>Flight Number</b>
+                                </span>
+                            </td>
+                            <td>
+                                <input type="text" id="f_number"/>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="error_msg" style="color:red;display:none;"> Please fill all required field before confirm. </div>
+                </body>
+                <footer class="footer centered">
+                    <div class="button confirm highlight"
+                         t-on-click="confirm">
+                        <t t-esc="props.confirmText"/>
+                    </div>
+                </footer>
+            </div>
+        </Draggable>
+    </t>
+
+</templates>

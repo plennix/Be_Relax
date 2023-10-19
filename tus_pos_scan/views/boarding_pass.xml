@@ -1,0 +1,44 @@
+<odoo>
+    <record id="boarding_pass_view_form" model="ir.ui.view">
+        <field name="name">boarding_pass_view_form</field>
+        <field name="model">boarding.pass</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="passenger_name"/>
+                        <field name="departure"/>
+                        <field name="destination"/>
+                        <field name="flight_company"/>
+                        <field name="flight_number"/>
+                        <field name="pos_id" invisible="1"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="boarding_pass_view_tree" model="ir.ui.view">
+        <field name="name">boarding_pass_view_tree</field>
+        <field name="model">boarding.pass</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="passenger_name"/>
+                <field name="departure"/>
+                <field name="destination"/>
+                <field name="flight_company"/>
+                <field name="flight_number"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="boarding_pass_action" model="ir.actions.act_window">
+        <field name="name">Boarding Pass</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">boarding.pass</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="boarding_pass_action_menu" name="Boarding Pass" parent="point_of_sale.menu_point_of_sale" action="boarding_pass_action" sequence="299"/>
+
+</odoo>

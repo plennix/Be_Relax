@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="SetOrderNTNButton" owl="1">
+        <div class="control-button">
+            <i class="fa fa-barcode" role="img" aria-label="NTN"
+               title="Set NTN Number" />Scan Boarding Pass
+        </div>
+    </t>
+</templates>
