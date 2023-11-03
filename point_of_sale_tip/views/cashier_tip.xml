@@ -5,10 +5,15 @@
         <field name="model">pos.order</field>
         <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
         <field name="arch" type="xml">
-
             <xpath expr="//notebook" position="inside">
                 <page name="cashier_tip" string="Tips">
-                    <field name="cashier_tip_ids" readonly="1">
+                    <field name="cashier_tip_ids" groups="point_of_sale_tip.cashier_tip_group">
+                        <tree>
+                            <field name="cashier_id"/>
+                            <field name="tip" string="Amount"/>
+                        </tree>
+                    </field>
+                    <field name="cashier_tip_ids" groups="!point_of_sale_tip.cashier_tip_group" readonly="1">
                         <tree>
                             <field name="cashier_id"/>
                             <field name="tip" string="Amount"/>
@@ -16,7 +21,6 @@
                     </field>
                 </page>
             </xpath>
-
         </field>
     </record>
 </odoo>

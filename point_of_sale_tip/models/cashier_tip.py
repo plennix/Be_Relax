@@ -33,3 +33,5 @@ class CashierTip(models.Model):
         required=False,
         store=True
     )
+
+

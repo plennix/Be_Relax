@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="point_of_sale.menu_point_of_sale"
+        name="Sales"
+        parent="point_of_sale.menu_point_root"
+        sequence="10"/>
+    <menuitem id="point_of_sale.menu_point_ofsale"
+              name="Sales"
+              parent="point_of_sale.menu_point_of_sale"
+              action="point_of_sale.action_pos_pos_form"
+              sequence="2"
+              groups="point_of_sale.group_pos_manager,point_of_sale.group_pos_user"/>
+
+    <record id="point_of_sale.action_pos_sale_graph" model="ir.actions.act_window">
+        <field name="name">Sales</field>
+    </record>
+     <record id="point_of_sale.action_pos_pos_form" model="ir.actions.act_window">
+        <field name="name">Sales</field>
+     </record>
+
+</odoo>

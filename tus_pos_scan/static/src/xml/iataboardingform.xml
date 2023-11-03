@@ -4,53 +4,53 @@
     <t t-name="IteaBoardingForm" owl="1">
         <Draggable>
             <div class="popup">
-                <header class="title drag-handle">
-                    <t t-esc="props.title"/>
+                <header class="title drag-handle">a
+                        <t t-esc="props.title"/>
                 </header>
                 <body style="background: white !important;overflow: auto;height: 70vh;">
                     <table style="width:100% !important;">
                         <tr>
                         <td style="text-align: left;">
-                            <span >
+                            <span>
                                 <b>Passenger Name</b>
                             </span>
                         </td>
-                        <td>
+                            <td>
                             <input type="text" id="passenger_name"
-                            t-att-value="props.posmodel.selectedOrder.boarding[props.index].passenger_name"/>
+                                   t-att-value="props.posmodel.selectedOrder.boarding[props.index].passenger_name"/>
                         </td>
                     </tr>
                         <tr>
                             <td style="text-align: left;">
-                                <span >
+                                <span>
                                     <b>Departure</b>
                                 </span>
                             </td>
                             <td>
                                 <input type="text" id="departure"
-                                t-att-value="props.posmodel.selectedOrder.boarding[props.index].departure"/>
+                                       t-att-value="props.posmodel.selectedOrder.boarding[props.index].departure"/>
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align: left;">
-                                <span >
+                                <span>
                                     <b>Destination</b>
                                 </span>
                             </td>
                             <td>
                                 <input type="text" id="destination"
-                                t-att-value="props.posmodel.selectedOrder.boarding[props.index].destination"/>
+                                       t-att-value="props.posmodel.selectedOrder.boarding[props.index].destination"/>
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align: left;">
-                                <span >
+                                <span>
                                     <b>Flight Company</b>
                                 </span>
                             </td>
                             <td>
                                 <input type="text" id="flight_company"
-                                t-att-value="props.posmodel.selectedOrder.boarding[props.index].flight_company"/>
+                                       t-att-value="props.posmodel.selectedOrder.boarding[props.index].flight_company"/>
                             </td>
                         </tr>
                         <tr>
@@ -61,7 +61,29 @@
                             </td>
                             <td>
                                 <input type="text" id="flight_number"
-                                t-att-value="props.posmodel.selectedOrder.boarding[props.index].flight_number"/>
+                                       t-att-value="props.posmodel.selectedOrder.boarding[props.index].flight_number"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">
+                                <span>
+                                    <b>Email</b>
+                                </span>
+                            </td>
+                            <td>
+                                <input type="text" id="flight_email"
+                                       t-att-value="props.posmodel.selectedOrder.boarding[props.index].flight_email"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: left;">
+                                <span>
+                                    <b>Phone Number</b>
+                                </span>
+                            </td>
+                            <td>
+                                <input type="number" id="flight_phone"
+                                       t-att-value="props.posmodel.selectedOrder.boarding[props.index].flight_phone"/>
                             </td>
                         </tr>
                     </table>
@@ -70,6 +92,10 @@
                     <div class="button confirm highlight"
                          t-on-click="confirm">
                         <t t-esc="props.confirmText"/>
+                    </div>
+                    <div class="button cancel"
+                         t-on-click="cancel">
+                        cancel
                     </div>
                 </footer>
             </div>

@@ -6,6 +6,7 @@
     'author': '',
     'depends': ['point_of_sale'],
     'data':[
+        'security/security.xml',
         'security/ir.model.access.csv',
         'views/cashier_tip.xml',
         'views/tips.xml',

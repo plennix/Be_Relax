@@ -19,7 +19,6 @@ odoo.define('point_of_sale_tip.PaymentScreentip', function (require) {
                 isInputSelected: true,
                 isEachTip: true,
             });
-
             if (confirmed) {
                 this.currentOrder.set_tip(parse.float(payload));
             }

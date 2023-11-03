@@ -7,6 +7,12 @@
                 <header class="title drag-handle">
                     <t t-esc="props.title"/>
                 </header>
+                <div class="search-bar-container sb-partner">
+                    <div class="pos-search-bar" style="width: 50%;text-align:end;">
+                        <input t-ref="search-word-input-partner" placeholder="Search Therapist..." size="1"
+                               t-on-keyup="updateEmployeeList" style="border-radius:30px;margin: 5px;height: 40px;"/>
+                    </div>
+                </div>
                 <body style="background: white !important;overflow: auto;height: 70vh;">
                     <table>
                         <thead>
@@ -16,11 +22,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <t t-foreach="cashiers" t-as="a" t-key="a.id">
-                                <tr>
-                                    <td><t t-esc="a.label"/></td>
-                                    <td style="padding-top: 10px;padding-left: 10px;"><input type="number" t-attf-value="{{a.defaultTip}}" t-attf-id="{{a.id}}"/></td>
-                                </tr>
+                            <t t-if="props.query == ''">
+                                <t t-foreach="cashiers" t-as="a" t-key="a.id">
+                                    <tr>
+                                        <td><t t-esc="a.label"/></td>
+                                        <td style="padding-top: 10px;padding-left: 10px;"><input type="number" t-attf-value="{{a.defaultTip}}" t-attf-id="{{a.id}}"/></td>
+                                    </tr>
+                                </t>
+                            </t>
+                            <t t-else="">
+                                <t t-foreach="state.EmpList" t-as="b" t-key="b.id">
+                                    <tr>
+                                        <td><t t-esc="b.label"/></td>
+                                        <td style="padding-top: 10px;padding-left: 10px;"><input type="number" t-attf-value="{{b.defaultTip}}" t-attf-id="{{b.id}}"/></td>
+                                    </tr>
+                                </t>
                             </t>
                         </tbody>
                     </table>

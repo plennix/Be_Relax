@@ -46,7 +46,7 @@ odoo.define('tus_pos_scan.SetOrderNTNButton', function(require) {
 
         async onClick() {
             const selectedOrder = this.env.pos.get_order();
-            const { confirmed, payload: inputNote } = await this.showPopup('TextInputPopup', {
+            var { confirmed, payload: inputNote } = await this.showPopup('TextInputPopup', {
                 startingValue: '',
                 title: this.env._t('Scan Boarding Pass'),
             });
@@ -54,6 +54,30 @@ odoo.define('tus_pos_scan.SetOrderNTNButton', function(require) {
             if (confirmed && inputNote) {
                 selectedOrder.ntn_number = inputNote;
                 const a = this.submitIata(inputNote);
+                let newPartner = await this.env.pos.load_new_partners();
+                let passenger_name = a.passenger_name.trim();
+                const partners_names = this.env.pos.partners.map(x => x.name).filter(x => x === passenger_name)
+                const new_partners_names = this.env.pos.db.search_partner(passenger_name)
+                if (partners_names.length != 0 || new_partners_names.length != 0){
+                    var { confirmed } = await this.showPopup('ConfirmPopup', {
+                        title: this.env._t('Create Partner'),
+                        body: this.env._t('This partner already exist if you want create new please confirm.'),
+                    });
+                }
+                if (confirmed || new_partners_names.length == 0){
+                    let partnerId = await this.rpc({
+                        model: 'res.partner',
+                        method: 'create_from_ui',
+                        args: [{'name': a.passenger_name.trim()}],
+                    });
+                    await this.env.pos.load_new_partners();
+                    a['partner_id'] = partnerId;
+                    this.env.pos.get_order().set_partner(this.env.pos.db.get_partner_by_id(partnerId))
+                }
+                if (new_partners_names.length > 0 && !confirmed){
+                    let lastCreatePartner = new_partners_names[new_partners_names.length - 1]
+                    this.env.pos.get_order().set_partner(lastCreatePartner)
+                }
                 if (selectedOrder.boarding){
                     selectedOrder.boarding.push(a);
                 }else{
@@ -61,6 +85,7 @@ odoo.define('tus_pos_scan.SetOrderNTNButton', function(require) {
                 }
             }
         }
+
     }
     SetOrderNTNButton.template = 'SetOrderNTNButton';
 

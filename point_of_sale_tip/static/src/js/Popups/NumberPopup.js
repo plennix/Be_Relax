@@ -8,12 +8,15 @@ odoo.define('point_of_sale_tip.NumberPopuptip', function(require) {
     const NumberPopuptip = NumberPopup =>
         class extends NumberPopup {
          confirm(event) {
+            debugger;
             if (NumberBuffer.get()) {
                 super.confirm();
             }
             if (this.props.isEachTip && Number(this.inputBuffer) !== 0){
                 this.showPopup('CashierTip',{
                     tipValue: Number(this.inputBuffer),
+                    query: '',
+                    order: this.props.order ? this.props.order : this.currentOrder,
                 })
             }
         }

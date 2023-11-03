@@ -27,4 +27,6 @@ class PosOrder(models.Model):
                         'flight_number': b_pass.get('flight_number') or '',
                         'partner_id': order.partner_id.id or False,
                     })
+                    order.partner_id.email = b_pass.get('flight_email') or ''
+                    order.partner_id.phone = b_pass.get('flight_phone') or ''
         return order_ids

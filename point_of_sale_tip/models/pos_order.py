@@ -22,12 +22,29 @@ class PosOrderTip(models.Model):
                     for emp_id, tip in tip.items():
                         if tip and float(tip) != 0.00:
                             line_val = (0, 0, {
-                                'cashier_id':int(emp_id) if not o.get('data').get('is_user') else self.env['res.users'].sudo().browse(int(emp_id)).employee_id.id,
-                                'tip':float(tip or 0)
+                                'cashier_id': int(emp_id) if not o.get('data').get('is_user') else self.env[
+                                    'res.users'].sudo().browse(int(emp_id)).employee_id.id,
+                                'tip': float(tip or 0)
                             })
                             order_line_list.append(line_val)
                     order.cashier_tip_ids = order_line_list
-
-
         return order_ids
+
+    @api.model
+    def pos_order_paid_tips(self, orders):
+        order_id = self.sudo().browse(orders.get('order_id'))
+        if order_id:
+            tip = orders.get('CashierTip')
+            if orders.get('name') == order_id.pos_reference and tip:
+                order_line_list = []
+                for emp_id, tip in tip.items():
+                    if tip and float(tip) != 0.00:
+                        line_val = (0, 0, {
+                            'cashier_id': int(emp_id),
+                            'tip': float(tip or 0)
+                        })
+                        order_line_list.append(line_val)
+                order_id.cashier_tip_ids = order_line_list
+        return True
+
 
