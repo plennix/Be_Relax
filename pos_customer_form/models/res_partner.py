@@ -13,14 +13,15 @@ class ResPartnerTus(models.Model):
     def create_from_ui(self, partner):
         res = super().create_from_ui(partner)
         partner_rec = self.browse(res)
-        if not partner_rec.bank_partner_id:
-            partner_rec.bank_partner_id = self.env['res.partner.bank'].sudo().create(
-                {'bank_id': int(partner.get('bank_id')), 'acc_number': partner.get('acc_number'), 'partner_id': res,
-                 'allow_out_payment': True, }).id
-        else:
-            partner_rec.bank_partner_id.write({
-                'bank_id': int(partner.get('bank_id')),
-                'acc_number': partner.get('acc_number'),
-                'allow_out_payment': True,
-            })
+        if partner.get('bank_id') or partner.get('acc_number'):
+            if not partner_rec.bank_partner_id:
+                partner_rec.bank_partner_id = self.env['res.partner.bank'].sudo().create(
+                    {'bank_id': int(partner.get('bank_id')), 'acc_number': partner.get('acc_number'), 'partner_id': res,
+                     'allow_out_payment': True, }).id
+            else:
+                partner_rec.bank_partner_id.write({
+                    'bank_id': int(partner.get('bank_id')),
+                    'acc_number': partner.get('acc_number'),
+                    'allow_out_payment': True,
+                })
         return res
