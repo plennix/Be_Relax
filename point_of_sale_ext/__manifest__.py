@@ -15,6 +15,8 @@
                 'point_of_sale_ext/static/src/js/TipsButton.js',
                 'point_of_sale_ext/static/src/js/PromoCodePopups.js',
                 'point_of_sale_ext/static/src/js/PosLoyaltyExt.js',
+                'point_of_sale_ext/static/src/js/SelectCashierMixin.js',
+                'point_of_sale_ext/static/src/js/PaymentScreen.js',
                 'point_of_sale_ext/static/src/xml/SelectionPopup.xml',
                 'point_of_sale_ext/static/src/xml/PosOrder.xml',
                 'point_of_sale_ext/static/src/xml/PromoCodePopups.xml',
