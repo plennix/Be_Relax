@@ -48,6 +48,13 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 		}
 
 		_UpdateAmountt() {
+		    if (!$('.edit-amount').val()){
+		         this.showPopup('ErrorPopup', {
+                    title: this.env._t('Wrong Value'),
+                    body: this.env._t('Please enter amount first after update value.'),
+                });
+                return;
+		    }
 			let self = this;
 			let order = this.env.pos.get_order();
 			let paymentlines = this.env.pos.get_order().get_paymentlines();
