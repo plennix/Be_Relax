@@ -7,7 +7,7 @@ odoo.define('tus_pos_scan.OrderlineCustomerNoteButton', function (require) {
     const OrderlineCustomerNoteButtonTUS = (OrderlineCustomerNoteButton) =>
         class extends OrderlineCustomerNoteButton {
             onClick() {
-                if (!this.env.pos.selectedOrder.boarding) {
+                if (!this.env.pos.selectedOrder.boarding && !this.env.pos.selectedOrder.partner) {
                     return true
                 }
                 return super.onClick();

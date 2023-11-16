@@ -7,7 +7,7 @@ odoo.define('tus_pos_scan.RefundButton', function (require) {
     const InviRefundButton = (RefundButton) =>
         class extends RefundButton {
             _onClick() {
-                if (!this.env.pos.selectedOrder.boarding) {
+                if (!this.env.pos.selectedOrder.boarding && !this.env.pos.selectedOrder.partner) {
                     return true
                 }
                 return super._onClick();

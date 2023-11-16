@@ -7,13 +7,13 @@ odoo.define('tus_pos_scan.ProductScreen', function (require) {
     const InviProductScreen = (ProductScreen) =>
         class extends ProductScreen {
             async _addProduct(product, options) {
-                if (!this.env.pos.selectedOrder.boarding) {
+                if (!this.env.pos.selectedOrder.boarding && !this.env.pos.selectedOrder.partner) {
                     return true
                 }
                 return await super._addProduct(product, options);
             }
             async _onClickPay() {
-                if (!this.env.pos.selectedOrder.boarding) {
+                if (!this.env.pos.selectedOrder.boarding && !this.env.pos.selectedOrder.partner) {
                     return true
                 }
                 return await super._onClickPay();

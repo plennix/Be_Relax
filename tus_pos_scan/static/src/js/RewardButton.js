@@ -7,7 +7,7 @@ odoo.define('tus_pos_scan.RewardButton', function (require) {
     const RewardButtonTUS = (RewardButton) =>
         class extends RewardButton {
             onClick() {
-                if (!this.env.pos.selectedOrder.boarding) {
+                if (!this.env.pos.selectedOrder.boarding && !this.env.pos.selectedOrder.partner) {
                     return true
                 }
                 return super.onClick();

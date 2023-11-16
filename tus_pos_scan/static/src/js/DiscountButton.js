@@ -7,7 +7,7 @@ odoo.define('tus_pos_scan.DiscountButton', function (require) {
     const DiscountButtonTUS = (DiscountButton) =>
         class extends DiscountButton {
             onClick() {
-                if (!this.env.pos.selectedOrder.boarding) {
+                if (!this.env.pos.selectedOrder.boarding || !this.env.pos.selectedOrder.partner) {
                     return true
                 }
                 return super.onClick();
