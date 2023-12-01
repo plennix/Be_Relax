@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <report
+                id="pos_ord_session_reprt"
+                string="Pos Order Report"
+                model="pos.session"
+                report_type="qweb-pdf"
+                file="point_of_sale_ext.pos_order_template"
+                name="point_of_sale_ext.pos_order_template"/>
+
+        <template id="pos_order_template">
+            <t t-call="web.html_container">
+                <t t-call="web.external_layout">
+                    <div class="page">
+                        <h2 align="center">POS Summary Report</h2>
+                        <br/>
+                        <div class="row">
+                            <div class="col-3">
+                                <span>Date:</span>
+                                <span t-esc="time.strftime('%Y-%m-%d')"/>
+                            </div>
+                            <div class="col-3">
+                                <span>Time:</span>
+                                <span t-esc="time.strftime('%H:%M:%S')"/>
+                            </div>
+                        </div>
+                        <div>
+                            <span>Location:</span>
+                            <span t-esc="location"/>
+                        </div>
+                        <div class="text-center">
+                            <strong>
+                                <center>Order Lines</center>
+                            </strong>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <span>Product</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Quantity</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Amount</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Tax</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Amount Without Tax</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="env['pos.order.line'].browse(orderlines)" t-as="order">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="order.full_product_name"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="order.qty"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(order.price_subtotal_incl)"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(order.price_subtotal_incl) - round(order.price_subtotal)"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(order.price_subtotal)"/>
+                                            </td>
+                                        </tr>
+                                        <t t-esc="o"/>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+                            <strong>
+                                <center>Sales made by staff</center>
+                            </strong>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <span>Therapist</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Amount</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Tax</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Amount Without Tax</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="env['pos.order.line'].read_group([('id', 'in', env['pos.order.line'].browse(orderlines).ids)], fields=['price_subtotal_incl', 'tax_ids_after_fiscal_position', 'price_subtotal'], groupby=['employee_id'])"
+                                       t-as="line">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="env['hr.employee'].browse(line['employee_id'][0]).name"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(line['price_subtotal_incl'])"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(line['price_subtotal_incl']) - round(line['price_subtotal'])"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(line['price_subtotal'])"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                        <br/>
+                        <div class="text-center">
+                            <strong>
+                                <center>Payment Modes</center>
+                            </strong>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <span>Name</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Quantity</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Amount</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Tax</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Amount Without Tax</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="env['pos.payment'].read_group([('session_id', '=', rec_id)], fields=['pos_order_id'], groupby=['payment_method_id'])"
+                                       t-as="method">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).payment_method_id.name"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('qty'))"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal_incl')))"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('amount_tax')))"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal')))"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="text-center">
+                            <strong>
+                                <center>Tips</center>
+                            </strong>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <span>Name</span>
+                                        </th>
+
+                                        <th class="text-center">
+                                            <span>Amount</span>
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="env['pos.payment'].read_group([('session_id', '=', rec_id)], fields=['pos_order_id'], groupby=['payment_method_id'])"
+                                       t-as="method">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).payment_method_id.name"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('cashier_tip_ids').mapped('tip')))"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div>
+                            <Strong align="center">Total in AED with Tax:</Strong>
+                            <span t-esc="total_with_tax_aed"/> AED
+                            <br/>
+                            <Strong align="center">Total in AED without Tax:</Strong>
+                            <span t-esc="total_without_tax_aed"/> AED
+                            <br/>
+                            <Strong align="center">Number Of Transactions:</Strong>
+                            <span t-esc="env['pos.payment'].search_count([('session_id', '=', rec_id)])"/>
+                            <br/>
+                            <Strong align="center">Discount Amount:</Strong>
+                            <span t-esc="env['pos.session'].browse(rec_id).get_discount()"/>
+                        </div>
+                        <div t-if="is_us and env['pos.order.line'].browse(orderlines).filtered(lambda o: o.product_id.detailed_type == 'product')" class="text-center">
+                            <strong>
+                                <center>Product without tax &amp; product tax</center>
+                            </strong>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <span>Quantity</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Amount</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Tax</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Amount Without Tax</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span t-esc="sum(env['pos.order.line'].browse(orderlines).filtered(lambda o: o.product_id.detailed_type == 'product').mapped('qty'))"/>
+                                        </td>
+                                        <td>
+
+                                            <span t-esc="round(sum(env['pos.order.line'].browse(orderlines).filtered(lambda o: o.product_id.detailed_type == 'product').mapped('price_subtotal_incl')))"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="round(sum(env['pos.order.line'].browse(orderlines).filtered(lambda o: o.product_id.detailed_type == 'product').mapped('order_id').mapped('amount_tax')))"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="round(sum(env['pos.order.line'].browse(orderlines).filtered(lambda o: o.product_id.detailed_type == 'product').mapped('price_subtotal')))"/>
+                                        </td>
+
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        </div>
+                        <div t-if="is_us and env['pos.order.line'].browse(orderlines).filtered(lambda o: o.product_id.detailed_type == 'service')" class="text-center">
+                            <strong>
+                                <center>Services without tax &amp; service tax</center>
+                            </strong>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <span>Quantity</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Amount</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Tax</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Amount Without Tax</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+<!--                                    <t t-foreach="env['pos.order.line'].browse(orderlines).filtered(lambda o: o.product_id.detailed_type == 'service')" t-as="order">-->
+                                        <tr>
+                                            <td>
+                                            <span t-esc="sum(env['pos.order.line'].browse(orderlines).filtered(lambda o: o.product_id.detailed_type == 'service').mapped('qty'))"/>
+                                        </td>
+                                        <td>
+
+                                            <span t-esc="round(sum(env['pos.order.line'].browse(orderlines).filtered(lambda o: o.product_id.detailed_type == 'service').mapped('price_subtotal_incl')))"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="round(sum(env['pos.order.line'].browse(orderlines).filtered(lambda o: o.product_id.detailed_type == 'service').mapped('order_id').mapped('amount_tax')))"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="round(sum(env['pos.order.line'].browse(orderlines).filtered(lambda o: o.product_id.detailed_type == 'service').mapped('price_subtotal')))"/>
+                                        </td>
+                                        </tr>
+<!--                                    </t>-->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </t>
+            </t>
+        </template>
+
+    </data>
+</odoo>

@@ -1,0 +1,8 @@
+<templates id="template" xml:space="preserve">
+    <t t-name="NumpadWidget" t-inherit="point_of_sale.NumpadWidget" t-inherit-mode="extension" owl="1">
+        <xpath expr="//button[hasclass('numpad-backspace')]" position="attributes">
+            <attribute name="t-att-disabled">!hasBackspaceControlRights</attribute>
+            <attribute name="t-att-class">{'disabled-mode': !hasBackspaceControlRights}</attribute>
+        </xpath>
+    </t>
+</templates>

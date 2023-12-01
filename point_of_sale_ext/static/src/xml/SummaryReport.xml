@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+    <t t-name="SummaryReportButton" owl="1">
+        <div class="control-button" style="background-color:#714B67;border:1px solid #714B67;color:white;font-size:medium;margin-top:4px;">
+             <i class='fa fa-print'></i>
+            <span>Summary Report</span>
+        </div>
+    </t>
+</templates>

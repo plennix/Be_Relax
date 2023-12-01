@@ -45,9 +45,8 @@ odoo.define('point_of_sale_ext.SelectCashierMixin', function (require) {
                 }
                 if (employee) {
                     this.env.pos.set_cashier(employee);
+                    this.back();
                 }
-                this.back();
-                return employee;
             }
         }
     });

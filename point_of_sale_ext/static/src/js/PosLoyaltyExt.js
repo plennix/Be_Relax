@@ -63,13 +63,6 @@ const PosLoyaltyOrderExt = (Order) => class PosLoyaltyOrderExt extends Order {
                     points: payload.points,
                 });
                 if (confirmed) {
-//                    if (!(payload.points >= parseInt(amount))) {
-//                        const ErrorPopup = await Gui.showPopup('ErrorPopup', {
-//                            title: _t('Error'),
-//                            body: _t('You have not enough amount to redeem'),
-//                        });
-//                        return true;
-//                    }
                     const program = this.pos.program_by_id[payload.program_id];
                     const coupon = new PosLoyaltyCard(code, payload.coupon_id, payload.program_id, payload.coupon_partner_id, parseInt(amount));
                     this.pos.couponCache[coupon.id] = coupon;
