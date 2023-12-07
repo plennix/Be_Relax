@@ -103,7 +103,7 @@
                                        t-as="line">
                                         <tr>
                                             <td>
-                                                <span t-esc="env['hr.employee'].browse(line['employee_id'][0]).name"/>
+                                                <span t-if="line['employee_id'] and line['employee_id'][0]" t-esc="env['hr.employee'].browse(line['employee_id'][0]).name"/>
                                             </td>
                                             <td>
                                                 <span t-esc="round(line['price_subtotal_incl'])"/>
@@ -149,19 +149,19 @@
                                        t-as="method">
                                         <tr>
                                             <td>
-                                                <span t-esc="env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).payment_method_id.name"/>
+                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).payment_method_id.name"/>
                                             </td>
                                             <td>
-                                                <span t-esc="sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('qty'))"/>
+                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('qty'))"/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal_incl')))"/>
+                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal_incl')))"/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('amount_tax')))"/>
+                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('amount_tax')))"/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal')))"/>
+                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal')))"/>
                                             </td>
                                         </tr>
                                     </t>
@@ -190,10 +190,10 @@
                                        t-as="method">
                                         <tr>
                                             <td>
-                                                <span t-esc="env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).payment_method_id.name"/>
+                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).payment_method_id.name"/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('cashier_tip_ids').mapped('tip')))"/>
+                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('cashier_tip_ids').mapped('tip')))"/>
                                             </td>
                                         </tr>
                                     </t>

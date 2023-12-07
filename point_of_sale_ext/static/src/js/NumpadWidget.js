@@ -15,11 +15,11 @@ odoo.define('point_of_sale_ext.NumpadWidget', function(require) {
                 !this.props.disabledModes.includes('price')
             );
         }
-        get hasBackspaceControlRights() {
-            return (
-                this.env.pos.cashier.remove_pos_order_line
-            )
-        }
+//        get hasBackspaceControlRights() {
+//            return (
+//                this.env.pos.cashier.remove_pos_order_line
+//            )
+//        }
     };
 
     Registries.Component.extend(NumpadWidget, DisNumpadWidget);

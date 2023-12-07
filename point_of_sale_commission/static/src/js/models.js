@@ -8,6 +8,7 @@ var Registries = require('point_of_sale.Registries');
 const PosSaleOrderLineEmp = (Orderline) => class PosSaleOrderLineEmp extends Orderline {
     export_as_JSON() {
         const json = super.export_as_JSON(...arguments);
+        debugger;
         json['employee_id']= this.employee_id
         json['line_emp_pin']= this.line_emp_pin
         return json;
