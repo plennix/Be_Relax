@@ -10,8 +10,27 @@ odoo.define('point_of_sale_tip.CashierTip', function(require) {
     class CashierTip extends AbstractAwaitablePopup {
         setup() {
             super.setup();
+            var empCount = this.env.pos.employees.length;
+                var firsttip = true;
+                var a = 0;
+                const employeesList = this.env.pos.employees
+                    .map((employee) => {
+                        if (firsttip) {
+                            a = a + Number(this.props.tipValue)
+                            firsttip = false
+                        } else {
+                            a = 0
+                        }
+                        return {
+                            id: employee.id,
+                            label: employee.name,
+                            defaultTip: a.toFixed(2),
+                        };
+                    });
+
             this.state = {
-                EmpList: this.cashiers,
+                EmpList: employeesList,
+                CashierList: employeesList  ,
             };
         }
         async updateEmployeeList(event) {
@@ -19,23 +38,41 @@ odoo.define('point_of_sale_tip.CashierTip', function(require) {
                 this.props.query = event.target.value;
             }
             if (this.props.query) {
-                let result = this.cashiers.filter(emp => emp.label.trim().toLowerCase().startsWith(this.props.query.toLowerCase()))
-                this.state.EmpList = result
+                let result = this.state.CashierList.filter(emp => emp.label.trim().toLowerCase().startsWith(this.props.query.toLowerCase()))
+                this.state.CashierList = result
             } else {
-                this.state.EmpList = this.cashiers
+            var a = 0;
+                 const employeesList = this.env.pos.employees
+                    .map((employee) => {
+                        return {
+                            id: employee.id,
+                            label: employee.name,
+                            defaultTip: employee.defaultTip ? employee.defaultTip: a.toFixed(2),
+                        };
+                    });
+                 this.state.CashierList = employeesList;
             }
             this.render(true);
-            return this.state.EmpList
+            return this.state.CashierList
         }
         async confirm() {
             var x = {};
             var sum = 0.00;
-            for (var i = 0; i < this.cashiers.length; i++) {
+            var a = 0;
+             const employeesList = this.env.pos.employees
+                .map((employee) => {
+                    return {
+                        id: employee.id,
+                        label: employee.name,
+                        defaultTip: employee.defaultTip ? employee.defaultTip: a.toFixed(2),
+                    };
+                });
+             this.state.CashierList = employeesList;
+            for (var i = 0; i < this.state.CashierList.length; i++) {
                 sum = Number(sum.toFixed(2))
-                x[this.cashiers[i].id] = $('#' + this.cashiers[i].id).val();
-                sum += Number($('#' + this.cashiers[i].id).val());
+                x[this.state.CashierList[i].id] = this.state.CashierList[i].defaultTip;
+                sum += Number(this.state.CashierList[i].defaultTip);
             }
-            debugger;
             if (this.props.tipValue == sum) {
                 if (this.props.order) {
                     this.props.order.set_cashier_tip(x)
@@ -64,17 +101,20 @@ odoo.define('point_of_sale_tip.CashierTip', function(require) {
                 });
             }
         }
+        updateDefaultTipValue(ev){
+            var employee = this.env.pos.employees.filter((x) => x.id === parseInt(ev.target.id))[0];
+            employee.defaultTip = ev.target.value;
+        }
         get cashiers() {
             if (!this.env.pos.employees) {
                 const CashierList = [{
-
                     id: this.env.pos.get_cashier().id,
                     label: this.env.pos.get_cashier().name,
                     defaultTip: this.props.tipValue.toFixed(2),
 
                 }];
                 return CashierList;
-            } else {
+            } else{
                 var empCount = this.env.pos.employees.length;
                 var firsttip = true;
                 var a = 0;
@@ -90,11 +130,8 @@ odoo.define('point_of_sale_tip.CashierTip', function(require) {
                             id: employee.id,
                             label: employee.name,
                             defaultTip: a.toFixed(2),
-
                         };
                     });
-
-
                 return employeesList;
             }
         }

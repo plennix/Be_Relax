@@ -8,7 +8,6 @@ odoo.define('point_of_sale_tip.NumberPopuptip', function(require) {
     const NumberPopuptip = NumberPopup =>
         class extends NumberPopup {
          confirm(event) {
-            debugger;
             if (NumberBuffer.get()) {
                 super.confirm();
             }
