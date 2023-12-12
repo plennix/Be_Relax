@@ -1,0 +1,9 @@
+
+Version 16.0.0.1 (06/12/22)
+	- Solved issue into move line have changed field name product_uom_qty to reserved_uom_qty.
+Version 16.0.0.2 (18/04/23)
+	- Add customer not in pos receipt.
+
+Version 16.0.0.3 (22/06/23)
+   	- In product used pack product without adding image that time pack prodcut tag is not showed in product screen fix issue.
+   	- Add combo product and set customer then price changed in combo product fixed issue and remove validation on set customer.
