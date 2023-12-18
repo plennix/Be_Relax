@@ -24,6 +24,7 @@
                 'point_of_sale_ext/static/src/js/PaymentScreen.js',
                 'point_of_sale_ext/static/src/js/NumpadWidget.js',
                 'point_of_sale_ext/static/src/js/SummaryReport.js',
+                'point_of_sale_ext/static/src/js/CashOpeningPopup.js',
                 'point_of_sale_ext/static/src/xml/SelectionPopup.xml',
                 'point_of_sale_ext/static/src/xml/PosOrder.xml',
                 'point_of_sale_ext/static/src/xml/PromoCodePopups.xml',

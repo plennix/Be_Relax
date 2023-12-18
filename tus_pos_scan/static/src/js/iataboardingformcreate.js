@@ -15,7 +15,7 @@ odoo.define('tus_pos_scan.IataBoardingFormCreate', function(require) {
             var f_number = document.getElementById('f_number').value;
             var f_email = document.getElementById('f_email').value;
             var f_phone = document.getElementById('f_phone').value;
-            if (p_name == '' || dep == '' || des == '' || f_company == '' || f_number == '' || f_email == '' || f_phone == '') {
+            if (p_name == '' || dep == '' || des == '' || f_company == '' || f_number == '' ) {
                 $('.error_msg').css('display', 'block')
             } else {
                 $('.error_msg').css('display', 'none')

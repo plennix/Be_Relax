@@ -1,13 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-        <report
-                id="pos_ord_session_reprt"
-                string="Pos Order Report"
-                model="pos.session"
-                report_type="qweb-pdf"
-                file="point_of_sale_ext.pos_order_template"
-                name="point_of_sale_ext.pos_order_template"/>
+<!--        <report-->
+<!--                id="pos_ord_session_reprt"-->
+<!--                string="Pos Order Report"-->
+<!--                model="pos.session"-->
+<!--                report_type="qweb-pdf"-->
+<!--                file="point_of_sale_ext.pos_order_template"-->
+<!--                name="point_of_sale_ext.pos_order_template"-->
+<!--                paperformat_id="paperformat_pos_summary_report"/>-->
+
+         <record id="paperformat_pos_summary_report" model="report.paperformat">
+            <field name="name">A4</field>
+            <field name="default" eval="True" />
+            <field name="format">A4</field>
+            <field name="page_height">0</field>
+            <field name="page_width">0</field>
+            <field name="orientation">Portrait</field>
+            <field name="margin_top">40</field>
+            <field name="margin_bottom">32</field>
+            <field name="margin_left">7</field>
+            <field name="margin_right">7</field>
+            <field name="header_line" eval="False" />
+            <field name="header_spacing">35</field>
+            <field name="dpi">90</field>
+        </record>
+
+
+         <record id="pos_ord_session_reprt" model="ir.actions.report">
+        <field name="name">Pos Order Report</field>
+        <field name="model">pos.session</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">point_of_sale_ext.pos_order_template</field>
+        <field name="report_file">point_of_sale_ext.pos_order_template</field>
+        <field name="print_report_name">'Pos Order Report'</field>
+        <field name="binding_model_id" ref="model_pos_session"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_pos_summary_report"/>
+    </record>
 
         <template id="pos_order_template">
             <t t-call="web.html_container">
@@ -301,6 +331,7 @@
                 </t>
             </t>
         </template>
+
 
     </data>
 </odoo>

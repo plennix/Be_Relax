@@ -28,7 +28,7 @@ odoo.define('point_of_sale_ext.SelectCashierMixin', function (require) {
                 let EmpCheckIn = await this.rpc({
                         model: 'hr.employee',
                         method: 'check_pos_cashier_checkin',
-                        args: [{'emp_id':employee.id}],
+                        args: [{'emp_id': employee.id}],
                     });
                 if (!EmpCheckIn){
                     this.showPopup('ErrorPopup', {

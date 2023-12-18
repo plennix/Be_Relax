@@ -18,14 +18,12 @@ odoo.define('point_of_sale_ext.SummaryReportButton', function(require) {
         async onClick() {
             var self = this;
             var order = this.env.pos.get_order();
-            debugger;
             await this.rpc({
                model: 'pos.session',
                method: 'print_report_ext',
                args: [[this.env.pos.pos_session.id]],
                context: self.odoo_context,
            }).then(function (result) {
-                debugger;
 //                result['data']['orderlines'] = parseInt(result['data']['orderlines'])
                 return self.env.pos.env.legacyActionManager.do_action(result);
 

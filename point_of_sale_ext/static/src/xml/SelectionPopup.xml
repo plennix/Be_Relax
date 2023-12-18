@@ -9,7 +9,7 @@
                                t-on-keyup="updateEmployeeList" style="border-radius:30px;margin: 5px;height: 40px;"/>
                     </div>
                     <i class="fa fa-search" t-on-click="_onPressEnterKey" style="margin: 0px 25px;"/>
-                </div>
+                    </div>
             </t>
         </xpath>
     </t>
