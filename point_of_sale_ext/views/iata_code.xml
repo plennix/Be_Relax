@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_district_view_tree" model="ir.ui.view">
+        <field name="name">iata.code.tree.view</field>
+        <field name="model">iata.code</field>
+        <field name="type">tree</field>
+        <field name="arch" type="xml">
+            <tree string="Codes">
+                <field name="code"/>
+                <field name="airport"/>
+                <field name="country"/>
+            </tree>
+        </field>
+    </record>
+    <record id="action_iata_code" model="ir.actions.act_window">
+        <field name="name">Codes</field>
+        <field name="res_model">iata.code</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+    <menuitem id="pos_menu_iata_code"
+              name="Codes"
+              parent="point_of_sale.menu_point_config_product"
+              action="action_iata_code"
+              sequence="12"/>
+</odoo>

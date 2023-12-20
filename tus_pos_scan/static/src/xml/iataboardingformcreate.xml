@@ -11,37 +11,52 @@
                     <table style="width:100% !important;">
                         <tr>
                         <td style="text-align: left;">
-                            <span >
+                            <span>
                                 <b>Passenger Name</b>
                             </span>
                         </td>
-                        <td>
+                            <td>
                             <input type="text" id="p_name"/>
                         </td>
                     </tr>
                         <tr>
                             <td style="text-align: left;">
-                                <span >
+                                <span>
                                     <b>Departure</b>
                                 </span>
                             </td>
                             <td>
-                                <input type="text" id="dep"/>
+                                 <select id="o_iata_code"
+                                         style="text-align: left;display: inline-block;overflow: hidden;background: white;min-height: 44px;font-size: 20px;color: #444;padding: 10px;border-radius: 3px;border: none;box-shadow: 0px 0px 0px 1px gainsboro inset;box-sizing: border-box;width: 80%;">
+                                     <t t-foreach='env.pos.iata_code' t-as='code' t-key="code.id">
+                                         <t t-if="code.id == props.code">
+                                            <option t-att-value='code.id'>
+                                                <t t-esc='code.code'/>
+                                            </option>
+                                         </t>
+                                     </t>
+                                     <t t-foreach='env.pos.iata_code' t-as='code' t-key="code.id">
+                                         <option t-att-value='code.id'>
+                                             <t t-esc='code.code'/>
+                                         </option>
+                                     </t>
+							    </select>
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align: left;">
-                                <span >
+                                <span>
                                     <b>Destination</b>
                                 </span>
                             </td>
                             <td>
+
                                 <input type="text" id="des"/>
                             </td>
                         </tr>
                         <tr>
                             <td style="text-align: left;">
-                                <span >
+                                <span>
                                     <b>Flight Company</b>
                                 </span>
                             </td>

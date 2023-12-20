@@ -35,3 +35,6 @@ class BoardingPass(models.Model):
         string='Partner',
         required=False
     )
+
+    departure_id = fields.Many2one('iata.code',
+                                   'departures')

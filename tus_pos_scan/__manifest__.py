@@ -13,6 +13,7 @@
         'views/boarding_pass.xml',
         'views/pos_order.xml',
         'views/partner.xml',
+        'views/iata_code.xml',
     ],
     'assets': {
         'point_of_sale.assets': [
@@ -32,6 +33,7 @@
             'tus_pos_scan/static/src/js/DiscountButton.js',
             'tus_pos_scan/static/src/js/RewardButton.js',
             'tus_pos_scan/static/src/js/models.js',
+            'tus_pos_scan/static/src/js/load_models.js',
         ],
     },
     'installable': True,

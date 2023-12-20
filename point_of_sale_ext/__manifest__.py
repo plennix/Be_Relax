@@ -1,4 +1,3 @@
-
 {
     'name': 'POS Commission',
     'version': '16.0.1',
@@ -7,10 +6,13 @@
     'author': '',
     'depends': ['pos_hr', 'pos_loyalty','point_of_sale'],
     'data': [
+        # 'security/ir.model.access.csv',
+        # 'data/iata.code.csv',
         'report/sale_report.xml',
         'views/pos_order.xml',
         'views/pos_config.xml',
         'views/hr_employee_views.xml',
+        # 'views/iata_code.xml',
     ],
 
     'assets': {
@@ -38,3 +40,4 @@
     'installable': True,
     'auto_install': False,
 }
+

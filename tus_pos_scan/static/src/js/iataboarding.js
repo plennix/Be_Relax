@@ -16,7 +16,13 @@ odoo.define('tus_pos_scan.IteaBoarding', function(require) {
                 var a = await this.showPopup('IteaBoardingList');
             }
             else{
-                await this.showPopup('IataBoardingFormCreate');
+               let iataCode = await this.rpc({
+                model: 'iata.code',
+                method: 'default_company_code',
+                args: [[]],
+            });
+
+                await this.showPopup('IataBoardingFormCreate',{'code':iataCode});
             }
         }
     };

@@ -9,7 +9,8 @@ odoo.define('tus_pos_scan.IataBoardingFormCreate', function(require) {
     class IataBoardingFormCreate extends AbstractAwaitablePopup {
         async confirm() {
             var p_name = document.getElementById('p_name').value;
-            var dep = document.getElementById('dep').value;
+//            var dep = document.getElementById('dep').value;
+            var dep = document.getElementById('o_iata_code').value;
             var des = document.getElementById('des').value;
             var f_company = document.getElementById('f_company').value;
             var f_number = document.getElementById('f_number').value;

@@ -73,6 +73,7 @@ const PosLoyaltyOrderExt = (Order) => class PosLoyaltyOrderExt extends Order {
             } else {
                 return payload.error_message;
             }
+            }
             if (claimableRewards && claimableRewards.length === 1) {
                 if (claimableRewards[0].reward.reward_type !== 'product' || !claimableRewards[0].reward.multi_product) {
                     this._applyReward(claimableRewards[0].reward, claimableRewards[0].coupon_id);
@@ -81,7 +82,6 @@ const PosLoyaltyOrderExt = (Order) => class PosLoyaltyOrderExt extends Order {
             }
             return true;
         }
-    }
 }
 
 Registries.Model.extend(Order, PosLoyaltyOrderExt);

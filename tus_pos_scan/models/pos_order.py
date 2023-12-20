@@ -21,7 +21,8 @@ class PosOrder(models.Model):
                     pos_boarding = self.env['boarding.pass'].sudo().create({
                         'pos_id': order.id,
                         'passenger_name': b_pass.get('passenger_name') or '',
-                        'departure': b_pass.get('departure') or '',
+                        # 'departure': b_pass.get('departure') or '',
+                        'departure_id': self.env['iata.code'].browse(int(b_pass.get('departure'))).id or '',
                         'destination': b_pass.get('destination') or '',
                         'flight_company': b_pass.get('flight_company') or '',
                         'flight_number': b_pass.get('flight_number') or '',
