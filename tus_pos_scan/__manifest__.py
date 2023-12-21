@@ -14,6 +14,7 @@
         'views/pos_order.xml',
         'views/partner.xml',
         'views/iata_code.xml',
+        'views/res_company_views.xml',
     ],
     'assets': {
         'point_of_sale.assets': [

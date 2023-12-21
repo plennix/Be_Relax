@@ -11,6 +11,6 @@ class IataCode(models.Model):
 
     def default_company_code(self):
         if self.env.company.country_id and self.env.company.country_id.name:
-            country = self.search([('country', '=', self.env.company.country_id.name)],limit=1)
-            return country.id
+            iata_code_id = self.search([('code', '=', self.env.company.iata_code)],limit=1)
+            return iata_code_id.id
 
