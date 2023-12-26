@@ -10,8 +10,9 @@ class PosSessionExt(models.Model):
         res = super(PosSessionExt, self)._get_pos_ui_hr_employee(params)
         for emp in res:
             employee_id = self.env['hr.employee'].sudo().browse(emp['id'])
-            emp['remove_pos_order_line'] = employee_id.remove_pos_order_line
-            emp['allow_pos_order_line_disc'] = employee_id.allow_pos_order_line_disc
+            emp['job_bool'] = self.env['hr.job'].sudo().browse(emp['job_id']).is_supervisor
+            # emp['remove_pos_order_line'] = employee_id.remove_pos_order_line
+            # emp['allow_pos_order_line_disc'] = employee_id.allow_pos_order_line_disc
         return res
 
     def print_report_ext(self):
@@ -45,3 +46,10 @@ class PosSessionExt(models.Model):
         for line in self.order_ids.lines.filtered(lambda o: o.discount):
             total += round((line.price_unit * line.discount) / 100)
         return total
+
+    def _loader_params_hr_employee(self):
+        res = super()._loader_params_hr_employee()
+        if res.get('search_params') and res.get('search_params').get('fields'):
+            res.get('search_params').get('fields').append('job_id')
+        return res
+

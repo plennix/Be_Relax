@@ -6,13 +6,15 @@ odoo.define('point_of_sale_ext.NumpadWidget', function(require) {
 
     const DisNumpadWidget = NumpadWidget => class extends NumpadWidget {
        get hasManualDiscount() {
-            return (this.env.pos.cashier.remove_pos_order_line && this.env.pos.cashier.allow_pos_order_line_disc) && !this.props.disabledModes.includes('discount');
+//            return (this.env.pos.cashier.remove_pos_order_line && this.env.pos.cashier.allow_pos_order_line_disc) && !this.props.disabledModes.includes('discount');
+            return this.env.pos.cashier.job_bool && !this.props.disabledModes.includes('discount');
         }
          get hasPriceControlRights() {
-            return (
-                this.env.pos.cashier.remove_pos_order_line &&
-                !this.props.disabledModes.includes('price')
-            );
+//            return (
+//                this.env.pos.cashier.remove_pos_order_line &&
+//                !this.props.disabledModes.includes('price')
+//            );
+            return this.env.pos.cashier.job_bool && !this.props.disabledModes.includes('price')
         }
     };
 

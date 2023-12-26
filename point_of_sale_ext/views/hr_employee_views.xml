@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <odoo>
-    <record id="view_partner_form_tus" model="ir.ui.view">
-        <field name="name">hr.employee.form.inherit</field>
-        <field name="model">hr.employee</field>
-        <field name="inherit_id" ref="hr.view_employee_form"/>
+<!--    <record id="view_partner_form_tus" model="ir.ui.view">-->
+<!--        <field name="name">hr.employee.form.inherit</field>-->
+<!--        <field name="model">hr.employee</field>-->
+<!--        <field name="inherit_id" ref="hr.view_employee_form"/>-->
+<!--        <field name="arch" type="xml">-->
+<!--            <xpath expr="//notebook//page[@name='hr_settings']//group//group[@name='active_group']" position="after">-->
+<!--                <group string="POS Setting" name="pos_set">-->
+<!--                    <field name="remove_pos_order_line"/>-->
+<!--                    <field name="allow_pos_order_line_disc"/>-->
+<!--                </group>-->
+<!--            </xpath>-->
+<!--        </field>-->
+<!--    </record>-->
+    <record id="view_hr_job_form_tus_ext" model="ir.ui.view">
+        <field name="name">hr.job.form.inherit</field>
+        <field name="model">hr.job</field>
+        <field name="inherit_id" ref="hr.view_hr_job_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//notebook//page[@name='hr_settings']//group//group[@name='active_group']" position="after">
-                <group string="POS Setting" name="pos_set">
-                    <field name="remove_pos_order_line"/>
-                    <field name="allow_pos_order_line_disc"/>
-                </group>
+            <xpath expr="//div[hasclass('o_row')]" position="after">
+                <field name="is_supervisor"/>
             </xpath>
         </field>
     </record>
