@@ -35,6 +35,7 @@
                 'point_of_sale_ext/static/src/xml/SummaryReport.xml',
                 # 'point_of_sale_ext/static/src/xml/NumpadWidget.xml',
                 'point_of_sale_ext/static/src/xml/chrome.xml',
+                ('replace', 'pos_hr/static/src/js/SelectCashierMixin.js', 'point_of_sale_ext/static/src/js/SelectCashierMixin.js'),
             ],
         },
 

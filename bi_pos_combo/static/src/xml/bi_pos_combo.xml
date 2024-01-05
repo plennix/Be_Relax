@@ -112,6 +112,9 @@
 								</t>
 	                        </div>
 	                        <WrappedProductNameLines line="line" />
+	                        <div t-if="line and line.line_emp_pin">
+				                <t t-esc="line.line_emp_pin"/>
+				            </div>
 	                    </t>
 	                    <t t-else="">
 	                        <div t-esc="line.product_name_wrapped[0]" />

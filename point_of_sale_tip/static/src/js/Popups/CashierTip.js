@@ -24,7 +24,7 @@ odoo.define('point_of_sale_tip.CashierTip', function(require) {
                         return {
                             id: employee.id,
                             label: employee.name,
-                            defaultTip: a.toFixed(2),
+                            defaultTip: 0.0,
                         };
                     });
 

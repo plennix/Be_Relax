@@ -1,11 +1,32 @@
-odoo.define('point_of_sale_ext.SelectCashierMixin', function (require) {
+
+/* global Sha1 */
+odoo.define('pos_hr.SelectCashierMixin', function (require) {
     'use strict';
 
-    const { patch } = require("@web/core/utils/patch");
-    const LoginScreen = require('pos_hr.LoginScreen');
+    const SelectCashierMixin = (PosComponent) => class ComponentWithSelectCashierMixin extends PosComponent {
+        async askPin(employee) {
+            const { confirmed, payload: inputPin } = await this.showPopup('NumberPopup', {
+                isPassword: true,
+                title: this.env._t('Password ?'),
+                startingValue: null,
+            });
 
-    patch(LoginScreen.prototype, 'point_of_sale_ext/static/src/js/SelectCashierMixin.js',{
-        async selectCashier() {
+            if (!confirmed) return;
+
+            if (employee.pin === Sha1.hash(inputPin)) {
+                return employee;
+            } else {
+                await this.showPopup('ErrorPopup', {
+                    title: this.env._t('Incorrect Password'),
+                });
+                return;
+            }
+        }
+
+        /**
+         * Select a cashier, the returning value will either be an object or nothing (undefined)
+         */
+         async selectCashier() {
               if (this.env.pos.config.module_pos_hr) {
                 const employeesList = this.env.pos.employees
                     .filter((employee) => employee.id !== this.env.pos.get_cashier().id)
@@ -49,5 +70,18 @@ odoo.define('point_of_sale_ext.SelectCashierMixin', function (require) {
                 }
             }
         }
-    });
+
+        async barcodeCashierAction(code) {
+            const employee = this.env.pos.employees.find(
+                (emp) => emp.barcode === Sha1.hash(code.code)
+            );
+            if (employee && employee !== this.env.pos.get_cashier() && (!employee.pin || (await this.askPin(employee)))) {
+                this.env.pos.set_cashier(employee);
+            }
+            return employee;
+        }
+    }
+
+    return SelectCashierMixin;
+
 });
