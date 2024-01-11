@@ -87,6 +87,8 @@ class PurchaseOrderInherit(models.Model):
 class PurchaseOrderLine(models.Model):
     _inherit = 'purchase.order.line'
 
+    discount = fields.Float("Discount")
+
     @api.onchange('product_id', 'product_qty', 'product_uom')
     def _onchange_suggest_packaging(self):
         # remove packaging if not match the product
@@ -98,7 +100,7 @@ class PurchaseOrderLine(models.Model):
                 'purchase')._find_suitable_product_packaging(self.product_qty, self.product_uom)
         for line in self:
             search_vendor_pricelist = self.env["product.supplierinfo"].search(
-                [('name', '=', self.partner_id.id), ('product_tmpl_id', '=', line.product_id.id)], limit=1)
+                [('partner_id', '=', self.partner_id.id), ('product_tmpl_id', '=', line.product_id.id)], limit=1)
             # print(search_vendor_pricelist)
             # print(line)
             if line.product_qty:
