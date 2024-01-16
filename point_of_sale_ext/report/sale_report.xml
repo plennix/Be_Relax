@@ -198,6 +198,44 @@
                                 </tbody>
                             </table>
                         </div>
+                                                <t t-set="order_id" t-value="env['pos.session'].browse(rec_id).order_ids"/>
+                        <div t-if="any(order_id.filtered(lambda x:x.payment_given))" class="text-center">
+                            <strong>
+                                <center>Other Payment</center>
+                            </strong>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <span>Order</span>
+                                        </th>
+
+                                        <th class="text-center">
+                                            <span>Amount</span>
+                                        </th>
+
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr t-foreach="order_id.filtered(lambda x:x.payment_given)" t-as="order">
+                                        <td>
+                                            <span t-esc="order.name"/>
+                                        </td>
+                                        <td>
+                                            <span t-esc="order.payment_given"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <b>Total Amount</b>
+                                        </td>
+                                        <td>
+                                            <b t-esc="sum(order_id.mapped('other_payment'))"/>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                         <div class="text-center">
                             <strong>
                                 <center>Tips</center>

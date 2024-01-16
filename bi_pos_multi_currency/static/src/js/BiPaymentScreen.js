@@ -10,6 +10,8 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 
 		setup() {
 			super.setup();
+		    debugger;
+
 			this.mobile_multi = false
 			useListener('click-update_amount', this._UpdateAmountt);
 			useListener('click-cur-switch', this._UpdateDetails);
@@ -23,6 +25,8 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 		}
 
 		_UpdateDetails() {
+		    debugger;
+
 			if($("#cur-switch").prop('checked') == true){
 				$('#details').hide()
 			}
@@ -32,6 +36,8 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 		}
 
 		_UpdateDetailsMobile() {
+		    debugger;
+
 			$(".js_multi").toggleClass("highlight");
 			if(this.mobile_multi == true){
 				$('#details_mobile').hide()
@@ -48,6 +54,8 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 		}
 
 		_UpdateAmountt() {
+		    debugger;
+
 		    if (!$('.edit-amount').val()){
 		         this.showPopup('ErrorPopup', {
                     title: this.env._t('Wrong Value'),
@@ -55,6 +63,7 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
                 });
                 return;
 		    }
+		    debugger;
 			let self = this;
 			let order = this.env.pos.get_order();
 			let paymentlines = this.env.pos.get_order().get_paymentlines();
@@ -70,6 +79,8 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 
 			for(var i=0;i<currency.length;i++){
 				if(cur==currency[i].id){
+		    debugger;
+
 					let c_rate = self.env.pos.currency.rate/currency[i].rate;
 					tot_amount = parseFloat(user_amt)*c_rate;
 					selected_paymentline.amount =parseFloat(tot_amount.toFixed(2));
@@ -95,6 +106,8 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 		}
 
 		_ChangeCurrency() {
+		    debugger;
+
 			let self = this;
 			let currencies = this.env.pos.poscurrency;
 			let cur = $('.drop-currency').val();
@@ -104,6 +117,8 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 			for(var i=0;i<currencies.length;i++){
 				if(cur != pos_currency.id && cur==currencies[i].id){
 					let currency_in_pos = (currencies[i].rate/self.env.pos.currency.rate).toFixed(6);
+					order.manual_currency_amount = currency_in_pos
+					order.manual_currency_id = cur
 					$('.currency_symbol').text(currencies[i].symbol);
 					$('.currency_rate').text(currency_in_pos);
 					curr_sym = currencies[i].symbol;

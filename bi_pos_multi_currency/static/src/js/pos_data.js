@@ -18,7 +18,8 @@ odoo.define('bi_pos_multi_currency.pos_data', function (require) {
 			super(...arguments);
 			this.currency_amount = this.currency_amount || "";
 			this.currency_symbol = this.currency_symbol || "";
-			this.currency_name = this.currency_name || "";
+			this.manual_currency_amount = 0.00;
+			this.manual_currency_id = "";
 		}
 		set_symbol(currency_symbol){
 			this.currency_symbol = currency_symbol;
@@ -56,6 +57,7 @@ odoo.define('bi_pos_multi_currency.pos_data', function (require) {
 			json.currency_amount = this.get_curamount() || 0.0;
 			json.currency_symbol = this.get_symbol() || false;
 			json.currency_name = this.get_curname() || false;
+			console.log('custom JSON',json)
 			return json;
 		}
 
@@ -97,6 +99,10 @@ odoo.define('bi_pos_multi_currency.pos_data', function (require) {
 			this.currency_amount = json.currency_amount || 0.0;
 			this.currency_name = json.currency_name || this.pos.currency.name;
 			this.currency_symbol = json.currency_symbol || this.pos.currency.symbol;
+			debugger;
+			json.manual_currency_amount = this.order.manual_currency_amount || 0.0;
+			json.manual_currency_id = this.order.manual_currency_id  || '';;
+
 		}
 
 		export_as_JSON(){
@@ -104,6 +110,9 @@ odoo.define('bi_pos_multi_currency.pos_data', function (require) {
 			json.currency_amount = this.currency_amount || 0.0;
 			json.currency_name = this.currency_name || this.pos.currency.name;
 			json.currency_symbol = this.currency_symbol || this.pos.currency.symbol;
+			json.manual_currency_amount = this.order.manual_currency_amount || 0.0;
+			debugger;
+			json.manual_currency_id = this.order.manual_currency_id  || '';
 
 			return json;
 		}
@@ -113,6 +122,10 @@ odoo.define('bi_pos_multi_currency.pos_data', function (require) {
 			json.currency_amount = this.currency_amount || 0.0;
 			json.currency_name = this.currency_name || this.pos.currency.name;
 			json.currency_symbol = this.currency_symbol || this.pos.currency.symbol;
+			debugger;
+            json.manual_currency_amount = this.order.manual_currency_amount || 0.0;
+			json.manual_currency_id = this.order.manual_currency_id  || '';
+
 			return json;
 		}
 

@@ -113,6 +113,11 @@ class HrEmployeeBase(models.AbstractModel):
 
     def attendance_break_manual(self, next_action, snap=None, entered_pin=None):
         self.ensure_one()
+        if isinstance(next_action,dict):
+            temp_dict = next_action
+            next_action = temp_dict.get('next_action', False)
+            entered_pin = temp_dict.get('entered_pin', False)
+            snap =  temp_dict.get('snap', False)
         can_check_without_pin = not self.env.user.has_group(
             "hr_attendance.group_hr_attendance_use_pin"
         ) or (self.user_id == self.env.user and entered_pin is None)

@@ -11,7 +11,8 @@ odoo.define("my_attendances", function (require) {
     ),
 
     click_break_resume_icon: function () {
-      console.log(this);
+
+
       if (this.face_recognition_enable)
         this.update_break_resume_with_recognition();
       else this.update_break_resume();
@@ -20,6 +21,8 @@ odoo.define("my_attendances", function (require) {
     willStart: function () {
       var self = this;
       var superDef = this._super.apply(this, arguments);
+//      var uid = this.__parentedParent && this.__parentedParent.props && this.__parentedParent.props.widgetArgs && this.__parentedParent.props.widgetArgs[0].res_id || this.getSession().uid
+//      var employee = this.__parentedParent && this.__parentedParent.props && this.__parentedParent.props.widgetArgs && this.__parentedParent.props.widgetArgs[0].attendance
       var def = this._rpc({
         model: "hr.employee",
         method: "search_read",
@@ -30,7 +33,6 @@ odoo.define("my_attendances", function (require) {
       }).then(function (attendance_break_state) {
         self.attendance_break_state = attendance_break_state[0] || false;
       });
-      console.log(this);
       return Promise.all([superDef, def]);
     },
 
@@ -72,9 +74,9 @@ odoo.define("my_attendances", function (require) {
           if (!data.length) {
             self.state_save.resolve();
           }
+
           self.state_save.then(function (data) {
             if (self.webcam_live) {
-              console.log("webcam_live");
               Webcam.snap(function (data_uri) {
                 self.webcam_access = true;
                 // base64 data
