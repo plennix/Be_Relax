@@ -10,6 +10,9 @@ class PosOrder(models.Model):
     @api.model
     def _payment_fields(self, order, ui_paymentline):
         res = super(PosOrder, self)._payment_fields(order, ui_paymentline)
+        print("\n\n\n")
+        print(">>>>>>>>",ui_paymentline)
+        print("\n\n\n")
         if ui_paymentline.get('manual_currency_amount', False) and ui_paymentline.get('manual_currency_id', False):
             taken_currency = order.currency_id.browse(int(ui_paymentline.get('manual_currency_id')))
             order.payment_given = ''

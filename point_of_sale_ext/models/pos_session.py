@@ -18,13 +18,32 @@ class PosSessionExt(models.Model):
         return res
 
     def print_report_ext(self):
+        # print(">>>>>>>>>>>>>",self.env['pos.order.line'].get_order_line(self.order_ids.mapped('lines').ids))
+        # print(">>>>>>>>>>>>>",self.env['pos.order.line'].get_order_line(self.order_ids.mapped('lines').filtered(lambda x: x.is_reward_line)))
+        # print(">>>>>>>>>>>>>>>",self.order_ids.mapped('lines'))
+        # print(">>>>>>>>>>>>>>>",self.order_ids.mapped('lines').filtered(lambda x: x.is_reward_line).ids)
+        # print(">>>>>>>>>>>>>>",self.env['pos.order.line'].get_order_line(self.order_ids.mapped('lines').filtered(lambda x: x.is_reward_line).ids))
+        # print("\n\n\n")
+        # print("")
+        # a = self.env['pos.payment'].read_group([('session_id', '=', self.id)], fields=['pos_order_id'],
+        #                               groupby=['payment_method_id'])
+        #
+        # print('aaaaaaaaaaaaaaaaaaaaaaaaaa',a)
+        # print(">>>>>>>>>",self.env['pos.order'].read_group([('id', 'in', self.order_ids.ids)], fields=['amount_tax', 'amount_total', 'tip_amount'], groupby=['employee_id']))
+        # print("\n\n\n")
+        # 5/0
         data = {
             'rec_id': self.id,
             'opening_date': self.start_at,
             'location': self.config_id.name,
             'is_us': self.config_id.is_us,
-            'orderlines': self.order_ids.mapped('lines').ids,
+            'order_ids': self.order_ids.ids,
+            'orderlines': self.order_ids.mapped('lines').filtered(lambda x: not x.is_reward_line).ids,
+            'promotion_lines': self.order_ids.mapped('lines').filtered(lambda x: x.is_reward_line).ids,
             'total_with_tax_aed': sum(self.order_ids.mapped('lines').mapped('price_subtotal_incl')),
+            # 'gross_sale': sum(self.order_ids.mapped('lines').filtered(lambda x: not x.is_reward_line).mapped('price_subtotal_incl')),
+            'total_tax': sum(self.order_ids.mapped('amount_tax')),
+            'discount_amount': sum(self.order_ids.mapped('lines').filtered(lambda x: x.is_reward_line).mapped('price_subtotal_incl')),
             'total_without_tax_aed': sum(self.order_ids.mapped('lines').mapped('price_subtotal')), #self.currency_id._convert(sum(self.order_ids.mapped('lines').mapped('price_subtotal')), currency_aed, self.company_id, datetime.now()),
             'sale_by_staff': self.env['pos.order.line'].read_group([('id', 'in', self.order_ids.mapped('lines').ids)], fields=['price_subtotal_incl', 'tax_ids_after_fiscal_position', 'price_subtotal'], groupby=['employee_id']),
             'payment_modes': self.env['pos.payment'].read_group([('session_id', '=', self.id)], fields=['pos_order_id'], groupby=['payment_method_id']),

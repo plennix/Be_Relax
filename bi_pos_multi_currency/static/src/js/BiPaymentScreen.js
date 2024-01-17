@@ -106,8 +106,6 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 		}
 
 		_ChangeCurrency() {
-		    debugger;
-
 			let self = this;
 			let currencies = this.env.pos.poscurrency;
 			let cur = $('.drop-currency').val();
@@ -117,13 +115,14 @@ odoo.define('bi_pos_multi_currency.BiPaymentScreen', function(require) {
 			for(var i=0;i<currencies.length;i++){
 				if(cur != pos_currency.id && cur==currencies[i].id){
 					let currency_in_pos = (currencies[i].rate/self.env.pos.currency.rate).toFixed(6);
-					order.manual_currency_amount = currency_in_pos
+//					debugger;
 					order.manual_currency_id = cur
 					$('.currency_symbol').text(currencies[i].symbol);
 					$('.currency_rate').text(currency_in_pos);
 					curr_sym = currencies[i].symbol;
 
 					let curr_tot =order.get_due()*currency_in_pos;
+					order.manual_currency_amount = curr_tot.toFixed(2)
 					$('.currency_cal').text(parseFloat(curr_tot.toFixed(6)));
 					order.set_curamount(parseFloat(curr_tot.toFixed(6)));
 					order.set_symbol(curr_sym);
