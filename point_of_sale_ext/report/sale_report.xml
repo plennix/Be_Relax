@@ -91,8 +91,8 @@
                                     <t t-foreach="env['pos.order.line'].get_order_line(orderlines)" t-as="order">
                                         <tr>
                                             <t t-set="orderline_total_qty" t-value="orderline_total_qty + order.get('qty', False)" />
-                                            <t t-set="orderline_total_sub_inc" t-value="orderline_total_sub_inc + order.get('price_subtotal_incl', False)" />
-                                            <t t-set="orderline_total_sub" t-value="orderline_total_sub + order.get('price_subtotal', False)" />
+                                            <t t-set="orderline_total_sub_inc" t-value="orderline_total_sub_inc + round(order.get('price_subtotal_incl', False), 2)" />
+                                            <t t-set="orderline_total_sub" t-value="orderline_total_sub + round(order.get('price_subtotal', False), 2)" />
                                             <td>
                                                 <span t-esc="order.get('full_product_name', False)"/>
                                             </td>
@@ -163,9 +163,9 @@
                                     <t t-foreach="env['pos.order.line'].get_order_line(promotion_lines)" t-as="promo">
                                         <tr>
                                             <t t-set="promotion_total_qty" t-value="promotion_total_qty + promo.get('qty', False)" />
-                                            <t t-set="promotion_total_sub_inc" t-value="promotion_total_sub_inc + promo.get('price_subtotal_incl', False)" />
+                                            <t t-set="promotion_total_sub_inc" t-value="promotion_total_sub_inc + round(promo.get('price_subtotal_incl', False), 2)" />
 <!--                                            <t t-set="orderline_total_tax" t-value="orderline_total_tax + order.get('price_subtotal_incl', False) - order.get('price_subtotal', False)" />-->
-                                            <t t-set="promotion_total_sub" t-value="promotion_total_sub + promo.get('price_subtotal', False)" />
+                                            <t t-set="promotion_total_sub" t-value="promotion_total_sub + round(promo.get('price_subtotal', False), 2)" />
                                             <td>
                                                 <span t-esc="promo.get('full_product_name', False)"/>
                                             </td>
@@ -173,13 +173,13 @@
                                                 <span t-esc="round(promo.get('qty', False), 1)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="promo.get('price_subtotal_incl', False)"/>
+                                                <span t-esc="round(promo.get('price_subtotal_incl', False), 2)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="promo.get('price_subtotal_incl', False) - promo.get('price_subtotal', False)"/>
+                                                <span t-esc="round(promo.get('price_subtotal_incl', False) - promo.get('price_subtotal', False), 2)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="promo.get('price_subtotal', False)"/>
+                                                <span t-esc="round(promo.get('price_subtotal', False), 2)"/>
                                             </td>
                                         </tr>
                                     </t>
@@ -189,16 +189,16 @@
                                             <b>Total Discounts</b>
                                         </td>
                                         <td>
-                                            <b t-esc="promotion_total_qty"/>
+                                            <b t-esc="round(promotion_total_qty, 1)"/>
                                         </td>
                                         <td>
-                                            <b t-esc="promotion_total_sub_inc"/>
+                                            <b t-esc="round(promotion_total_sub_inc, 2)"/>
                                         </td>
                                         <td>
-                                            <b t-esc="promotion_total_sub_inc - promotion_total_sub"/>
+                                            <b t-esc="round(promotion_total_sub_inc - promotion_total_sub, 2)"/>
                                         </td>
                                         <td>
-                                            <b t-esc="promotion_total_sub"/>
+                                            <b t-esc="round(promotion_total_sub, 2)"/>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -254,7 +254,7 @@
                                                 <span t-esc="round(line['amount_tax'], 2)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(line['amount_total'], 2) - round(line['amount_tax'], 2)"/>
+                                                <span t-esc="round(round(line['amount_total'], 2) - round(line['amount_tax'], 2), 2)"/>
                                             </td>
                                         </tr>
                                     </t>
@@ -263,16 +263,16 @@
                                             <b>Total Sales made by staff</b>
                                         </td>
                                         <td>
-                                            <b t-esc="line_total_tip"/>
+                                            <b t-esc="round(line_total_tip, 2)"/>
                                         </td>
                                         <td>
-                                            <b t-esc="line_total_amount"/>
+                                            <b t-esc="round(line_total_amount, 2)"/>
                                         </td>
                                         <td>
-                                            <b t-esc="line_total_tax"/>
+                                            <b t-esc="round(line_total_tax, 2)"/>
                                         </td>
                                         <td>
-                                            <b t-esc="line_total_amount - line_total_tax"/>
+                                            <b t-esc="round(line_total_amount - line_total_tax,2)"/>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -316,7 +316,7 @@
                                         t-as="method">
                                         <t t-if="method['payment_method_id'] and method['payment_method_id'][0]">
                                             <t t-set="payment_tip_total" t-value="payment_tip_total + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('tip_amount')), 2)" />
-                                            <t t-set="payment_total_quantity" t-value="payment_total_quantity + sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('qty'))" />
+                                            <t t-set="payment_total_quantity" t-value="payment_total_quantity + len(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').ids)" />
                                             <t t-set="payment_amount_total" t-value="payment_amount_total + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal_incl')), 2)" />
                                             <t t-set="payment_tax_total" t-value="payment_tax_total + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('amount_tax')), 2)" />
                                             <t t-set="payment_amount_without_tax" t-value="payment_amount_without_tax + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal')), 2)" />
@@ -330,7 +330,8 @@
                                                 <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('tip_amount')), 2)"/>
                                             </td>
                                             <td>
-                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('qty'))"/>
+<!--                                                mapped('lines').mapped('qty')-->
+                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="float(len(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').ids))"/>
                                             </td>
                                             <td>
                                                 <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal_incl')), 2)"/>
@@ -343,67 +344,109 @@
                                             </td>
                                         </tr>
                                     </t>
-                                    <tr style="border-top: 5px double black;">
-                                        <td>
-                                            <b>Total Payment</b>
-                                        </td>
-                                        <td>
-                                            <b t-esc="payment_tip_total"/>
-                                        </td>
-                                        <td>
-                                            <b t-esc="payment_total_quantity"/>
-                                        </td>
-                                        <td>
-                                            <b t-esc="payment_amount_total"/>
-                                        </td>
-                                        <td>
-                                            <b t-esc="payment_tax_total"/>
-                                        </td>
-                                        <td>
-                                            <b t-esc="payment_amount_without_tax"/>
-                                        </td>
-                                    </tr>
+<!--                                    <t t-esc="currency" />-->
+                                    <t t-foreach="env['pos.order'].read_group([('id', 'in', order_ids)], fields=['amount_tax', 'amount_total', 'tip_amount', 'id'], groupby=['manual_currency_id'])"
+                                        t-as="currency">
+<!--                                        <div>-->
+<!--                                            <t t-esc="currency" />-->
+<!--                                            <t t-esc="currency['tip_amount']" />-->
+<!--                                        </div>-->
+                                        <tr>
+                                            <td>
+<!--                                                env['pos.payment'].search_count([('session_id', '=', rec_id)])-->
+                                                <span t-if="currency['manual_currency_id'] and currency['manual_currency_id'][0]" t-esc="env['res.currency'].search([('id', '=', currency['manual_currency_id'][0])]).name"/>
+                                            </td>
+                                            <td>
+                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['tip_amount'], currency['manual_currency_id'][0])" />
+<!--                                                <t t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])"/>-->
+<!--                                                , 'from_currency': env['pos.order.line'].get_currency()-->
+<!--                                                env[res.currency]._convert(currency.tip_amount, env[res.currency].browse(int(currency['manual_currency_id'][0])), company_id)-->
+<!--                                                <t t-esc="docids" />-->
+<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['tip_amount'], currency['manual_currency_id'][0])" />-->
+                                            </td>
+                                            <td>
+<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />-->
+<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />-->
+<!--                                                round(currency['manual_currency_id_count'], 1)-->
+                                                <span t-esc="float(currency['manual_currency_id_count'])" />
+                                            </td>
+                                            <td>
+                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />
+<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_total'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />-->
+                                            </td>
+                                            <td>
+                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />
+<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />-->
+<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_tax'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />-->
+                                            </td>
+                                            <td>
+                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="round(env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0]) - env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0]), 2)" />
+<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0]) - env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />-->
+<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_total'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />-->
+                                            </td>
+                                        </tr>
+                                    </t>
+<!--                                    <tr>-->
+<!--                                        <td>-->
+<!--                                            <b>Total Payment</b>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <b t-esc="payment_tip_total"/>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <b t-esc="payment_total_quantity"/>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <b t-esc="payment_amount_total"/>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <b t-esc="payment_tax_total"/>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <b t-esc="payment_amount_without_tax"/>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
                                 </tbody>
                             </table>
                         </div>
-                        <t t-set="order_id" t-value="env['pos.session'].browse(rec_id).order_ids"/>
-                        <div t-if="any(order_id.filtered(lambda x:x.payment_given))" class="text-center">
-                            <strong>
-                                <center>Other Payment</center>
-                            </strong>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">
-                                            <span>Order</span>
-                                        </th>
+<!--                        <t t-set="order_id" t-value="env['pos.session'].browse(rec_id).order_ids"/>-->
+<!--                        <div t-if="any(order_id.filtered(lambda x:x.payment_given))" class="text-center">-->
+<!--                            <strong>-->
+<!--                                <center>Other Payment</center>-->
+<!--                            </strong>-->
+<!--                            <table class="table table-bordered">-->
+<!--                                <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th class="text-center">-->
+<!--                                            <span>Order</span>-->
+<!--                                        </th>-->
 
-                                        <th class="text-center">
-                                            <span>Amount</span>
-                                        </th>
+<!--                                        <th class="text-center">-->
+<!--                                            <span>Amount</span>-->
+<!--                                        </th>-->
 
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr t-foreach="order_id.filtered(lambda x:x.payment_given)" t-as="order">
-                                        <td>
-                                            <span t-esc="order.name"/>
-                                        </td>
-                                        <td>
-                                            <span t-esc="order.payment_given"/>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <b>Total Amount</b>
-                                        </td>
-                                        <td>
-                                            <b t-esc="round(sum(order_id.mapped('other_payment')), 2)"/>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+<!--                                    </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody>-->
+<!--                                    <tr t-foreach="order_id.filtered(lambda x:x.payment_given)" t-as="order">-->
+<!--                                        <td>-->
+<!--                                            <span t-esc="order.name"/>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <span t-esc="order.payment_given"/>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                    <tr>-->
+<!--                                        <td>-->
+<!--                                            <b>Total Amount</b>-->
+<!--                                        </td>-->
+<!--                                        <td>-->
+<!--                                            <b t-esc="round(sum(order_id.mapped('other_payment')), 2)"/>-->
+<!--                                        </td>-->
+<!--                                    </tr>-->
+<!--                                </tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
 <!--                        <div class="text-center">-->
 <!--                            <strong>-->
 <!--                                <center>Tips</center>-->
