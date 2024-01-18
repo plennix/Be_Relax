@@ -13,6 +13,7 @@ class PosSessionExt(models.Model):
         for emp in res:
             employee_id = self.env['hr.employee'].sudo().browse(emp['id'])
             emp['job_bool'] = self.env['hr.job'].sudo().browse(emp['job_id']).is_supervisor
+            emp['allow_refund'] = self.env['hr.job'].sudo().browse(emp['job_id']).is_refund_allow
             # emp['remove_pos_order_line'] = employee_id.remove_pos_order_line
             # emp['allow_pos_order_line_disc'] = employee_id.allow_pos_order_line_disc
         return res

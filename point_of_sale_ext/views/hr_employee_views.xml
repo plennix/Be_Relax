@@ -21,6 +21,9 @@
             <xpath expr="//div[hasclass('o_row')]" position="after">
                 <field name="is_supervisor"/>
             </xpath>
+            <xpath expr="//field[@name='contract_type_id']" position="after">
+                <field name="is_refund_allow"/>
+            </xpath>
         </field>
     </record>
 </odoo>

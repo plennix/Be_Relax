@@ -6,7 +6,9 @@
     'summary': ' Changes in POS customer creation form ',
     'depends': ['point_of_sale', 'base', 'contacts'],
     'data': [
+        'security/pos_session_rule.xml',
         'views/res_partner.xml',
+        'views/res_users.xml',
     ],
     'assets': {
         'point_of_sale.assets': [

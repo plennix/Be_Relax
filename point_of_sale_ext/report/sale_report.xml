@@ -351,40 +351,43 @@
 <!--                                            <t t-esc="currency" />-->
 <!--                                            <t t-esc="currency['tip_amount']" />-->
 <!--                                        </div>-->
-                                        <tr>
-                                            <td>
-<!--                                                env['pos.payment'].search_count([('session_id', '=', rec_id)])-->
-                                                <span t-if="currency['manual_currency_id'] and currency['manual_currency_id'][0]" t-esc="env['res.currency'].search([('id', '=', currency['manual_currency_id'][0])]).name"/>
-                                            </td>
-                                            <td>
-                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['tip_amount'], currency['manual_currency_id'][0])" />
-<!--                                                <t t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])"/>-->
-<!--                                                , 'from_currency': env['pos.order.line'].get_currency()-->
-<!--                                                env[res.currency]._convert(currency.tip_amount, env[res.currency].browse(int(currency['manual_currency_id'][0])), company_id)-->
-<!--                                                <t t-esc="docids" />-->
-<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['tip_amount'], currency['manual_currency_id'][0])" />-->
-                                            </td>
-                                            <td>
-<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />-->
-<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />-->
-<!--                                                round(currency['manual_currency_id_count'], 1)-->
-                                                <span t-esc="float(currency['manual_currency_id_count'])" />
-                                            </td>
-                                            <td>
-                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />
-<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_total'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />-->
-                                            </td>
-                                            <td>
-                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />
-<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />-->
-<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_tax'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />-->
-                                            </td>
-                                            <td>
-                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="round(env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0]) - env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0]), 2)" />
-<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0]) - env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />-->
-<!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_total'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />-->
-                                            </td>
-                                        </tr>
+                                        <t t-if="currency['manual_currency_id']">
+                                            <tr>
+
+                                                <td>
+                                                    <!--                                                env['pos.payment'].search_count([('session_id', '=', rec_id)])-->
+                                                    <span t-if="currency['manual_currency_id'] and currency['manual_currency_id'][0]" t-esc="env['res.currency'].search([('id', '=', currency['manual_currency_id'][0])]).name"/>
+                                                </td>
+                                                <td>
+                                                    <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['tip_amount'], currency['manual_currency_id'][0])" />
+                                                    <!--                                                <t t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])"/>-->
+                                                    <!--                                                , 'from_currency': env['pos.order.line'].get_currency()-->
+                                                    <!--                                                env[res.currency]._convert(currency.tip_amount, env[res.currency].browse(int(currency['manual_currency_id'][0])), company_id)-->
+                                                    <!--                                                <t t-esc="docids" />-->
+                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['tip_amount'], currency['manual_currency_id'][0])" />-->
+                                                </td>
+                                                <td>
+                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />-->
+                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />-->
+                                                    <!--                                                round(currency['manual_currency_id_count'], 1)-->
+                                                    <span t-esc="float(currency['manual_currency_id_count'])" />
+                                                </td>
+                                                <td>
+                                                    <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />
+                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_total'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />-->
+                                                </td>
+                                                <td>
+                                                    <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />
+                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />-->
+                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_tax'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />-->
+                                                </td>
+                                                <td>
+                                                    <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="round(env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0]) - env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0]), 2)" />
+                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0]) - env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />-->
+                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_total'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />-->
+                                                </td>
+                                            </tr>
+                                        </t>
                                     </t>
 <!--                                    <tr>-->
 <!--                                        <td>-->

@@ -7,7 +7,7 @@ odoo.define('point_of_sale_ext.TicketScreen', function(require) {
     const TicketScreenExt = (TicketScreen) => class extends TicketScreen {
 
         async _onDoRefund() {
-            if((this.env.pos.get_cashier() && this.env.pos.get_cashier().job_bool) || !this.env.pos.config.module_pos_hr) {
+            if((this.env.pos.get_cashier() && this.env.pos.get_cashier().allow_refund) || !this.env.pos.config.module_pos_hr) {
                 return super._onDoRefund()
             }else {
                 return this.showPopup('ErrorPopup', {

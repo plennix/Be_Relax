@@ -20,6 +20,4 @@ class HrJobExt(models.Model):
     _inherit = 'hr.job'
 
     is_supervisor = fields.Boolean(string='Is Supervisor')
-
-        
-            
+    is_refund_allow = fields.Boolean(string='Is Refund Allow', default=False)

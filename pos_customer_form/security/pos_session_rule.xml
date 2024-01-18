@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="pos_config_multi_company_rule" model="ir.rule">
+            <field name="name">pos config multi company rule</field>
+            <field name="model_id" ref="point_of_sale.model_pos_config"/>
+            <field name="groups" eval="[(4, ref('point_of_sale.group_pos_user'))]"/>
+            <field name="domain_force">[('id', 'in', user.allowed_pos_configs.ids)]</field>
+        </record>
+        <record id="pos_config_multi_company_rule_admin" model="ir.rule">
+            <field name="name">pos config multi company rule admin</field>
+            <field name="model_id" ref="point_of_sale.model_pos_config"/>
+            <field name="groups" eval="[(4, ref('base.user_admin'))]"/>
+        </record>
+
+    </data>
+</odoo>
