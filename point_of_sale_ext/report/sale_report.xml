@@ -235,26 +235,33 @@
                                     <t t-set="line_total_tip" t-value="0" />
                                     <t t-set="line_total_amount" t-value="0" />
                                     <t t-set="line_total_tax" t-value="0" />
-                                    <t t-foreach="env['pos.order'].read_group([('id', 'in', order_ids)], fields=['amount_tax', 'amount_total', 'tip_amount'], groupby=['employee_id'])"
+                                    <t t-set="line_total_tax_without" t-value="0" />
+<!--                                    read_group([('pos_id', 'in', order_ids)], fields=['amount_tax', 'amount_total', 'tip_amount'], groupby=['employee_id'])-->
+                                    <t t-foreach="env['pos.session'].get_sale_by_cashier(order_ids)"
                                        t-as="line">
-                                        <t t-set="line_total_tip" t-value="line_total_tip + round(line['tip_amount'], 2)" />
-                                        <t t-set="line_total_amount" t-value="line_total_amount + round(line['amount_total'], 2)" />
-                                        <t t-set="line_total_tax" t-value="line_total_tax + round(line['amount_tax'], 2)" />
+                                        <t t-set="line_total_tip" t-value="line_total_tip + round(line.get('tip', 0), 2)" />
+                                        <t t-set="line_total_amount" t-value="line_total_amount + round(line.get('amount', 0), 2)" />
+                                        <t t-set="line_total_tax" t-value="line_total_tax + round(line.get('amount_tax', 0), 2)" />
+                                        <t t-set="line_total_tax_without" t-value="line_total_tax_without + round(line.get('amount_without', 0), 2)" />
                                         <tr>
                                             <td>
-                                                <span t-if="line['employee_id'] and line['employee_id'][0]" t-esc="env['hr.employee'].browse(line['employee_id'][0]).name"/>
+                                                <span t-if="line.get('employee', False)" t-esc="line.get('employee').name" />
                                             </td>
                                             <td>
-                                                <span t-esc="round(line['tip_amount'], 2)"/>
+                                                <span t-if="line.get('tip', False)" t-esc="round(line.get('tip'), 2)" />
+                                                <span t-else="" t-esc="float(0)" />
                                             </td>
                                             <td>
-                                                <span t-esc="round(line['amount_total'], 2)"/>
+                                                <span t-if="line.get('amount', False)" t-esc="round(line.get('amount', False), 2)" />
+                                                <span t-else="" t-esc="float(0)" />
                                             </td>
                                             <td>
-                                                <span t-esc="round(line['amount_tax'], 2)"/>
+                                                <span t-if="line.get('amount_tax', False)" t-esc="round(line.get('amount_tax', False), 2)" />
+                                                <span t-else="" t-esc="float(0)" />
                                             </td>
                                             <td>
-                                                <span t-esc="round(round(line['amount_total'], 2) - round(line['amount_tax'], 2), 2)"/>
+                                                <span t-if="line.get('amount_without', False)" t-esc="round(line.get('amount_without', False), 2)" />
+                                                <span t-else="" t-esc="float(0)" />
                                             </td>
                                         </tr>
                                     </t>
@@ -272,7 +279,7 @@
                                             <b t-esc="round(line_total_tax, 2)"/>
                                         </td>
                                         <td>
-                                            <b t-esc="round(line_total_amount - line_total_tax,2)"/>
+                                            <b t-esc="round(line_total_tax_without,2)"/>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -293,125 +300,170 @@
                                             <span>Tips</span>
                                         </th>
                                         <th class="text-center">
-                                            <span>Quantity</span>
+                                            <span>Qty</span>
                                         </th>
                                         <th class="text-center">
-                                            <span>Amount</span>
+                                            <span>Amount Without tips</span>
                                         </th>
                                         <th class="text-center">
-                                            <span>Tax</span>
+                                            <span>Total Amount Paid</span>
                                         </th>
-                                        <th class="text-center">
-                                            <span>Amount Without Tax</span>
-                                        </th>
+<!--                                        <th class="text-center">-->
+<!--                                            <span>Amount Without Tax</span>-->
+<!--                                        </th>-->
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <t t-set="payment_tip_total" t-value="0" />
                                     <t t-set="payment_total_quantity" t-value="0" />
                                     <t t-set="payment_amount_total" t-value="0" />
-                                    <t t-set="payment_tax_total" t-value="0" />
-                                    <t t-set="payment_amount_without_tax" t-value="0" />
-                                    <t t-foreach="env['pos.payment'].read_group([('session_id', '=', rec_id)], fields=['pos_order_id'], groupby=['payment_method_id'])"
+<!--                                    <t t-set="payment_tax_total" t-value="0" />-->
+<!--                                    <t t-set="payment_amount_without_tax" t-value="0" />-->
+                                    <t t-foreach="env['pos.payment'].read_group([('session_id', '=', rec_id)], fields=['amount'], groupby=['payment_method_id'])"
                                         t-as="method">
-                                        <t t-if="method['payment_method_id'] and method['payment_method_id'][0]">
-                                            <t t-set="payment_tip_total" t-value="payment_tip_total + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('tip_amount')), 2)" />
-                                            <t t-set="payment_total_quantity" t-value="payment_total_quantity + len(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').ids)" />
-                                            <t t-set="payment_amount_total" t-value="payment_amount_total + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal_incl')), 2)" />
-                                            <t t-set="payment_tax_total" t-value="payment_tax_total + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('amount_tax')), 2)" />
-                                            <t t-set="payment_amount_without_tax" t-value="payment_amount_without_tax + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal')), 2)" />
-                                        </t>
+                                        <t t-set="payment_total_quantity" t-value="payment_total_quantity + method.get('payment_method_id_count',0)" />
+                                        <t t-set="payment_amount_total" t-value="payment_amount_total + method.get('amount', 0)" />
+<!--                                        <t t-if="method['payment_method_id'] and method['payment_method_id'][0]">-->
+<!--                                            <t t-set="payment_tip_total" t-value="payment_tip_total + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('tip_amount')), 2)" />-->
+<!--                                            <t t-set="payment_tax_total" t-value="payment_tax_total + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('amount_tax')), 2)" />-->
+<!--                                            <t t-set="payment_amount_without_tax" t-value="payment_amount_without_tax + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal')), 2)" />-->
+<!--                                        </t>-->
                                         <tr>
                                             <td>
 <!--                                                env['pos.payment'].search_count([('session_id', '=', rec_id)])-->
                                                 <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).payment_method_id.name"/>
                                             </td>
                                             <td>
-                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('tip_amount')), 2)"/>
+<!--                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('tip_amount')), 2)"/>-->
                                             </td>
                                             <td>
+                                                <span t-esc="float(method.get('payment_method_id_count', 0))" />
 <!--                                                mapped('lines').mapped('qty')-->
-                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="float(len(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').ids))"/>
+<!--                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="float(len(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').ids))"/>-->
                                             </td>
                                             <td>
-                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal_incl')), 2)"/>
+                                                <span t-if="method.get('amount', False)" t-esc="round(method.get('amount'), 2)" />
+                                                <span t-else="" t-esc="float(0)" />
+<!--                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal_incl')), 2)"/>-->
                                             </td>
                                             <td>
-                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('amount_tax')), 2)"/>
+                                                <span t-if="method.get('amount', False)" t-esc="round(method.get('amount'), 2)" />
+                                                <span t-else="" t-esc="float(0)" />
+<!--                                                <span t-esc="float(method.get('payment_method_id_count', 0))" />-->
+<!--                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('amount_tax')), 2)"/>-->
                                             </td>
-                                            <td>
-                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal')), 2)"/>
-                                            </td>
+<!--                                            <td>-->
+<!--&lt;!&ndash;                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal')), 2)"/>&ndash;&gt;-->
+<!--                                            </td>-->
                                         </tr>
                                     </t>
 <!--                                    <t t-esc="currency" />-->
-                                    <t t-foreach="env['pos.order'].read_group([('id', 'in', order_ids)], fields=['amount_tax', 'amount_total', 'tip_amount', 'id'], groupby=['manual_currency_id'])"
-                                        t-as="currency">
-<!--                                        <div>-->
-<!--                                            <t t-esc="currency" />-->
-<!--                                            <t t-esc="currency['tip_amount']" />-->
-<!--                                        </div>-->
-                                        <t t-if="currency['manual_currency_id']">
-                                            <tr>
+<!--                                    <t t-foreach="env['pos.order'].read_group([('id', 'in', order_ids)], fields=['amount_tax', 'amount_total', 'tip_amount', 'id'], groupby=['manual_currency_id'])"-->
+<!--                                        t-as="currency">-->
+<!--&lt;!&ndash;                                        <div>&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <t t-esc="currency" />&ndash;&gt;-->
+<!--&lt;!&ndash;                                            <t t-esc="currency['tip_amount']" />&ndash;&gt;-->
+<!--&lt;!&ndash;                                        </div>&ndash;&gt;-->
+<!--                                        <t t-if="currency['manual_currency_id']">-->
+<!--                                            <tr>-->
 
-                                                <td>
-                                                    <!--                                                env['pos.payment'].search_count([('session_id', '=', rec_id)])-->
-                                                    <span t-if="currency['manual_currency_id'] and currency['manual_currency_id'][0]" t-esc="env['res.currency'].search([('id', '=', currency['manual_currency_id'][0])]).name"/>
-                                                </td>
-                                                <td>
-                                                    <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['tip_amount'], currency['manual_currency_id'][0])" />
-                                                    <!--                                                <t t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])"/>-->
-                                                    <!--                                                , 'from_currency': env['pos.order.line'].get_currency()-->
-                                                    <!--                                                env[res.currency]._convert(currency.tip_amount, env[res.currency].browse(int(currency['manual_currency_id'][0])), company_id)-->
-                                                    <!--                                                <t t-esc="docids" />-->
-                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['tip_amount'], currency['manual_currency_id'][0])" />-->
-                                                </td>
-                                                <td>
-                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />-->
-                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />-->
-                                                    <!--                                                round(currency['manual_currency_id_count'], 1)-->
-                                                    <span t-esc="float(currency['manual_currency_id_count'])" />
-                                                </td>
-                                                <td>
-                                                    <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />
-                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_total'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />-->
-                                                </td>
-                                                <td>
-                                                    <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />
-                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />-->
-                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_tax'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />-->
-                                                </td>
-                                                <td>
-                                                    <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="round(env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0]) - env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0]), 2)" />
-                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0]) - env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />-->
-                                                    <!--                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_total'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />-->
-                                                </td>
-                                            </tr>
-                                        </t>
-                                    </t>
-<!--                                    <tr>-->
-<!--                                        <td>-->
-<!--                                            <b>Total Payment</b>-->
-<!--                                        </td>-->
-<!--                                        <td>-->
+<!--                                                <td>-->
+<!--                                                    &lt;!&ndash;                                                env['pos.payment'].search_count([('session_id', '=', rec_id)])&ndash;&gt;-->
+<!--                                                    <span t-if="currency['manual_currency_id'] and currency['manual_currency_id'][0]" t-esc="env['res.currency'].search([('id', '=', currency['manual_currency_id'][0])]).name"/>-->
+<!--                                                </td>-->
+<!--                                                <td>-->
+<!--                                                    <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['tip_amount'], currency['manual_currency_id'][0])" />-->
+<!--                                                    &lt;!&ndash;                                                <t t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])"/>&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                , 'from_currency': env['pos.order.line'].get_currency()&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                env[res.currency]._convert(currency.tip_amount, env[res.currency].browse(int(currency['manual_currency_id'][0])), company_id)&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                <t t-esc="docids" />&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['tip_amount'], currency['manual_currency_id'][0])" />&ndash;&gt;-->
+<!--                                                </td>-->
+<!--                                                <td>-->
+<!--                                                    &lt;!&ndash;                                                <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                round(currency['manual_currency_id_count'], 1)&ndash;&gt;-->
+<!--                                                    <span t-esc="float(currency['manual_currency_id_count'])" />-->
+<!--                                                </td>-->
+<!--                                                <td>-->
+<!--                                                    <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0])" />-->
+<!--                                                    &lt;!&ndash;                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_total'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />&ndash;&gt;-->
+<!--                                                </td>-->
+<!--                                                <td>-->
+<!--                                                    <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />-->
+<!--                                                    &lt;!&ndash;                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_tax'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />&ndash;&gt;-->
+<!--                                                </td>-->
+<!--                                                <td>-->
+<!--                                                    <span t-options="{'widget': 'monetary', 'display_currency': env['res.currency'].browse(int(currency['manual_currency_id'][0]))}" t-esc="round(env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0]) - env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0]), 2)" />-->
+<!--                                                    &lt;!&ndash;                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="env['pos.session'].convert_amount_to_currency(currency['amount_total'], currency['manual_currency_id'][0]) - env['pos.session'].convert_amount_to_currency(currency['amount_tax'], currency['manual_currency_id'][0])" />&ndash;&gt;-->
+<!--                                                    &lt;!&ndash;                                                <span t-options="{'widget': 'monetary', 'display_currency': currency['manual_currency_id'][0]}" t-esc="round(env['res.currency']._convert(currency['amount_total'], env['res.currency'].browse(int(currency['manual_currency_id'][0])), company_id), 2)" />&ndash;&gt;-->
+<!--                                                </td>-->
+<!--                                            </tr>-->
+<!--                                        </t>-->
+<!--                                    </t>-->
+                                    <tr>
+                                        <td>
+                                            <b>Total Payment</b>
+                                        </td>
+                                        <td>
 <!--                                            <b t-esc="payment_tip_total"/>-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <b t-esc="payment_total_quantity"/>-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <b t-esc="payment_amount_total"/>-->
-<!--                                        </td>-->
-<!--                                        <td>-->
-<!--                                            <b t-esc="payment_tax_total"/>-->
-<!--                                        </td>-->
+                                        </td>
+                                        <td>
+                                            <b t-esc="float(payment_total_quantity)"/>
+                                        </td>
+                                        <td>
+                                            <b t-esc="round(payment_amount_total, 2)"/>
+                                        </td>
+                                        <td>
+                                            <b t-esc="round(payment_amount_total, 2)"/>
+                                        </td>
 <!--                                        <td>-->
 <!--                                            <b t-esc="payment_amount_without_tax"/>-->
 <!--                                        </td>-->
-<!--                                    </tr>-->
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
+                        <br />
+                        <div class="text-center">
+                            <strong>
+                                <center>Payment By Currency</center>
+                            </strong>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <span>Name</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Quantity</span>
+                                        </th>
+                                        <th class="text-center">
+                                            <span>Amount</span>
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="env['pos.payment'].read_group([('session_id', '=', rec_id)], fields=['account_currency', 'pos_order_id'], groupby=['currency_name'])"
+                                       t-as="currency_payment">
+                                        <tr>
+                                            <td>
+                                                <span t-esc="currency_payment.get('currency_name', False)"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="float(currency_payment.get('currency_name_count', False))"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="round(currency_payment.get('account_currency', False), 2)"/>
+                                            </td>
+                                        </tr>
+
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+<!--                    </div>-->
 <!--                        <t t-set="order_id" t-value="env['pos.session'].browse(rec_id).order_ids"/>-->
 <!--                        <div t-if="any(order_id.filtered(lambda x:x.payment_given))" class="text-center">-->
 <!--                            <strong>-->
@@ -482,39 +534,39 @@
 <!--                                </tbody>-->
 <!--                            </table>-->
 <!--                        </div>-->
-                        <t t-set="taxes" t-value="env['pos.order.line'].get_pos_tax(orderlines)"/>
-                        <div t-if="taxes" class="text-center">
-                            <strong>
-                                <center>Tax</center>
-                            </strong>
-                            <table class="table table-bordered">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">
-                                            <span>Name</span>
-                                        </th>
+<!--                        <t t-set="taxes" t-value="env['pos.order.line'].get_pos_tax(orderlines)"/>-->
+<!--                        <div t-if="taxes" class="text-center">-->
+<!--                            <strong>-->
+<!--                                <center>Tax</center>-->
+<!--                            </strong>-->
+<!--                            <table class="table table-bordered">-->
+<!--                                <thead>-->
+<!--                                    <tr>-->
+<!--                                        <th class="text-center">-->
+<!--                                            <span>Name</span>-->
+<!--                                        </th>-->
 
-                                        <th class="text-center">
-                                            <span>Amount</span>
-                                        </th>
+<!--                                        <th class="text-center">-->
+<!--                                            <span>Amount</span>-->
+<!--                                        </th>-->
 
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <t t-if="taxes" t-foreach="taxes"
-                                       t-as="tax">
-                                        <tr>
-                                            <td>
-                                                <span t-esc="tax.get('name', False)"/>
-                                            </td>
-                                            <td>
-                                                <span t-esc="round(tax.get('tax_amount', False), 2)"/>
-                                            </td>
-                                        </tr>
-                                    </t>
-                                </tbody>
-                            </table>
-                        </div>
+<!--                                    </tr>-->
+<!--                                </thead>-->
+<!--                                <tbody>-->
+<!--                                    <t t-if="taxes" t-foreach="taxes"-->
+<!--                                       t-as="tax">-->
+<!--                                        <tr>-->
+<!--                                            <td>-->
+<!--                                                <span t-esc="tax.get('name', False)"/>-->
+<!--                                            </td>-->
+<!--                                            <td>-->
+<!--                                                <span t-esc="round(tax.get('tax_amount', False), 2)"/>-->
+<!--                                            </td>-->
+<!--                                        </tr>-->
+<!--                                    </t>-->
+<!--                                </tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
                         <br/>
                         <div>
                             <Strong align="center">Gross Sales:</Strong>
@@ -534,7 +586,7 @@
                             <span t-options="{'widget': 'monetary', 'from_currency': env['pos.order.line'].get_currency(), 'display_currency': env['pos.order.line'].get_currency()}" t-esc="round(total_without_tax_aed, 2)"/>
                             <br/>
                             <Strong align="center">Number Of Transactions:</Strong>
-                            <span t-esc="env['pos.payment'].search_count([('session_id', '=', rec_id)])"/>
+                            <span t-esc="env['pos.order'].search_count([('session_id', '=', rec_id)])"/>
 <!--                            <br/>-->
 <!--                            <Strong align="center">Discount Amount:</Strong>-->
 <!--                            <span t-esc="env['pos.session'].browse(rec_id).get_discount()"/>-->
