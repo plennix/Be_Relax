@@ -24,26 +24,23 @@ class PosSessionExt(models.Model):
 
     def get_sale_by_cashier(self, order_ids):
         order_ids = self.env['pos.order'].browse(order_ids)
-        cashier_order = order_ids.mapped('employee_id')
+        order_lines = order_ids.mapped('lines')
+        cashier_order = order_lines.mapped('employee_id')
         cashier_order |= order_ids.cashier_tip_ids.mapped('cashier_id')
         vals = []
         for cashier in cashier_order:
-            orders = order_ids.filtered(lambda l: l.employee_id.id == cashier.id)
+            orders = order_lines.filtered(lambda l: l.employee_id.id == cashier.id)
             tip_amount = sum(order_ids.cashier_tip_ids.filtered(lambda l: l.cashier_id.id == cashier.id).mapped('tip'))
             vals.append({
                 'employee': cashier,
                 'tip': tip_amount,
-                'amount': sum(orders.mapped('amount_total')),
-                'amount_tax': sum(orders.mapped('amount_tax')),
-                'amount_without': sum(orders.mapped('amount_total')) - sum(orders.mapped('amount_tax')),
+                'amount': round(sum(orders.mapped('price_subtotal_incl')), 2),
+                'amount_tax': round(sum(orders.mapped('price_subtotal_incl')) - sum(orders.mapped('price_subtotal')), 2),
+                'amount_without': round(sum(orders.mapped('price_subtotal')), 2),
             })
         return vals
 
     def print_report_ext(self):
-        # print("\n\n\n")
-        # print(">>>>>>>>>>>",self.env['pos.payment'].read_group([('session_id', '=', self.id)], fields=['amount'], groupby=['payment_method_id']))
-        # print("\n\n\n")
-        # 5/0
         data = {
             'rec_id': self.id,
             'opening_date': self.start_at,
