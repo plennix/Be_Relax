@@ -236,31 +236,31 @@
                                     <t t-set="line_total_amount" t-value="0" />
                                     <t t-set="line_total_tax" t-value="0" />
                                     <t t-set="line_total_tax_without" t-value="0" />
+                                    <t t-set="sales_staff" t-value="env['pos.session'].get_sale_by_cashier(order_ids)" />
 <!--                                    read_group([('pos_id', 'in', order_ids)], fields=['amount_tax', 'amount_total', 'tip_amount'], groupby=['employee_id'])-->
-                                    <t t-foreach="env['pos.session'].get_sale_by_cashier(order_ids)"
-                                       t-as="line">
-                                        <t t-set="line_total_tip" t-value="line_total_tip + round(line.get('tip', 0), 2)" />
-                                        <t t-set="line_total_amount" t-value="line_total_amount + round(line.get('amount', 0), 2)" />
-                                        <t t-set="line_total_tax" t-value="line_total_tax + round(line.get('amount_tax', 0), 2)" />
-                                        <t t-set="line_total_tax_without" t-value="line_total_tax_without + round(line.get('amount_without', 0), 2)" />
+                                    <t t-foreach="sales_staff" t-as="staff">
+                                        <t t-set="line_total_tip" t-value="line_total_tip + round(sales_staff[staff].get('tip_amount', 0), 2)" />
+                                        <t t-set="line_total_amount" t-value="line_total_amount + round(sales_staff[staff].get('amount', 0), 2)" />
+                                        <t t-set="line_total_tax" t-value="line_total_tax + round(sales_staff[staff].get('amount_tax', 0), 2)" />
+                                        <t t-set="line_total_tax_without" t-value="line_total_tax_without + round(sales_staff[staff].get('amount_without', 0), 2)" />
                                         <tr>
                                             <td>
-                                                <span t-if="line.get('employee', False)" t-esc="line.get('employee').name" />
+                                                <span t-if="sales_staff[staff].get('employee', False)" t-esc="sales_staff[staff].get('employee').name" />
                                             </td>
                                             <td>
-                                                <span t-if="line.get('tip', False)" t-esc="round(line.get('tip'), 2)" />
+                                                <span t-if="sales_staff[staff].get('tip_amount', False)" t-esc="round(sales_staff[staff].get('tip_amount'), 2)" />
                                                 <span t-else="" t-esc="float(0)" />
                                             </td>
                                             <td>
-                                                <span t-if="line.get('amount', False)" t-esc="round(line.get('amount', False), 2)" />
+                                                <span t-if="sales_staff[staff].get('amount', False)" t-esc="round(sales_staff[staff].get('amount', False), 2)" />
                                                 <span t-else="" t-esc="float(0)" />
                                             </td>
                                             <td>
-                                                <span t-if="line.get('amount_tax', False)" t-esc="round(line.get('amount_tax', False), 2)" />
+                                                <span t-if="sales_staff[staff].get('amount_tax', False)" t-esc="round(sales_staff[staff].get('amount_tax', False), 2)" />
                                                 <span t-else="" t-esc="float(0)" />
                                             </td>
                                             <td>
-                                                <span t-if="line.get('amount_without', False)" t-esc="round(line.get('amount_without', False), 2)" />
+                                                <span t-if="sales_staff[staff].get('amount_without', False)" t-esc="round(sales_staff[staff].get('amount_without', False), 2)" />
                                                 <span t-else="" t-esc="float(0)" />
                                             </td>
                                         </tr>
@@ -445,17 +445,17 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <t t-foreach="env['pos.payment'].read_group([('session_id', '=', rec_id)], fields=['account_currency', 'pos_order_id'], groupby=['currency_name'])"
+                                    <t t-foreach="env['pos.payment'].read_group([('session_id', '=', rec_id)], fields=['amount', 'account_currency', 'pos_order_id'], groupby=['currency_name'])"
                                        t-as="currency_payment">
                                         <tr>
                                             <td>
                                                 <span t-esc="currency_payment.get('currency_name', False)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="float(currency_payment.get('currency_name_count', False))"/>
+                                                <span t-esc="round(currency_payment.get('account_currency', False), 2)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(currency_payment.get('account_currency', False), 2)"/>
+                                                <span t-esc="round(currency_payment.get('amount', False), 2)"/>
                                             </td>
                                         </tr>
 

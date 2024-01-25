@@ -23,22 +23,86 @@ class PosSessionExt(models.Model):
         return amount_to_currency
 
     def get_sale_by_cashier(self, order_ids):
-        order_ids = self.env['pos.order'].browse(order_ids)
-        order_lines = order_ids.mapped('lines')
-        cashier_order = order_lines.mapped('employee_id')
-        cashier_order |= order_ids.cashier_tip_ids.mapped('cashier_id')
-        vals = []
-        for cashier in cashier_order:
-            orders = order_lines.filtered(lambda l: l.employee_id.id == cashier.id)
-            tip_amount = sum(order_ids.cashier_tip_ids.filtered(lambda l: l.cashier_id.id == cashier.id).mapped('tip'))
-            vals.append({
-                'employee': cashier,
-                'tip': tip_amount,
-                'amount': round(sum(orders.mapped('price_subtotal_incl')), 2),
-                'amount_tax': round(sum(orders.mapped('price_subtotal_incl')) - sum(orders.mapped('price_subtotal')), 2),
-                'amount_without': round(sum(orders.mapped('price_subtotal')), 2),
-            })
-        return vals
+        orders = self.env['pos.order'].browse(order_ids)
+        sale_by_staff = {}
+        for order in orders:
+            # lines_without_tips = order.lines.filtered(lambda l: l.product_id != l.order_id.session_id.config_id.tip_product_id)
+            # therapists = order.lines.mapped('employee_id') + orders.cashier_tip_ids.mapped('cashier_id')
+            for line in order.lines.filtered(lambda l: l.product_id != l.order_id.session_id.config_id.tip_product_id and not l.is_reward_line):
+                if line.employee_id.id in sale_by_staff.keys():
+                    therapist_vals = sale_by_staff[line.employee_id.id]
+                    sale_by_staff[line.employee_id.id].update({
+                        'amount': round(therapist_vals.get('amount', 0) + line.price_subtotal_incl, 2),
+                        'amount_tax': round(therapist_vals.get('amount_tax', 0) + line.price_subtotal_incl - line.price_subtotal, 2),
+                        'amount_without': round(therapist_vals.get('amount_without', 0) + line.price_subtotal, 2),
+                    })
+                else:
+                    sale_by_staff.update({line.employee_id.id: {
+                        'employee': line.employee_id,
+                        'amount': round(line.price_subtotal_incl, 2) or 0,
+                        'amount_tax': round(line.price_subtotal_incl - line.price_subtotal, 2) or 0,
+                        'amount_without': round(line.price_subtotal, 2) or 0,
+                    }})
+
+            for reward_line in order.lines.filtered(lambda l: l.is_reward_line):
+                reward = reward_line.reward_id
+                if reward.reward_type == 'discount':
+                    if reward.discount_applicability == 'order':
+                        for sales in sale_by_staff:
+                            lines_employees = order.lines.mapped('employee_id').ids
+                            if sales in lines_employees:
+                                therapist_disc_vals = sale_by_staff[sales]
+                                if reward.discount_mode == 'percent':
+                                    amount_disc_with_tax = (reward.discount / 100) * therapist_disc_vals.get('amount', 0)
+                                    amount_disc_wo_tax = (reward.discount / 100) * therapist_disc_vals.get('amount_without', 0)
+                                    disc_diff = amount_disc_wo_tax - amount_disc_with_tax
+                                    sale_by_staff[sales].update({
+                                        'amount': round(therapist_disc_vals.get('amount', 0) - amount_disc_with_tax, 2),
+                                        'amount_tax': round(therapist_disc_vals.get('amount_tax', 0) - disc_diff, 2),
+                                        'amount_without': round(therapist_disc_vals.get('amount_without', 0) - amount_disc_wo_tax, 2),
+                                    })
+                                else:
+                                    lines_applicable = order.lines.filtered(lambda l: l.product_id != l.order_id.session_id.config_id.tip_product_id and not l.is_reward_line)
+                                    fix_reward_amount = reward.discount / len(lines_applicable)
+                                    sale_by_staff[sales].update({
+                                        'amount': round(therapist_disc_vals.get('amount', 0) - fix_reward_amount, 2),
+                                        'amount_without': round(therapist_disc_vals.get('amount_without', 0) - fix_reward_amount, 2),
+                                    })
+                    elif reward.discount_applicability == 'specific':
+                        discountable_line = order.lines.filtered(lambda l: l.product_id.id in reward.discount_product_ids.ids)
+                        if reward.discount_mode == 'percent':
+                            amount_discounted_with_tax = round((reward.discount / 100) * discountable_line.price_subtotal_incl, 2)
+                            amount_discounted_wo_tax = round((reward.discount / 100) * discountable_line.price_subtotal, 2)
+                            discounted_diff = round(amount_discounted_wo_tax - amount_discounted_with_tax, 2)
+                            therapist_reward_vals = sale_by_staff[discountable_line.employee_id.id]
+                            sale_by_staff[discountable_line.employee_id.id].update({
+                                'amount': round(therapist_reward_vals.get('amount', 0) - amount_discounted_with_tax, 2),
+                                'amount_tax': round(therapist_reward_vals.get('amount_tax', 0) - discounted_diff, 2),
+                                'amount_without': round(therapist_reward_vals.get('amount_without', 0) - amount_discounted_wo_tax, 2),
+                            })
+                        else:
+                            therapist_reward_vals = sale_by_staff[discountable_line.employee_id.id]
+                            sale_by_staff[discountable_line.employee_id.id].update({
+                                'amount': round(therapist_reward_vals.get('amount', 0) - reward.discount, 2),
+                                'amount_without': round(therapist_reward_vals.get('amount_without', 0) - reward.discount, 2),
+                            })
+
+            therapists = order.lines.filtered(lambda l: l.product_id != l.order_id.session_id.config_id.tip_product_id and not l.is_reward_line).mapped('employee_id') | order.cashier_tip_ids.mapped('cashier_id')
+
+            for therapist in therapists:
+                tip_amount = sum(order.cashier_tip_ids.filtered(lambda t: t.cashier_id.id == therapist.id).mapped('tip'))
+                if therapist.id in sale_by_staff.keys():
+                    thera_vals = sale_by_staff[therapist.id]
+                    sale_by_staff[therapist.id].update({'tip_amount': round(thera_vals.get('tip_amount', 0) + tip_amount, 2)})
+                else:
+                    sale_by_staff.update({therapist.id: {
+                        'employee': therapist,
+                        'amount': float(0),
+                        'amount_tax': float(0),
+                        'amount_without': float(0),
+                        'tip_amount': round(tip_amount, 2)
+                    }})
+        return sale_by_staff
 
     def print_report_ext(self):
         data = {
@@ -116,5 +180,4 @@ class PosLine(models.Model):
                         taxes.setdefault(tax['id'], {'name': tax['name'], 'tax_amount':0.0, 'base_amount':0.0})
                     taxes[tax['id']]['tax_amount'] += tax['amount']
                     taxes[tax['id']]['base_amount'] += tax['base']
-        print("???????????????line_taxes", taxes)
         return taxes.values()
