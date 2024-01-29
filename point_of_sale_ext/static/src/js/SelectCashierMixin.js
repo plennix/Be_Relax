@@ -72,16 +72,23 @@ odoo.define('pos_hr.SelectCashierMixin', function (require) {
       }
     }
 
-    async barcodeCashierAction(code) {
-      const employee = this.env.pos.employees.find(
+  async barcodeCashierAction(code) {
+    const employee = this.env.pos.employees.find(
         (emp) => emp.barcode === Sha1.hash(code.code)
-      );
-      if (employee && employee !== this.env.pos.get_cashier()) {
+    );
+
+    let EmpCheckIn = await this.rpc({
+      model: 'hr.employee',
+      method: 'check_pos_cashier_checkin',
+      args: [{ 'emp_id': employee.id }],
+    });
+    if (employee && employee !== this.env.pos.get_cashier() && EmpCheckIn) {
         this.env.pos.set_cashier(employee);
-      }
-      return employee;
     }
+    return employee;
   }
+
+}
 
   return SelectCashierMixin;
 

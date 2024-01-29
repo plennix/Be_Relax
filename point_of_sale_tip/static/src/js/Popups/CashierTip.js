@@ -13,6 +13,9 @@ odoo.define('point_of_sale_tip.CashierTip', function(require) {
             var empCount = this.env.pos.employees.length;
                 var firsttip = true;
                 var a = 0;
+                _.each(this.env.pos.employees,function (employee) {
+                    employee.defaultTip = 0
+                })
                 const employeesList = this.env.pos.employees
                     .map((employee) => {
                         if (firsttip) {
