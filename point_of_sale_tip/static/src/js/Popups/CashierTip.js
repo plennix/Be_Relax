@@ -77,24 +77,32 @@ odoo.define('point_of_sale_tip.CashierTip', function(require) {
                 sum += Number(this.state.CashierList[i].defaultTip);
             }
             if (this.props.tipValue == sum) {
-                if (this.props.order) {
-                    this.props.order.set_cashier_tip(x)
+//                if (this.env.pos.get_order()) {
+                    this.env.pos.get_order().set_cashier_tip(x)
                     if (!this.env.pos.employees) {
-                        this.props.order.is_user()
+                        this.env.pos.get_order().is_user()
                     }
                     let PosOrder = await this.rpc({
                         model: 'pos.order',
                         method: 'pos_order_paid_tips',
-                        args: [{'CashierTip':this.props.order.CashierTip,'order_id':this.props.order.backendId,'name':this.props.order.name}],
+                        args: [{'CashierTip':this.env.pos.get_order().CashierTip,'order_id':this.env.pos.get_order().backendId,'name':this.env.pos.get_order().name}],
+                    });
+                    this.showPopup('PaymentMethodPopup', {
+                        title: this.env._t('Payment Methods'),
+                        tip_amount: sum,
+//                        body: this.env._t(
+//                            'Assigned value must be equals to tip.'
+//                        ),
                     });
                     this.cancel();
-                }else{
-                    this.env.pos.get_order().set_cashier_tip(x);
-                    if (!this.env.pos.employees) {
-                        this.env.pos.get_order().is_user()
-                    }
-                }
-                this.cancel();
+//                }
+//                else{
+//                    this.env.pos.get_order().set_cashier_tip(x);
+//                    if (!this.env.pos.employees) {
+//                        this.env.pos.get_order().is_user()
+//                    }
+//                }
+//                this.cancel();
             } else {
                 this.showPopup('ErrorPopup', {
                     title: this.env._t('Wrong value'),

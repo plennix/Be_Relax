@@ -47,4 +47,18 @@ class PosOrderTip(models.Model):
                 order_id.cashier_tip_ids = order_line_list
         return True
 
+    @api.model
+    def _payment_fields(self, order, ui_paymentline):
+        res = super(PosOrderTip, self)._payment_fields(order, ui_paymentline)
+        is_tip = ui_paymentline.get('is_tip', False)
+        res.update({
+            'is_tip': is_tip,
+        })
+        return res
+
+
+class PosPayment(models.Model):
+	_inherit = "pos.payment"
+
+	is_tip = fields.Boolean(string="Is Tip", default=False)
 
