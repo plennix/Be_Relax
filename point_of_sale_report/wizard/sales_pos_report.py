@@ -67,6 +67,12 @@ class SalesPosReport(models.TransientModel):
         worksheet.set_column(6, 6, 10)
         worksheet.set_column(7, 7, 10)
         worksheet.set_column(8, 8, 10)
+        worksheet.set_column(9, 9, 10)
+        worksheet.set_column(10, 10, 30)
+        worksheet.set_column(11, 11, 15)
+        worksheet.set_column(12, 12, 10)
+        worksheet.set_column(13, 13, 10)
+        worksheet.set_column(14, 14, 15)
 
         float_format = workbook.add_format(
             {
@@ -116,17 +122,28 @@ class SalesPosReport(models.TransientModel):
         worksheet.write(row, column + 6, "Qty", column_titles)
         worksheet.write(row, column + 7, "Price", column_titles)
         worksheet.write(row, column + 8, "Discount", column_titles)
+        worksheet.write(row, column + 9, "Site", column_titles)
+        worksheet.write(row, column + 10, "Product Categories", column_titles)
+        worksheet.write(row, column + 11, "Flight number", column_titles)
+        worksheet.write(row, column + 12, "Promotions", column_titles)
+        worksheet.write(row, column + 13, "Currency", column_titles)
+        worksheet.write(row, column + 14, "Payment in AED", column_titles)
+        # worksheet.write(row, column + 15, "Company", column_titles)
 
         data = self.get_report_data()
         row = 1
         index = 1
-
+        price = 0.0
+        aed_price = 0.0
+        qty = 0.0
+        discount = 0.0
         for rec in data:
             employee_name = (
                 self.env["hr.employee"].browse(rec["employee_id"]).name
                 if rec["employee_id"]
                 else ""
             )
+            product_id = self.env["product.product"].browse(rec["product_id"]) if rec["product_id"] else ""
             product_barcode = (
                 self.env["product.product"].browse(rec["product_id"]).barcode
                 if rec["product_id"]
@@ -137,6 +154,16 @@ class SalesPosReport(models.TransientModel):
                 if rec["order_id"]
                 else ""
             )
+            site = ','.join([i for i in [order_id.boarding_pass_ids[0].departure_id.code, order_id.boarding_pass_ids[0].destination] if i]) if order_id.boarding_pass_ids else ''
+            flight_no = order_id.boarding_pass_ids[0].flight_number if order_id.boarding_pass_ids else ''
+            product_cat = product_id.categ_id.name
+            currency = order_id.currency_id.name
+            aed_currency_id = self.env['res.currency'].sudo().search([('symbol', '=', 'AED')], limit=1)
+            rate_currency_id = aed_currency_id.rate_ids.filtered(lambda x: x.company_id == order_id.company_id)
+            aed_convert_rate = 0.0
+            if rate_currency_id:
+                company_rate = rate_currency_id[0].company_rate
+                aed_convert_rate = rec["price_unit"] * company_rate
             discount_amount = (rec["discount"] / 100) * rec["price_unit"]
             worksheet.write(row, column, index, text_format)
             worksheet.write(
@@ -181,9 +208,82 @@ class SalesPosReport(models.TransientModel):
                 discount_amount if discount_amount else 0.0,
                 float_format,
             )
-
+            worksheet.write(
+                row,
+                column + 9,
+                site,
+                text_format,
+            )
+            worksheet.write(
+                row,
+                column + 10,
+                product_cat if product_cat else '',
+                text_format,
+            )
+            worksheet.write(
+                row,
+                column + 11,
+                flight_no if flight_no else '',
+                text_format,
+            )
+            worksheet.write(
+                row,
+                column + 12,
+                '',
+                text_format,
+            )
+            worksheet.write(
+                row,
+                column + 13,
+                currency if currency else '',
+                text_format,
+            )
+            worksheet.write(
+                row,
+                column + 14,
+                aed_convert_rate,
+                float_format,
+            )
+            qty += rec["qty"] if rec["qty"] else 0.0
+            price += rec["price_unit"] if rec["price_unit"] else 0.0
+            aed_price += aed_convert_rate
+            discount += discount_amount if discount_amount else 0.0
             row += 1
             index += 1
+        total_format = workbook.add_format(
+            {
+                "bold": True,
+                "align": "left",
+                "valign": "bottom",
+                "font_name": "Calibri",
+                "font_size": "9",
+                "bg_color": "#D3D3D3",
+            }
+        )
+        worksheet.write(
+            row,
+            column + 6,
+            round(qty,2),
+            total_format,
+        )
+        worksheet.write(
+            row,
+            column + 7,
+            round(price,2),
+            total_format,
+        )
+        worksheet.write(
+            row,
+            column + 8,
+            round(discount,2),
+            total_format,
+        )
+        worksheet.write(
+            row,
+            column + 14,
+            round(aed_price,2),
+            total_format,
+        )
 
         workbook.close()
         output.seek(0)

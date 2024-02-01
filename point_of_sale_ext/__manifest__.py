@@ -17,6 +17,7 @@
 
     'assets': {
             'point_of_sale.assets': [
+                'point_of_sale_ext/static/src/js/BarcodeReaderExt.js',
                 'point_of_sale_ext/static/src/js/close_session_button.js',
                 'point_of_sale_ext/static/src/js/SelectionPopup.js',
                 'point_of_sale_ext/static/src/js/TipsButton.js',

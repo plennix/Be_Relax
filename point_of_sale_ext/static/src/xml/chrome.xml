@@ -5,6 +5,10 @@
         <xpath expr="//div[hasclass('pos-branding')]" position="after">
             <SummaryReportButton />
         </xpath>
+        <xpath expr="//div[hasclass('pos-branding')]//CashMoveButton" position="replace">
+<!--             t-if="showCashMoveButton()"-->
+            <CashMoveButton />
+        </xpath>
     </t>
 
 </templates>

@@ -1,5 +1,4 @@
-
-/* global Sha1 */
+/ global Sha1 /
 odoo.define('pos_hr.SelectCashierMixin', function (require) {
   'use strict';
 
@@ -46,12 +45,17 @@ odoo.define('pos_hr.SelectCashierMixin', function (require) {
         if (!confirmed) {
           return;
         }
-        let EmpCheckIn = await this.rpc({
-          model: 'hr.employee',
-          method: 'check_pos_cashier_checkin',
-          args: [{ 'emp_id': employee.id }],
-        });
-        if (!EmpCheckIn) {
+        let EmpCheckIn = false
+
+        if (employee) {
+          EmpCheckIn = await this.rpc({
+            model: 'hr.employee',
+            method: 'check_pos_cashier_checkin',
+            args: [{ 'emp_id': employee.id }],
+          });
+        }
+
+        if (employee && !EmpCheckIn) {
           this.showPopup('ErrorPopup', {
             title: this.env._t('Wrong value'),
             body: this.env._t(
@@ -72,23 +76,26 @@ odoo.define('pos_hr.SelectCashierMixin', function (require) {
       }
     }
 
-  async barcodeCashierAction(code) {
-    const employee = this.env.pos.employees.find(
+    async barcodeCashierAction(code) {
+//    code1 = '041' + code.code
+//      console.log(">>>codecodecode>>>>>>",code1)
+      const employee = this.env.pos.employees.find(
         (emp) => emp.barcode === Sha1.hash(code.code)
-    );
-
-    let EmpCheckIn = await this.rpc({
-      model: 'hr.employee',
-      method: 'check_pos_cashier_checkin',
-      args: [{ 'emp_id': employee.id }],
-    });
-    if (employee && employee !== this.env.pos.get_cashier() && EmpCheckIn) {
+      );
+      let EmpCheckIn = false
+      if (employee) {
+        EmpCheckIn = await this.rpc({
+          model: 'hr.employee',
+          method: 'check_pos_cashier_checkin',
+          args: [{ 'emp_id': employee.id }],
+        });
+      }
+      if (employee && employee !== this.env.pos.get_cashier() && EmpCheckIn) {
         this.env.pos.set_cashier(employee);
+      }
+      return employee;
     }
-    return employee;
   }
-
-}
 
   return SelectCashierMixin;
 

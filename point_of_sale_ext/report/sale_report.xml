@@ -79,6 +79,9 @@
                                             <span>Tax</span>
                                         </th>
                                         <th class="text-center">
+                                            <span>Labour Surcharge</span>
+                                        </th>
+                                        <th class="text-center">
                                             <span>Amount Without Tax</span>
                                         </th>
                                     </tr>
@@ -88,11 +91,17 @@
                                     <t t-set="orderline_total_sub_inc" t-value="0" />
 <!--                                    <t t-set="orderline_total_tax" t-value="0" />-->
                                     <t t-set="orderline_total_sub" t-value="0" />
+                                    <t t-set="labor_surcharge_total" t-value="0" />
                                     <t t-foreach="env['pos.order.line'].get_order_line(orderlines)" t-as="order">
                                         <tr>
                                             <t t-set="orderline_total_qty" t-value="orderline_total_qty + order.get('qty', False)" />
                                             <t t-set="orderline_total_sub_inc" t-value="orderline_total_sub_inc + round(order.get('price_subtotal_incl', False), 2)" />
                                             <t t-set="orderline_total_sub" t-value="orderline_total_sub + round(order.get('price_subtotal', False), 2)" />
+                                            <t t-set="labor_surcharge" t-value="0"/>
+                                            <t t-set="orderline_labor_surcharge" t-value="order.get('tax_ids_after_fiscal_position', []).filtered(lambda x: x.name == 'Labor Surcharge')" />
+                                            <t t-if="orderline_labor_surcharge">
+                                                <t t-set="labor_surcharge" t-value="round((order.get('price_subtotal', False) * orderline_labor_surcharge.amount) / 100,2)"/>
+                                            </t>
                                             <td>
                                                 <span t-esc="order.get('full_product_name', False)"/>
                                             </td>
@@ -103,7 +112,11 @@
                                                 <span t-esc="round(order.get('price_subtotal_incl', False), 2)"/>
                                             </td>
                                             <td>
-                                                <span t-esc="round(order.get('price_subtotal_incl', False) - order.get('price_subtotal', False), 2)"/>
+                                                <span t-esc="round(round(order.get('price_subtotal_incl', False) - order.get('price_subtotal', False), 2) - labor_surcharge,2)"/>
+                                            </td>
+                                            <td>
+                                                <span t-esc="labor_surcharge"/>
+                                                <t t-set="labor_surcharge_total" t-value="labor_surcharge_total + labor_surcharge"/>
                                             </td>
                                             <td>
                                                 <span t-esc="round(order.get('price_subtotal', False), 2)"/>
@@ -122,7 +135,10 @@
                                             <b t-esc="round(orderline_total_sub_inc, 2)"/>
                                         </td>
                                         <td>
-                                            <b t-esc="round(orderline_total_sub_inc - orderline_total_sub, 2)"/>
+                                            <b t-esc="round(orderline_total_sub_inc - orderline_total_sub, 2) - round(labor_surcharge_total, 2)"/>
+                                        </td>
+                                        <td>
+                                            <b t-esc="round(labor_surcharge_total, 2)"/>
                                         </td>
                                         <td>
                                             <b t-esc="round(orderline_total_sub, 2)"/>
@@ -225,6 +241,9 @@
                                             <span>Tax</span>
                                         </th>
                                         <th class="text-center">
+                                            <span>Labor Surcharge</span>
+                                        </th>
+                                        <th class="text-center">
                                             <span>Amount Without Tax</span>
                                         </th>
                                     </tr>
@@ -236,6 +255,7 @@
                                     <t t-set="line_total_amount" t-value="0" />
                                     <t t-set="line_total_tax" t-value="0" />
                                     <t t-set="line_total_tax_without" t-value="0" />
+                                    <t t-set="line_total_labor_surcharge" t-value="0" />
                                     <t t-set="sales_staff" t-value="env['pos.session'].get_sale_by_cashier(order_ids)" />
 <!--                                    read_group([('pos_id', 'in', order_ids)], fields=['amount_tax', 'amount_total', 'tip_amount'], groupby=['employee_id'])-->
                                     <t t-foreach="sales_staff" t-as="staff">
@@ -243,6 +263,7 @@
                                         <t t-set="line_total_amount" t-value="line_total_amount + round(sales_staff[staff].get('amount', 0), 2)" />
                                         <t t-set="line_total_tax" t-value="line_total_tax + round(sales_staff[staff].get('amount_tax', 0), 2)" />
                                         <t t-set="line_total_tax_without" t-value="line_total_tax_without + round(sales_staff[staff].get('amount_without', 0), 2)" />
+                                        <t t-set="line_total_labor_surcharge" t-value="line_total_labor_surcharge + round(sales_staff[staff].get('labor_surcharge', False), 2)" />
                                         <tr>
                                             <td>
                                                 <span t-if="sales_staff[staff].get('employee', False)" t-esc="sales_staff[staff].get('employee').name" />
@@ -256,7 +277,11 @@
                                                 <span t-else="" t-esc="float(0)" />
                                             </td>
                                             <td>
-                                                <span t-if="sales_staff[staff].get('amount_tax', False)" t-esc="round(sales_staff[staff].get('amount_tax', False), 2)" />
+                                                <span t-if="sales_staff[staff].get('amount_tax', False)" t-esc="round(sales_staff[staff].get('amount_tax', False), 2) - round(sales_staff[staff].get('labor_surcharge', False), 2)" />
+                                                <span t-else="" t-esc="float(0)" />
+                                            </td>
+                                            <td>
+                                                <span t-if="sales_staff[staff].get('labor_surcharge', False)" t-esc="round(sales_staff[staff].get('labor_surcharge', False), 2)" />
                                                 <span t-else="" t-esc="float(0)" />
                                             </td>
                                             <td>
@@ -276,7 +301,10 @@
                                             <b t-esc="round(line_total_amount, 2)"/>
                                         </td>
                                         <td>
-                                            <b t-esc="round(line_total_tax, 2)"/>
+                                            <b t-esc="round(line_total_tax, 2) - round(line_total_labor_surcharge, 2)"/>
+                                        </td>
+                                        <td>
+                                            <b t-esc="round(line_total_labor_surcharge, 2)"/>
                                         </td>
                                         <td>
                                             <b t-esc="round(line_total_tax_without,2)"/>
@@ -315,7 +343,7 @@
                                 </thead>
                                 <tbody>
                                     <t t-set="payment_tip_total" t-value="0" />
-                                    <t t-set="payment_total_quantity" t-value="0" />
+                                    <t t-set="payment_total_quantity" t-value="0"/>
                                     <t t-set="payment_amount_total" t-value="0" />
 <!--                                    <t t-set="payment_tax_total" t-value="0" />-->
 <!--                                    <t t-set="payment_amount_without_tax" t-value="0" />-->
@@ -334,7 +362,11 @@
                                                 <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).payment_method_id.name"/>
                                             </td>
                                             <td>
-<!--                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('tip_amount')), 2)"/>-->
+                                                <t t-if="method['payment_method_id'] and method['payment_method_id'][0]">
+                                                    <t t-set="tip_amount" t-value="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id), ('is_tip','=',True)]).mapped('amount')), 2)"/>
+                                                    <span t-esc="tip_amount"/>
+                                                    <t t-set="payment_tip_total" t-value="payment_tip_total + tip_amount" />
+                                                </t>
                                             </td>
                                             <td>
                                                 <span t-esc="float(method.get('payment_method_id_count', 0))" />
@@ -342,7 +374,7 @@
 <!--                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="float(len(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').ids))"/>-->
                                             </td>
                                             <td>
-                                                <span t-if="method.get('amount', False)" t-esc="round(method.get('amount'), 2)" />
+                                                <span t-if="method.get('amount', False)" t-esc="round(method.get('amount'), 2) - tip_amount" />
                                                 <span t-else="" t-esc="float(0)" />
 <!--                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal_incl')), 2)"/>-->
                                             </td>
@@ -407,7 +439,7 @@
                                             <b>Total Payment</b>
                                         </td>
                                         <td>
-<!--                                            <b t-esc="payment_tip_total"/>-->
+                                            <b t-esc="payment_tip_total"/>
                                         </td>
                                         <td>
                                             <b t-esc="float(payment_total_quantity)"/>

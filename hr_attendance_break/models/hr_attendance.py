@@ -124,15 +124,13 @@ class HrAttendanceBreak(models.Model):
             resume_time = False
             local_tz = pytz.timezone(self._context.get("tz") or "UTC")
             if rec.break_time:
-                break_time = (
-                    rec.break_time.replace(tzinfo=pytz.utc).astimezone(local_tz)
-                ).time()
+                # break_time = (
+                #     rec.break_time.replace(tzinfo=pytz.utc).astimezone(local_tz)
+                # ).time()
+                break_time = rec.break_time.time()
             if rec.resume_time:
-                resume_time = (
-                    rec.resume_time.replace(tzinfo=pytz.utc).astimezone(
-                        local_tz
-                    )
-                ).time()
+                # resume_time = (rec.resume_time.replace(tzinfo=pytz.utc).astimezone(local_tz)).time()
+                resume_time = rec.resume_time.time()
 
             break_time = (
                 break_time.strftime("%H:%M:%S")

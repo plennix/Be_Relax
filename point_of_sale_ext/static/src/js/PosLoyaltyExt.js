@@ -74,7 +74,7 @@ const PosLoyaltyOrderExt = (Order) => class PosLoyaltyOrderExt extends Order {
                 return payload.error_message;
             }
             }
-            if (claimableRewards && claimableRewards.length === 1) {
+            if (claimableRewards && claimableRewards.length === 1) {reward_type
                 if (claimableRewards[0].reward.reward_type !== 'product' || !claimableRewards[0].reward.multi_product) {
                     this._applyReward(claimableRewards[0].reward, claimableRewards[0].coupon_id);
                     this._updateRewards();
