@@ -28,15 +28,16 @@ class SalesPosReport(models.TransientModel):
             ON
                 pol.order_id = po.id
             WHERE
-                po.date_order >= %s AND po.date_order <= %s;
+                po.date_order >= %s AND po.date_order <= %s AND po.company_id = %s;
             """
 
-        params = (self.date_from, self.date_to)
+        params = (self.date_from, self.date_to, self.env.company.id)
         self.env.cr.execute(sql_q, params)
         for row in self.env.cr.dictfetchall():
             pos_lines[row.pop("id")] = row
         for key in pos_lines.keys():
             res = dict((fn, 0.0) for fn in ["amount_tax", "amount_untaxed", "discount"])
+            res['id'] = key
             res["order_id"] = pos_lines[key].get("order_id")
             res["name"] = pos_lines[key].get("name")
             res["date_order"] = pos_lines[key].get("date_order")
@@ -46,6 +47,7 @@ class SalesPosReport(models.TransientModel):
             res["qty"] = pos_lines[key].get("qty")
             res["price_unit"] = pos_lines[key].get("price_unit")
             res["discount"] = pos_lines[key].get("discount")
+            res["price_subtotal"] = pos_lines[key].get('price_subtotal')
 
             report_lines.append(res)
         return report_lines
@@ -73,6 +75,10 @@ class SalesPosReport(models.TransientModel):
         worksheet.set_column(12, 12, 10)
         worksheet.set_column(13, 13, 10)
         worksheet.set_column(14, 14, 15)
+        # worksheet.set_column(15, 15, 15)
+        # worksheet.set_column(16, 16, 15)
+        # worksheet.set_column(17, 17, 15)
+        # worksheet.set_column(18, 18, 15)
 
         float_format = workbook.add_format(
             {
@@ -128,7 +134,7 @@ class SalesPosReport(models.TransientModel):
         worksheet.write(row, column + 12, "Promotions", column_titles)
         worksheet.write(row, column + 13, "Currency", column_titles)
         worksheet.write(row, column + 14, "Payment in AED", column_titles)
-        # worksheet.write(row, column + 15, "Company", column_titles)
+
 
         data = self.get_report_data()
         row = 1
@@ -137,6 +143,8 @@ class SalesPosReport(models.TransientModel):
         aed_price = 0.0
         qty = 0.0
         discount = 0.0
+        labour_surcharge = 0.0
+        order_set = set()
         for rec in data:
             employee_name = (
                 self.env["hr.employee"].browse(rec["employee_id"]).name
@@ -154,6 +162,7 @@ class SalesPosReport(models.TransientModel):
                 if rec["order_id"]
                 else ""
             )
+            order_set.update(order_id)
             site = ','.join([i for i in [order_id.boarding_pass_ids[0].departure_id.code, order_id.boarding_pass_ids[0].destination] if i]) if order_id.boarding_pass_ids else ''
             flight_no = order_id.boarding_pass_ids[0].flight_number if order_id.boarding_pass_ids else ''
             product_cat = product_id.categ_id.name
@@ -165,6 +174,11 @@ class SalesPosReport(models.TransientModel):
                 company_rate = rate_currency_id[0].company_rate
                 aed_convert_rate = rec["price_unit"] * company_rate
             discount_amount = (rec["discount"] / 100) * rec["price_unit"]
+            line = self.env['pos.order.line'].browse(rec['id'])
+            tax_ids_after_fiscal_position = line.tax_ids_after_fiscal_position.filtered(lambda x: x.name == 'Labor Surcharge')
+            if tax_ids_after_fiscal_position:
+                labour_surcharge += (rec['price_subtotal'] * tax_ids_after_fiscal_position.amount)/100
+                
             worksheet.write(row, column, index, text_format)
             worksheet.write(
                 row, column + 1, order_id.name if order_id.name else "", text_format
@@ -250,16 +264,15 @@ class SalesPosReport(models.TransientModel):
             discount += discount_amount if discount_amount else 0.0
             row += 1
             index += 1
-        total_format = workbook.add_format(
-            {
-                "bold": True,
-                "align": "left",
-                "valign": "bottom",
-                "font_name": "Calibri",
-                "font_size": "9",
-                "bg_color": "#D3D3D3",
-            }
-        )
+
+        total_format = workbook.add_format({
+            "bold": True,
+            "align": "right",
+            "valign": "bottom",
+            "font_name": "Calibri",
+            "font_size": "9",
+            "bg_color": "#D3D3D3",
+        })
         worksheet.write(
             row,
             column + 6,
@@ -283,6 +296,41 @@ class SalesPosReport(models.TransientModel):
             column + 14,
             round(aed_price,2),
             total_format,
+        )
+        row = row+3
+        orders_list = list(order_set)
+        amount_tax = 0.0
+        amount_total = 0.0
+        for x in orders_list:
+            amount_tax += x.amount_tax
+            amount_total += x.amount_total
+        worksheet.write(row, column + 2, "Nb of Receipts", column_titles)
+        worksheet.write(row, column + 4, "DF (Duty Free)", column_titles)
+        worksheet.write(row, column + 6, "DP (Duty Paid)", column_titles)
+        worksheet.write(row, column + 8, "Labour Surcharge", column_titles)
+        worksheet.write(
+            row,
+            column + 3,
+            len(orders_list),
+            float_format,
+        )
+        worksheet.write(
+            row,
+            column + 5,
+            round(amount_total-amount_tax,2),
+            float_format,
+        )
+        worksheet.write(
+            row,
+            column + 7,
+            round(amount_total, 2),
+            float_format,
+        )
+        worksheet.write(
+            row,
+            column + 9,
+            round(labour_surcharge, 2),
+            float_format,
         )
 
         workbook.close()

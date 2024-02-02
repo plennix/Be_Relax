@@ -160,6 +160,9 @@
 	                            <span class="price_display pos-receipt-right-align">
 	                                <t t-esc="env.pos.format_currency_no_symbol(line.price_display)" />
 	                            </span>
+								 <div t-if="line and line.line_emp_pin">
+									<t t-esc="line.line_emp_pin"/>
+								 </div>
 	                        </div>
 	                    </t>
 						<t t-if="line.customer_note">
