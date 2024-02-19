@@ -1,12 +1,220 @@
-from odoo import models, fields, api
+from odoo import api, fields, models, _, Command
 from itertools import groupby
 from operator import itemgetter
 from datetime import datetime, date
 from collections import defaultdict
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 
 class PosSessionExt(models.Model):
     _inherit = 'pos.session'
+
+    attendance_record_ids = fields.One2many('attendance.record','session_id',string='Attend Record(s)')
+    start_cash_register_currency_line_ids = fields.One2many('cash.register.currency.line','session_id',string="Cash Register Currency Line Start")
+    end_real_cash_register_currency_line_ids = fields.One2many('cash.register.currency.line','pos_session_id',string="Cash Register Currency Line End")
+
+
+    def post_closing_cash_details(self, counted_cash):
+        """
+        Calling this method will try store the cash details during the session closing.
+
+        :param counted_cash: float, the total cash the user counted from its cash register
+        If successful, it returns {'successful': True}
+        Otherwise, it returns {'successful': False, 'message': str, 'redirect': bool}.
+        'redirect' is a boolean used to know whether we redirect the user to the back end or not.
+        When necessary, error (i.e. UserError, AccessError) is raised which should redirect the user to the back end.
+        """
+        self.ensure_one()
+        check_closing_session = self._cannot_close_session()
+        if check_closing_session:
+            return check_closing_session
+
+        if not self.cash_journal_id:
+            # The user is blocked anyway, this user error is mostly for developers that try to call this function
+            raise UserError(_("There is no cash register in this session."))
+
+        self.cash_register_balance_end_real = counted_cash
+
+        for line in self.start_cash_register_currency_line_ids:
+            default_cash_payment_method_id = self.payment_method_ids.filtered(lambda pm: pm.type == 'cash')[0]
+            end_real_cash_register_currency_line = self.end_real_cash_register_currency_line_ids.filtered(
+                lambda x: x.currency_name == line.currency_name)
+            orders = self.order_ids.filtered(lambda o: o.state == 'paid' or o.state == 'invoiced')
+            currency_cash_payments = orders.payment_ids.filtered(
+                lambda
+                    p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == line.currency_name)
+            if end_real_cash_register_currency_line:
+                end_real_cash_register_currency_line.write({
+                    'account_currency': end_real_cash_register_currency_line.account_currency + sum(
+                        currency_cash_payments.mapped('account_currency'))})
+            else:
+                self.write({'end_real_cash_register_currency_line_ids': [(0, 0, {
+                    'currency_name': line.currency_name,
+                    'account_currency': line.account_currency + sum(
+                        currency_cash_payments.mapped('account_currency'))})]})
+
+        return {'successful': True}
+
+    def action_pos_session_closing_control(self, balancing_account=False, amount_to_balance=0,
+                                           bank_payment_method_diffs=None):
+        bank_payment_method_diffs = bank_payment_method_diffs or {}
+        for session in self:
+            if any(order.state == 'draft' for order in session.order_ids):
+                raise UserError(_("You cannot close the POS when orders are still in draft"))
+            if session.state == 'closed':
+                raise UserError(_('This session is already closed.'))
+            session.write({'state': 'closing_control', 'stop_at': fields.Datetime.now()})
+            if not session.config_id.cash_control:
+                return session.action_pos_session_close(balancing_account, amount_to_balance, bank_payment_method_diffs)
+            # If the session is in rescue, we only compute the payments in the cash register
+            # It is not yet possible to close a rescue session through the front end, see `close_session_from_ui`
+            if session.rescue and session.config_id.cash_control:
+                default_cash_payment_method_id = self.payment_method_ids.filtered(lambda pm: pm.type == 'cash')[0]
+                orders = self.order_ids.filtered(lambda o: o.state == 'paid' or o.state == 'invoiced')
+                total_cash = sum(
+                    orders.payment_ids.filtered(lambda p: p.payment_method_id == default_cash_payment_method_id).mapped(
+                        'amount')
+                ) + self.cash_register_balance_start
+
+                session.cash_register_balance_end_real = total_cash
+
+                # orders = self.order_ids.filtered(lambda o: o.state == 'paid' or o.state == 'invoiced')
+                for line in session.start_cash_register_currency_line_ids:
+                    default_cash_payment_method_id = self.payment_method_ids.filtered(lambda pm: pm.type == 'cash')[0]
+                    end_real_cash_register_currency_line = session.end_real_cash_register_currency_line_ids.filtered(
+                        lambda x: x.currency_name == line.currency_name)
+                    currency_cash_payments = orders.payment_ids.filtered(
+                        lambda
+                            p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == line.currency_name)
+                    if end_real_cash_register_currency_line:
+                        end_real_cash_register_currency_line.write({
+                                                                       'account_currency': end_real_cash_register_currency_line.account_currency + sum(
+                                                                           currency_cash_payments.mapped(
+                                                                               'account_currency'))})
+                    else:
+                        session.write({'start_cash_register_currency_line_ids': [(0, 0, {
+                            'currency_name': line.currency_name,
+                            'account_currency': line.account_currency + sum(
+                                currency_cash_payments.mapped('account_currency'))})]})
+
+            return session.action_pos_session_validate(balancing_account, amount_to_balance, bank_payment_method_diffs)
+
+    def action_pos_session_open(self):
+        # we only open sessions that haven't already been opened
+        for session in self.filtered(lambda session: session.state == 'opening_control'):
+            values = {}
+            if not session.start_at:
+                values['start_at'] = fields.Datetime.now()
+            if session.config_id.cash_control and not session.rescue:
+                last_session = self.search([('config_id', '=', session.config_id.id), ('id', '!=', session.id)], limit=1)
+                session.cash_register_balance_start = last_session.cash_register_balance_end_real  # defaults to 0 if lastsession is empty
+
+                poscurrency = self.env['res.currency'].search([('id', 'in', session.config_id.selected_currency.ids)])
+
+                if not last_session:
+                    session.write({
+                        'start_cash_register_currency_line_ids' : [(0,0,{'currency_name':currency.name, 'account_currency': 0}) for currency in poscurrency]
+                    })
+                else:
+                    for currency in poscurrency:
+                        start_cash_register_currency_line = session.start_cash_register_currency_line_ids.filtered(lambda x:x.currency_name == currency.name)
+                        end_real_cash_register_currency_line = last_session.end_real_cash_register_currency_line_ids.filtered(lambda x:x.currency_name == currency.name)
+
+                        if start_cash_register_currency_line and end_real_cash_register_currency_line:
+                            start_cash_register_currency_line.write({'account_currency':end_real_cash_register_currency_line.account_currency})
+                        else:
+                            if end_real_cash_register_currency_line:
+                                session.write({'start_cash_register_currency_line_ids':[(0,0,{'currency_name':currency.name, 'account_currency': end_real_cash_register_currency_line.account_currency})]})
+                            else:
+                                session.write({'start_cash_register_currency_line_ids': [(0, 0, {
+                                    'currency_name': currency.name if currency else '',
+                                    'account_currency': 0.0})]})
+
+            else:
+                values['state'] = 'opened'
+            session.write(values)
+        return True
+
+    def get_closing_control_data(self):
+        result = super().get_closing_control_data()
+        orders = self.order_ids.filtered(lambda o: o.state == 'paid' or o.state == 'invoiced')
+        payments = orders.payment_ids.filtered(lambda p: p.payment_method_id.type != "pay_later")
+        pay_later_payments = orders.payment_ids - payments
+        cash_payment_method_ids = self.payment_method_ids.filtered(lambda pm: pm.type == 'cash')
+        default_cash_payment_method_id = cash_payment_method_ids[0] if cash_payment_method_ids else None
+        other_payment_method_ids = self.payment_method_ids - default_cash_payment_method_id if default_cash_payment_method_id else self.payment_method_ids
+        last_session = self.search([('config_id', '=', self.config_id.id), ('id', '!=', self.id)], limit=1)
+        cash_in_count = 0
+        cash_out_count = 0
+        cash_in_out_list = []
+        for cash_move in self.sudo().statement_line_ids.sorted('create_date'):
+            if cash_move.amount > 0:
+                cash_in_count += 1
+                name = f'Cash in {cash_in_count}'
+            else:
+                cash_out_count += 1
+                name = f'Cash out {cash_out_count}'
+            cash_in_out_list.append({
+                'name': cash_move.payment_ref if cash_move.payment_ref else name,
+                'amount': cash_move.amount
+            })
+
+        cash_lst = []
+        for currency_name in list(
+                set(payments.filtered(lambda p: p.payment_method_id == default_cash_payment_method_id).mapped(
+                        'currency_name'))):
+            currency_cash_payments = payments.filtered(
+                lambda p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == currency_name)
+            statement_total_amount = sum(self.sudo().statement_line_ids.filtered(lambda s: s.currency_name == currency_name).mapped('account_currency'))
+            cash_register_balance_end_real_currencywise = sum(last_session.end_real_cash_register_currency_line_ids.filtered(lambda x:x.currency_name == currency_name).mapped('account_currency'))
+
+            currency = self.env['res.currency'].sudo().search([('name','=',currency_name)],limit=1)
+
+            cash_lst.append({
+                'name': default_cash_payment_method_id.name + '(' + currency_name + ')',
+                'amount': cash_register_balance_end_real_currencywise
+                          + sum(currency_cash_payments.mapped('account_currency'))
+                          + statement_total_amount,
+                'opening': cash_register_balance_end_real_currencywise,
+                'payment_amount': sum(currency_cash_payments.mapped('account_currency')),
+                'amount_org': sum(currency_cash_payments.mapped('amount')),
+                'moves': cash_in_out_list,
+                'id': default_cash_payment_method_id.id,
+                'currency_name': currency_name,
+                'currency_symbol': currency.symbol if currency else currency_name,
+            })
+
+        other_payment_methods_cuurency = []
+        for pm in other_payment_method_ids:
+            if list(set(orders.payment_ids.filtered(lambda p: p.payment_method_id == pm).mapped('currency_name'))):
+                for currency_name in list(
+                        set(orders.payment_ids.filtered(lambda p: p.payment_method_id == pm).mapped('currency_name'))):
+                    currency_cash_payments = orders.payment_ids.filtered(
+                        lambda p: p.payment_method_id == pm and p.currency_name == currency_name)
+                    currency = self.env['res.currency'].sudo().search([('name', '=', currency_name)], limit=1)
+
+                    other_payment_methods_cuurency.append({
+                        'name': pm.name + '(' + currency_name + ')',
+                        'amount': sum(currency_cash_payments.mapped('amount')),
+                        'number': len(currency_cash_payments),
+                        'id': pm.id,
+                        'type': pm.type,
+                        'currency_symbol': currency.symbol if currency else currency_name,
+                    })
+            else:
+                other_payment_methods_cuurency.append({
+                    'name': pm.name,
+                    'amount': sum(orders.payment_ids.filtered(lambda p: p.payment_method_id == pm).mapped('amount')),
+                    'number': len(orders.payment_ids.filtered(lambda p: p.payment_method_id == pm)),
+                    'id': pm.id,
+                    'type': pm.type,
+                    'currency_symbol': False,
+                })
+        result.update({
+            'cash_lst': cash_lst,
+            'other_payment_methods_cuurency': other_payment_methods_cuurency,
+        })
+        return result
 
     def _get_pos_ui_hr_employee(self, params):
         res = super(PosSessionExt, self)._get_pos_ui_hr_employee(params)

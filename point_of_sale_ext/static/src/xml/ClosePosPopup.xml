@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+    <t t-name="ClosePosPopup" t-inherit="point_of_sale.ClosePosPopup" t-inherit-mode="extension" owl="1">
+        <xpath expr="//t[@t-if='cashControl']" position="replace">
+            <t t-if="cashControl">
+                <t t-foreach="defaultCashList" t-as="defaultCashCurr" t-key="defaultCashCurr.name">
+             <tbody>
+                 <tr>
+                    <td t-esc="defaultCashCurr.name"/>
+                    <td>
+                        <t t-esc="env.pos.format_currency_no_symbol(defaultCashCurr.amount) + ' ' + defaultCashCurr.currency_symbol"/>
+                    </td>
+                    <td class="flex" t-on-input="(event) => this.handleInputChangeForCashCurrency(defaultCashCurr.name, event)">
+                        <input class="pos-input" t-ref="closingCashInput_{{defaultCashCurr.name}}"/>
+                        <div class="button icon" t-on-click="openDetailsPopup">
+                            <i class="fa fa-calculator" role="img" title="Open the money details popup"/>
+                        </div>
+                    </td>
+                    <td t-att-class="{'warning': state.payments[defaultCashCurr.name].difference}">
+                        <t t-esc="env.pos.format_currency_no_symbol(state.payments[defaultCashCurr.name].difference) + ' ' + defaultCashCurr.currency_symbol"/>
+                    </td>
+                </tr>
+             </tbody>
+                <tbody class="cash-overview">
+                    <tr>
+                        <td>Opening</td>
+                        <td>
+                            <t t-esc="env.pos.format_currency_no_symbol(defaultCashCurr.opening) + ' ' + defaultCashCurr.currency_symbol"/>
+
+                        </td>
+                    </tr>
+                    <tr t-foreach="defaultCashCurr.moves" t-as="move" t-key="move_index">
+                        <td>
+                            <div class="flex">
+                                <div class="cash-sign" t-esc="move.amount &lt; 0 ? '-' : '+'"/>
+                                <t t-esc="move.name"/>
+                            </div>
+                        </td>
+                        <td>
+                            <t t-esc="env.pos.format_currency_no_symbol(Math.abs(move.amount)) + ' ' + defaultCashCurr.currency_symbol"/>
+                        </td>
+                    </tr>
+                    <tr t-if="defaultCashCurr.payment_amount">
+                        <td>
+                            <div class="flex">
+                                <div class="cash-sign" t-esc="defaultCashCurr.payment_amount &lt; 0 ? '-' : '+'"/>
+                                Payments in <t t-esc="defaultCashCurr.name"/>
+                            </div>
+                        </td>
+                        <td>
+                            <t t-esc="env.pos.format_currency_no_symbol(Math.abs(defaultCashCurr.payment_amount)) + ' ' + defaultCashCurr.currency_symbol"/>
+                        </td>
+                    </tr>
+                </tbody>
+            </t>
+            </t>
+        </xpath>
+<!--        <xpath expr="//t[@t-if='cashControl']/tbody" position="before">-->
+<!--            <t t-foreach="defaultCashList" t-as="defaultCashCurr" t-key="defaultCashCurr.name">-->
+<!--             <tbody>-->
+<!--                 <tr>-->
+<!--                    <td t-esc="defaultCashCurr.name"/>-->
+<!--                    <td>-->
+<!--                        <t t-esc="env.pos.format_currency_no_symbol(defaultCashCurr.amount) + ' ' + defaultCashCurr.currency_symbol"/>-->
+<!--                    </td>-->
+<!--                    <td class="flex" t-on-input="(event) => this.handleInputChangeForCurrency(defaultCashCurr.name, event)">-->
+<!--                        <input class="pos-input" t-ref="closingCashInput_{{defaultCashCurr.name}}"/>-->
+<!--                        <div class="button icon" t-on-click="openDetailsPopup">-->
+<!--                            <i class="fa fa-calculator" role="img" title="Open the money details popup"/>-->
+<!--                        </div>-->
+<!--                    </td>-->
+<!--                    <td t-att-class="{'warning': state.payments[defaultCashCurr.name].difference}">-->
+<!--                        <t t-esc="env.pos.format_currency_no_symbol(state.payments[defaultCashCurr.name].difference) + ' ' + defaultCashCurr.currency_symbol"/>-->
+<!--                    </td>-->
+<!--                </tr>-->
+<!--             </tbody>-->
+<!--                <tbody class="cash-overview">-->
+<!--                    <tr>-->
+<!--                        <td>Opening</td>-->
+<!--                        <td>-->
+<!--                            <t t-esc="env.pos.format_currency_no_symbol(defaultCashCurr.opening) + ' ' + defaultCashCurr.currency_symbol"/>-->
+
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr t-foreach="defaultCashCurr.moves" t-as="move" t-key="move_index">-->
+<!--                        <td>-->
+<!--                            <div class="flex">-->
+<!--                                <div class="cash-sign" t-esc="move.amount &lt; 0 ? '-' : '+'"/>-->
+<!--                                <t t-esc="move.name"/>-->
+<!--                            </div>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            <t t-esc="env.pos.format_currency_no_symbol(Math.abs(move.amount)) + ' ' + defaultCashCurr.currency_symbol"/>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                    <tr t-if="defaultCashCurr.payment_amount">-->
+<!--                        <td>-->
+<!--                            <div class="flex">-->
+<!--                                <div class="cash-sign" t-esc="defaultCashCurr.payment_amount &lt; 0 ? '-' : '+'"/>-->
+<!--                                Payments in <t t-esc="defaultCashCurr.name"/>-->
+<!--                            </div>-->
+<!--                        </td>-->
+<!--                        <td>-->
+<!--                            <t t-esc="env.pos.format_currency_no_symbol(Math.abs(defaultCashCurr.payment_amount)) + ' ' + defaultCashCurr.currency_symbol"/>-->
+<!--                        </td>-->
+<!--                    </tr>-->
+<!--                </tbody>-->
+<!--            </t>-->
+<!--        </xpath>-->
+        <xpath expr="//tbody[@t-if='otherPaymentMethods.length &gt; 0']" position="before">
+             <tbody t-if="otherPaymentMethodsCurrency.length &gt; 0">
+                <tr t-foreach="otherPaymentMethodsCurrency" t-as="pm" t-key="pm.name">
+                    <td t-esc="pm.name"/>
+                    <t t-if="pm.currency_symbol">
+                        <td t-esc="env.pos.format_currency_no_symbol(pm.amount) + ' ' + pm.currency_symbol"/>
+                    </t>
+                    <t t-else="">
+                        <td t-esc="env.pos.format_currency(pm.amount)"/>
+                    </t>
+
+                    <t t-set="_showDiff" t-value="_getShowDiff(pm)" />
+                    <td t-if="_showDiff" t-on-input="(event) => this.handleInputChangeForCurrency(pm.name, event)">
+                        <input class="pos-input" t-ref="closingCashInput_{{pm.name}}"/>
+                    </td>
+                    <t t-if="pm.currency_symbol">
+                        <td t-if="_showDiff" t-esc="env.pos.format_currency_no_symbol(state.payments[pm.name].difference) + ' ' + pm.currency_symbol" t-att-class="{'warning': state.payments[pm.name].difference}"/>
+                    </t>
+                    <t t-else="">
+                        <td t-if="_showDiff" t-esc="env.pos.format_currency(pm.amount)" t-att-class="{'warning': state.payments[pm.name].difference}"/>
+                    </t>
+                </tr>
+            </tbody>
+        </xpath>
+        <xpath expr="//tbody[@t-if='otherPaymentMethods.length &gt; 0']" position="replace">
+        </xpath>
+    </t>
+</templates>

@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_iata_code,iata.code,model_iata_code,,1,1,1,1
+access_attendance_record,attendance.record,model_attendance_record,,1,1,1,1
+access_cash_register_currency_line,cash.register.currency.line,model_cash_register_currency_line,,1,1,1,1

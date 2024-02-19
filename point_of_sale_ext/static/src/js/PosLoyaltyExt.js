@@ -15,6 +15,58 @@ import {
 } from '@pos_loyalty/js/Loyalty';
 
 
+   const POSComboProduct = (PosGlobalState) => class POSComboProduct extends PosGlobalState {
+        async getClosePosInfo() {
+        const closingData = await this.env.services.rpc({
+            model: 'pos.session',
+            method: 'get_closing_control_data',
+            args: [[this.pos_session.id]]
+        });
+        const ordersDetails = closingData.orders_details;
+        const paymentsAmount = closingData.payments_amount;
+        const payLaterAmount = closingData.pay_later_amount;
+        const openingNotes = closingData.opening_notes;
+        const defaultCashDetails = closingData.default_cash_details;
+        const defaultCashList = closingData.cash_lst;
+        const otherPaymentMethodsCurrency = closingData.other_payment_methods_cuurency;
+        const otherPaymentMethods = closingData.other_payment_methods;
+        const isManager = closingData.is_manager;
+        const amountAuthorizedDiff = closingData.amount_authorized_diff;
+        const cashControl = this.config.cash_control;
+
+        // component state and refs definition
+        const state = {notes: '', acceptClosing: false, payments: {}};
+        if (cashControl) {
+            state.payments[defaultCashDetails.id] = {counted: 0, difference: -defaultCashDetails.amount, number: 0, cash: true};
+        }
+        if (otherPaymentMethods.length > 0) {
+            otherPaymentMethods.forEach(pm => {
+                if (pm.type === 'bank') {
+                    state.payments[pm.id] = {counted: this.round_decimals_currency(pm.amount), difference: 0, number: pm.number}
+                }
+            })
+        }
+        if (otherPaymentMethodsCurrency.length > 0) {
+            otherPaymentMethodsCurrency.forEach(pm => {
+                if (pm.type === 'bank') {
+                    state.payments[pm.name] = {counted: this.round_decimals_currency(pm.amount), difference: 0, number: pm.number}
+                }
+            })
+        }
+        if (defaultCashList.length > 0) {
+            defaultCashList.forEach(pm => {
+                    state.payments[pm.name] = {counted: 0, difference: - pm.amount, number: 0}
+            })
+        }
+        return {
+            ordersDetails, paymentsAmount, payLaterAmount, openingNotes, defaultCashDetails, otherPaymentMethods,
+            isManager, amountAuthorizedDiff, state, cashControl, defaultCashList, otherPaymentMethodsCurrency
+        }
+    }
+  }
+
+  Registries.Model.extend(PosGlobalState, POSComboProduct);
+
 const _t = core._t;
 
 const PosLoyaltyOrderExt = (Order) => class PosLoyaltyOrderExt extends Order {

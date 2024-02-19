@@ -111,6 +111,32 @@ class HrEmployeeBase(models.AbstractModel):
                     else "resume"
                 )
 
+    @api.model
+    def employee_attendance_check(self, barcode):
+        employee = self.sudo().search([('barcode', '=', barcode)], limit=1)
+        if employee:
+            if employee.attendance_state == 'checked_in':
+                if employee.attendance_break_state == 'resume':
+                    last_break_record = employee.last_attendance_id.break_ids[-1] if employee.last_attendance_id and employee.last_attendance_id.break_ids else False
+                    if last_break_record and not last_break_record.resume_time:
+                        return {'check_out_break': True, 'employee_id': employee.id, 'want_checkout_break':False}
+                    elif not last_break_record:
+                        return {'check_out_break': True, 'employee_id': employee.id, 'want_checkout_break': False}
+                    else:
+                        return {'check_out_break': False, 'employee_id': employee.id, 'want_checkout_break':False}
+                if employee.attendance_break_state == 'break':
+                    return {'check_out_break': False, 'employee_id': employee.id ,'want_checkout_break':True}
+                return {'check_out_break':True,'employee_id':employee.id,'want_checkout_break':False}
+            else:
+                return {'check_out_break':False,'employee_id':employee.id, 'want_checkout_break':False}
+        return {'warning': _("No employee corresponding to Badge ID '%(barcode)s.'") % {'barcode': barcode}}
+
+    def attendance_break_scan(self, next_action, barcode):
+        employee = self.sudo().search([('barcode', '=', barcode)], limit=1)
+        if employee:
+            return self.attendance_break_resume_action(next_action)
+        return {'warning': _("No employee corresponding to Badge ID '%(barcode)s.'") % {'barcode': barcode}}
+
     def attendance_break_manual(self, next_action, snap=None, entered_pin=None):
         self.ensure_one()
         if isinstance(next_action,dict):

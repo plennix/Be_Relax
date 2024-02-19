@@ -51,11 +51,11 @@ odoo.define('pos_hr.SelectCashierMixin', function (require) {
           EmpCheckIn = await this.rpc({
             model: 'hr.employee',
             method: 'check_pos_cashier_checkin',
-            args: [{ 'emp_id': employee.id }],
+            args: [[employee.id],this.env.pos.pos_session.id],
           });
-        }
 
-        if (employee && !EmpCheckIn) {
+        }
+        if (employee && !EmpCheckIn.emp_attendance_status) {
           this.showPopup('ErrorPopup', {
             title: this.env._t('Wrong value'),
             body: this.env._t(
@@ -65,12 +65,30 @@ odoo.define('pos_hr.SelectCashierMixin', function (require) {
           return false
         }
 
+//         if (employee && EmpCheckIn.already_checkin_another_session) {
+//          this.showPopup('ErrorPopup', {
+//            title: this.env._t('Wrong value'),
+//            body: this.env._t(
+//              'This Cashier Already Logged In Another Session.'
+//            ),
+//          });
+//          return false
+//        }
+
+
         if (employee && employee.pin) {
           employee = await this.askPin(employee);
         }
         if (employee) {
           this.env.pos.set_cashier(employee);
-          debugger;
+          if(this.env.pos.config.enable_attendance){
+              await this.rpc({
+                model: 'hr.employee',
+                method: 'pos_cashier_checkin',
+                args: [[employee.id],this.env.pos.pos_session.id],
+              });
+          }
+
           this.back ? this.back() : null;
         }
       }
@@ -90,7 +108,7 @@ odoo.define('pos_hr.SelectCashierMixin', function (require) {
           args: [{ 'emp_id': employee.id }],
         });
       }
-      if (employee && employee !== this.env.pos.get_cashier() && EmpCheckIn) {
+      if (employee && employee !== this.env.pos.get_cashier() && EmpCheckIn.emp_attendance_statu && !EmpCheckIn.already_checkin_another_session) {
         this.env.pos.set_cashier(employee);
       }
       return employee;

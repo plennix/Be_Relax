@@ -38,6 +38,7 @@
             "hr_attendance_break/static/src/js/my_attendances.js",
             "hr_attendance_break/static/src/js/greeting_message.js",
             "hr_attendance_break/static/src/js/kiosk_confirm.js",
+            "hr_attendance_break/static/src/js/kiosk_mode.js",
             "hr_attendance_break/static/src/xml/attendance.xml",
         ],
         # "web.assets_qweb": [

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+	<data>
+		<record id="view_pos_session_form_inherit" model="ir.ui.view">
+			<field name="name">pos.session.form.inherit</field>
+			<field name="model">pos.session</field>
+			<field name="inherit_id" ref="point_of_sale.view_pos_session_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//sheet" position="inside">
+					 <notebook>
+                        <page string="Attendance Record(s)" name="attendance_record_ids">
+                            <field name="attendance_record_ids">
+                                <tree string="Attendance Record(s)">
+                                    <field name="employee_id"/>
+                                    <field name="check_in"/>
+                                    <field name="check_out"/>
+                                    <field name="worked_hours"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Cash Register Currency Line Start" name="cash_register_currency_line_ids">
+                            <field name="start_cash_register_currency_line_ids">
+                                <tree string="Cash Register Currency Line Start">
+                                    <field name="currency_name"/>
+                                    <field name="account_currency"/>
+                                </tree>
+                            </field>
+                        </page>
+                         <page string="Cash Register Currency Line End" name="end_real_cash_register_currency_line_ids">
+							<field name="end_real_cash_register_currency_line_ids">
+                                <tree string="Cash Register Currency Line End">
+                                    <field name="currency_name"/>
+                                    <field name="account_currency"/>
+                                </tree>
+                            </field>
+                        </page>
+                     </notebook>
+				</xpath>
+			</field>
+		</record>
+	</data>
+</odoo>

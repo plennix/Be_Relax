@@ -48,5 +48,33 @@
 
     </t>
 
+    <t t-extend="HrAttendanceKioskMode">
+        <t t-jquery="div.o_hr_attendance_kiosk_welcome_row" t-operation="after">
+            <div class="modal fade" id="checkOutPopup" data-bs-backdrop="static" data-bs-keyboard="false"
+                 tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">Check OUT / Take break</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="flex-grow-1">
+                                    <button class="o_hr_attendance_sign_in_out_icon btn btn-warning align-self-center px-5 py-3 mt-4 mb-2">
+                                        <i t-attf-class="fa fa-4x fa-sign-out align-middle"/>
+                                        <span class="align-middle fs-2 ms-3">Check OUT</span>
+                                    </button>
+                                    <button class="o_hr_attendance_break_resume_icon btn btn-success align-self-center px-5 py-3 mt-4 mb-2">
+                                        <span class="align-middle fs-2 me-3 text-white">Take break</span>
+                                        <i class="fa fa-4x fa-cutlery align-middle" title="Break"/>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                  </div>
+            </div>
+        </t>
+    </t>
+
 
 </template>

@@ -129,7 +129,7 @@ odoo.define('point_of_sale_commission.ProductScreen', function (require) {
           });
           return
         }
-
+        debugger;
         const { confirmed, payload } = await this.showPopup('ConfirmPopup', {
           'title': this.env._t('Add Product'),
           'body': this.env._t('Add more products?'),

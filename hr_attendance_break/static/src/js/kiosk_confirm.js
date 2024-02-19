@@ -1,4 +1,4 @@
-odoo.define("hr_attendance_base.kiosk_mode", function (require) {
+odoo.define("hr_attendance_base.kiosk_confirm", function (require) {
   "use strict";
 
   const KioskConfirm = require("hr_attendance.kiosk_confirm");
