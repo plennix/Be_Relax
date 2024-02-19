@@ -10,6 +10,14 @@ class AttendanceRecord(models.Model):
     check_in = fields.Datetime(string="Check In", default=fields.Datetime.now, required=True)
     check_out = fields.Datetime(string="Check Out")
     worked_hours = fields.Float(string='Worked Hours', compute='_compute_worked_hours', store=True, readonly=True)
+    config_id = fields.Many2one('pos.config',related='session_id.config_id', string='Point of Sale', readonly=True)
+    attendance_id = fields.Many2one(
+        "hr.attendance",
+        ondelete="cascade",
+        store=True,
+        copy=False,
+        string="Attendance Reference",
+    )
 
     @api.depends('check_in', 'check_out')
     def _compute_worked_hours(self):

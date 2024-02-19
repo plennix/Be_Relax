@@ -13,6 +13,7 @@
         'views/pos_config.xml',
         'views/pos_session.xml',
         'views/hr_employee_views.xml',
+        'views/hr_attendance.xml',
         # 'views/iata_code.xml',
     ],
 

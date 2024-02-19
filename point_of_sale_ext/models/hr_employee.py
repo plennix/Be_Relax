@@ -30,13 +30,14 @@ class HrEmployeeExt(models.Model):
             'employee_id':self.id,
             'session_id':session,
             'check_in': datetime.datetime.now(),
+            'attendance_id': self.last_attendance_id.id if self.last_attendance_id else False,
         })
         self.sudo().write({'pos_attendance_state':'checked_in', 'last_pos_attendance_record':attendance.id})
 
     def pos_cashier_checkout(self, session):
         attendance = self.env['attendance.record'].sudo().search([('session_id','=',session),('employee_id','=',self.id)],limit=1)
         if attendance:
-            attendance.write({'check_out':datetime.datetime.now()})
+            attendance.write({'check_out':datetime.datetime.now(), 'attendance_id': self.last_attendance_id.id if self.last_attendance_id else False})
             self.sudo().write({'pos_attendance_state': 'checked_out','last_pos_attendance_record':attendance.id})
 
 class HrJobExt(models.Model):

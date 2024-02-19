@@ -8,16 +8,16 @@
 			<field name="arch" type="xml">
 				<xpath expr="//sheet" position="inside">
 					 <notebook>
-                        <page string="Attendance Record(s)" name="attendance_record_ids">
-                            <field name="attendance_record_ids">
-                                <tree string="Attendance Record(s)">
-                                    <field name="employee_id"/>
-                                    <field name="check_in"/>
-                                    <field name="check_out"/>
-                                    <field name="worked_hours"/>
-                                </tree>
-                            </field>
-                        </page>
+<!--                        <page string="Attendance Record(s)" name="attendance_record_ids">-->
+<!--                            <field name="attendance_record_ids">-->
+<!--                                <tree string="Attendance Record(s)">-->
+<!--                                    <field name="employee_id"/>-->
+<!--                                    <field name="check_in"/>-->
+<!--                                    <field name="check_out"/>-->
+<!--                                    <field name="worked_hours"/>-->
+<!--                                </tree>-->
+<!--                            </field>-->
+<!--                        </page>-->
                         <page string="Cash Register Currency Line Start" name="cash_register_currency_line_ids">
                             <field name="start_cash_register_currency_line_ids">
                                 <tree string="Cash Register Currency Line Start">

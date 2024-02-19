@@ -6,3 +6,4 @@ from . import pos_session
 # from . import iata_code
 from . import pos_order
 from . import product_product
+from . import hr_attendance
