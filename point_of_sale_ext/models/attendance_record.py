@@ -10,7 +10,8 @@ class AttendanceRecord(models.Model):
     check_in = fields.Datetime(string="Check In", default=fields.Datetime.now, required=True)
     check_out = fields.Datetime(string="Check Out")
     worked_hours = fields.Float(string='Worked Hours', compute='_compute_worked_hours', store=True, readonly=True)
-    config_id = fields.Many2one('pos.config',related='session_id.config_id', string='Point of Sale', readonly=True)
+    config_id = fields.Many2one('pos.config',related='session_id.config_id', string='Point of Sale', readonly=True, store=True)
+    company_id = fields.Many2one('res.company',related='session_id.company_id', string='Company', readonly=True, store=True)
     attendance_id = fields.Many2one(
         "hr.attendance",
         ondelete="cascade",

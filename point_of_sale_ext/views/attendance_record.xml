@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- views -->
+
+    <record id="view_attendance_record_tree" model="ir.ui.view">
+        <field name="name">attendance.record.tree</field>
+        <field name="model">attendance.record</field>
+        <field name="arch" type="xml">
+            <tree string="POS Employee attendances" editable="bottom" sample="1">
+                <field name="employee_id"/>
+                <field name="config_id" string="Shop"/>
+                <field name="check_in"/>
+                <field name="check_out"/>
+                <field name="worked_hours" string="Work Hours" widget="float_time"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="hr_attendance_record_view_form" model="ir.ui.view">
+        <field name="name">attendance.record.form</field>
+        <field name="model">attendance.record</field>
+        <field name="arch" type="xml">
+            <form string="POS Employee attendances">
+                <sheet>
+                    <group>
+                        <field name="employee_id"/>
+                        <field name="config_id" string="Shop"/>
+                        <field name="check_in"/>
+                        <field name="check_out"/>
+                        <field name="worked_hours" string="Work Hours" widget="float_time"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="hr_attendance_record_view_filter" model="ir.ui.view">
+        <field name="name">attendance_record_view_filter</field>
+        <field name="model">attendance.record</field>
+        <field name="arch" type="xml">
+            <search string="Hr Attendance Search">
+                <field name="employee_id"/>
+                <filter string="My Attendances" name="myattendances" domain="[('employee_id.user_id', '=', uid)]" />
+                <separator/>
+                <filter string="Check In" name="check_in_filter" date="check_in" default_period="last_month"/>
+                <filter string="No Check Out" name="nocheckout" domain="[('check_out', '=', False)]" />
+                <group expand="0" string="Group By">
+                    <filter string="Employee" name="employee" context="{'group_by': 'employee_id'}"/>
+                    <filter string="Check In" name="groupby_name" context="{'group_by': 'check_in'}"/>
+                    <filter string="Check Out" name="groupby_check_out" context="{'group_by': 'check_out'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- actions -->
+
+    <record id="attendance_record_attendance_action" model="ir.actions.act_window">
+        <field name="name">POS Attendances</field>
+        <field name="res_model">attendance.record</field>
+        <field name="view_mode">tree,form</field>
+        <field name="context">{"search_default_today":1}</field>
+        <field name="search_view_id" ref="hr_attendance_record_view_filter" />
+        <field name="help" type="html">
+            <p class="o_view_nocontent_empty_folder">
+                No attendance records found
+            </p><p>
+                The attendance records of your employees will be displayed here.
+            </p>
+        </field>
+    </record>
+
+    <menuitem id="menu_attendance_record" name="POS Attendances" parent="hr_attendance.menu_hr_attendance_root" sequence="11" groups="hr_attendance.group_hr_attendance" action="attendance_record_attendance_action"/>
+</odoo>

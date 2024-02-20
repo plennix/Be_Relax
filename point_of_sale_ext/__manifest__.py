@@ -7,6 +7,7 @@
     'depends': ['pos_hr', 'pos_loyalty','point_of_sale'],
     'data': [
         'security/ir.model.access.csv',
+        'security/record_rules.xml',
         # 'data/iata.code.csv',
         'report/sale_report.xml',
         'views/pos_order.xml',
@@ -14,6 +15,7 @@
         'views/pos_session.xml',
         'views/hr_employee_views.xml',
         'views/hr_attendance.xml',
+        'views/attendance_record.xml',
         # 'views/iata_code.xml',
     ],
 
