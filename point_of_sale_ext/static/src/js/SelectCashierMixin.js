@@ -76,45 +76,55 @@ odoo.define('pos_hr.SelectCashierMixin', function (require) {
 //        }
 
 
-        if (employee && employee.pin) {
-          employee = await this.askPin(employee);
-        }
-        if (employee) {
-          this.env.pos.set_cashier(employee);
-          if(this.env.pos.config.enable_attendance){
-              await this.rpc({
-                model: 'hr.employee',
-                method: 'pos_cashier_checkin',
-                args: [[employee.id],this.env.pos.pos_session.id],
-              });
-          }
+                if (employee && employee.pin) {
+                    employee = await this.askPin(employee);
+                }
+                if (employee) {
+                    this.env.pos.set_cashier(employee);
+                    if (this.env.pos.config.enable_attendance) {
+                        await this.rpc({
+                            model: 'hr.employee',
+                            method: 'pos_cashier_checkin',
+                            args: [[employee.id], this.env.pos.pos_session.id],
+                        });
+                    }
 
-          this.back ? this.back() : null;
+                    this.back ? this.back() : null;
+                }
+            }
         }
-      }
+
+        async barcodeCashierAction(code) {
+            //    code1 = '041' + code.code
+            //      console.log(">>>codecodecode>>>>>>",code1)
+            const employee = this.env.pos.employees.find(
+                (emp) => emp.barcode === Sha1.hash(code.code)
+            );
+            let EmpCheckIn = false
+            debugger;
+
+            if (employee) {
+                EmpCheckIn = await this.rpc({
+                    model: 'hr.employee',
+                    method: 'check_pos_cashier_checkin',
+                    args: [[employee.id], this.env.pos.pos_session.id],
+                });
+            }
+            if (employee && employee !== this.env.pos.get_cashier() && EmpCheckIn.emp_attendance_status && !EmpCheckIn.already_checkin_another_session) {
+
+              this.env.pos.set_cashier(employee);
+                    if (this.env.pos.config.enable_attendance) {
+                        await this.rpc({
+                            model: 'hr.employee',
+                            method: 'pos_cashier_checkin',
+                            args: [[employee.id], this.env.pos.pos_session.id],
+                        });
+                    }
+            }
+            return employee;
+        }
     }
 
-    async barcodeCashierAction(code) {
-//    code1 = '041' + code.code
-//      console.log(">>>codecodecode>>>>>>",code1)
-      const employee = this.env.pos.employees.find(
-        (emp) => emp.barcode === Sha1.hash(code.code)
-      );
-      let EmpCheckIn = false
-      if (employee) {
-        EmpCheckIn = await this.rpc({
-          model: 'hr.employee',
-          method: 'check_pos_cashier_checkin',
-          args: [{ 'emp_id': employee.id }],
-        });
-      }
-      if (employee && employee !== this.env.pos.get_cashier() && EmpCheckIn.emp_attendance_statu && !EmpCheckIn.already_checkin_another_session) {
-        this.env.pos.set_cashier(employee);
-      }
-      return employee;
-    }
-  }
-
-  return SelectCashierMixin;
+    return SelectCashierMixin;
 
 });
