@@ -27,7 +27,7 @@
     "images": [
         "static/description/preview.png",
     ],
-    "depends": ["hr_attendance", "hr_attendance_base"],
+    "depends": ["hr_attendance", "hr_attendance_base","point_of_sale_ext"],
     "data": [
         "security/ir.model.access.csv",
         "views/hr_attendance_view.xml",

@@ -12,7 +12,10 @@
                 <field name="config_id" string="Shop"/>
                 <field name="check_in"/>
                 <field name="check_out"/>
+                <field name="break_time"/>
+                <field name="resume_time"/>
                 <field name="worked_hours" string="Work Hours" widget="float_time"/>
+                <field name="break_hours" string="Break Hours" widget="float_time"/>
             </tree>
         </field>
     </record>
@@ -28,7 +31,10 @@
                         <field name="config_id" string="Shop"/>
                         <field name="check_in"/>
                         <field name="check_out"/>
+                         <field name="break_time"/>
+                        <field name="resume_time"/>
                         <field name="worked_hours" string="Work Hours" widget="float_time"/>
+                        <field name="break_hours" string="Break Hours" widget="float_time"/>
                     </group>
                 </sheet>
             </form>

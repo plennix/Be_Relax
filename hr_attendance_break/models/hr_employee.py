@@ -192,6 +192,13 @@ class HrEmployeeBase(models.AbstractModel):
                     )
                     self.parse_param(vals, "out")
                     break_obj.write(vals)
+
+                    if attendance.attendance_record_ids:
+                        if attendance.attendance_record_ids[0].check_in and attendance.attendance_record_ids[0].break_time and not attendance.attendance_record_ids[
+                            0].check_out and not attendance.attendance_record_ids[0].resume_time:
+                            attendance.attendance_record_ids[0].write({
+                                "resume_time": action_date,
+                            })
                 else:
                     break_obj.create(
                         {
@@ -202,6 +209,13 @@ class HrEmployeeBase(models.AbstractModel):
                             "webcam_check_in": snap,
                         }
                     )
+
+                    if attendance.attendance_record_ids:
+                        if attendance.attendance_record_ids[0].check_in and not attendance.attendance_record_ids[0].break_time and not attendance.attendance_record_ids[0].check_out and not attendance.attendance_record_ids[0].resume_time:
+                            attendance.attendance_record_ids[0].write({
+                                "break_time": action_date,
+                            })
+
                     self.parse_param(vals)
                     break_obj.write(vals)
 

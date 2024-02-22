@@ -61,31 +61,24 @@ class SalesPosReport(models.TransientModel):
         worksheet.fit_to_pages(1, 0)
         worksheet.set_zoom(100)
         worksheet.set_column(0, 0, 5)
-        worksheet.set_column(1, 1, 20)
+        worksheet.set_column(1, 1, 12)
         worksheet.set_column(2, 2, 15)
         worksheet.set_column(3, 3, 15)
-        worksheet.set_column(4, 4, 18)
-        worksheet.set_column(5, 5, 30)
-        worksheet.set_column(6, 6, 40)
-        worksheet.set_column(7, 7, 40)
-        worksheet.set_column(8, 8, 15)
-        worksheet.set_column(9, 9, 20)
-        worksheet.set_column(10, 10, 10)
-        worksheet.set_column(11, 11, 10)
+        worksheet.set_column(4, 4, 30)
+        worksheet.set_column(5, 5, 15)
+        worksheet.set_column(6, 6, 10)
+        worksheet.set_column(7, 7, 10)
+        worksheet.set_column(8, 8, 10)
+        worksheet.set_column(9, 9, 10)
+        worksheet.set_column(10, 10, 30)
+        worksheet.set_column(11, 11, 15)
         worksheet.set_column(12, 12, 10)
         worksheet.set_column(13, 13, 10)
-        worksheet.set_column(14, 14, 10)
-        worksheet.set_column(15, 15, 35)
-        worksheet.set_column(16, 16, 15)
-        worksheet.set_column(17, 17, 15)
-        worksheet.set_column(18, 18, 15)
-        worksheet.set_column(19, 19, 15)
-        worksheet.set_column(20, 20, 25)
-        worksheet.set_column(21, 21, 15)
-        worksheet.set_column(22, 22, 15)
-        worksheet.set_column(23, 23, 15)
-        worksheet.set_column(24, 24, 15)
-        worksheet.set_column(25,25, 15)
+        worksheet.set_column(14, 14, 15)
+        # worksheet.set_column(15, 15, 15)
+        # worksheet.set_column(16, 16, 15)
+        # worksheet.set_column(17, 17, 15)
+        # worksheet.set_column(18, 18, 15)
 
         float_format = workbook.add_format(
             {
@@ -94,18 +87,6 @@ class SalesPosReport(models.TransientModel):
                 "valign": "bottom",
                 "font_name": "Calibri",
                 "font_size": "9",
-            }
-        )
-        total_format = workbook.add_format(
-            {
-                "bold": True,
-                "align": "right",
-                "num_format": "0.00",
-                "valign": "bottom",
-                "font_name": "Calibri",
-                "font_size": "10",
-                "bg_color": "#D3D3D3",
-
             }
         )
         text_format = workbook.add_format(
@@ -139,344 +120,218 @@ class SalesPosReport(models.TransientModel):
 
         # Add Column Header
         worksheet.write(row, column, "Seq", column_titles)
-        worksheet.write(row, column + 1, "Airport Name", column_titles)
-        worksheet.write(row, column + 2, "Destination", column_titles)
-        worksheet.write(row, column + 3, "Shop Name", column_titles)
-        worksheet.write(row, column + 4, "Receipt Date", column_titles)
-        worksheet.write(row, column + 5, "Sales Person", column_titles)
-        worksheet.write(row, column + 6, "Customer Name", column_titles)
-        worksheet.write(row, column + 7, "Name", column_titles)
-        worksheet.write(row, column + 8, "Item Code", column_titles)
-        worksheet.write(row, column + 9, "Barcode", column_titles)
-        worksheet.write(row, column + 10, "Qty", column_titles)
-        worksheet.write(row, column + 11, "Price", column_titles)
-        worksheet.write(row, column + 12, "Discount", column_titles)
-        worksheet.write(row, column + 13, "Tips", column_titles)
-        worksheet.write(row, column + 14, "Type", column_titles)
-        worksheet.write(row, column + 15, "Product Categories", column_titles)
-        worksheet.write(row, column + 16, "Flight number", column_titles)
-        worksheet.write(row, column + 17, "Promotions", column_titles)
-        worksheet.write(row, column + 18, "Currency", column_titles)
-        worksheet.write(row, column + 19, "Payment in AED", column_titles)
-        worksheet.write(row, column + 20, "Nb of Receipts", column_titles)
-        worksheet.write(row, column + 21, "Tax Amount", column_titles)
-        worksheet.write(row, column + 22, "DF (Duty Free)", column_titles)
-        worksheet.write(row, column + 23, "DP (Duty Paid)", column_titles)
-        worksheet.write(row, column + 24, "Labour surcharge", column_titles)
+        worksheet.write(row, column + 1, "Shop Name", column_titles)
+        worksheet.write(row, column + 2, "Receipt Date", column_titles)
+        worksheet.write(row, column + 3, "Sales Person", column_titles)
+        worksheet.write(row, column + 4, "Name", column_titles)
+        worksheet.write(row, column + 5, "Barcode", column_titles)
+        worksheet.write(row, column + 6, "Qty", column_titles)
+        worksheet.write(row, column + 7, "Price", column_titles)
+        worksheet.write(row, column + 8, "Discount", column_titles)
+        worksheet.write(row, column + 9, "Site", column_titles)
+        worksheet.write(row, column + 10, "Product Categories", column_titles)
+        worksheet.write(row, column + 11, "Flight number", column_titles)
+        worksheet.write(row, column + 12, "Promotions", column_titles)
+        worksheet.write(row, column + 13, "Currency", column_titles)
+        worksheet.write(row, column + 14, "Payment in AED", column_titles)
+
 
         data = self.get_report_data()
-        order_ids = self.env['pos.order'].browse([i['order_id'] for i in data])
         row = 1
         index = 1
-        total_price = 0.0
-        total_discount = 0.0
-        total_tip = 0.0
-        total_reward = 0.0
-        total_aed_price = 0.0
-        total_labour = 0.0
-        total_tax = 0.0
-        total_df = 0.0
-        total_dp = 0.0
-
-        for rec in order_ids:
-            tip_product = rec.config_id.tip_product_id
-            # # order_set.update(order_id)
-            site = ','.join([i for i in [rec.boarding_pass_ids[0].departure_id.code, rec.boarding_pass_ids[0].destination] if i]) if rec.boarding_pass_ids else ''
-            flight_no = rec.boarding_pass_ids[0].flight_number if rec.boarding_pass_ids else ''
-            # product_cat = product_id.categ_id.name
-            # currency = order_id.currency_id.name
-            # aed_currency_id = self.env['res.currency'].sudo().search([('symbol', '=', 'AED')], limit=1)
-            # rate_currency_id = aed_currency_id.rate_ids.filtered(lambda x: x.company_id == order_id.company_id)
-            # aed_convert_rate = 0.0
-            # if rate_currency_id:
-            #     company_rate = rate_currency_id[0].company_rate
-            #     aed_convert_rate = rec["price_unit"] * company_rate
-            # discount_amount = (rec["discount"] / 100) * rec["price_unit"]
-            # line = self.env['pos.order.line'].browse(rec['id'])
-
-            currency = rec.currency_id.name
+        price = 0.0
+        aed_price = 0.0
+        qty = 0.0
+        discount = 0.0
+        labour_surcharge = 0.0
+        order_set = set()
+        for rec in data:
+            employee_name = (
+                self.env["hr.employee"].browse(rec["employee_id"]).name
+                if rec["employee_id"]
+                else ""
+            )
+            product_id = self.env["product.product"].browse(rec["product_id"]) if rec["product_id"] else ""
+            product_barcode = (
+                self.env["product.product"].browse(rec["product_id"]).barcode
+                if rec["product_id"]
+                else ""
+            )
+            order_id = (
+                self.env["pos.order"].browse(rec["order_id"])
+                if rec["order_id"]
+                else ""
+            )
+            order_set.update(order_id)
+            site = ','.join([i for i in [order_id.boarding_pass_ids[0].departure_id.code, order_id.boarding_pass_ids[0].destination] if i]) if order_id.boarding_pass_ids else ''
+            flight_no = order_id.boarding_pass_ids[0].flight_number if order_id.boarding_pass_ids else ''
+            product_cat = product_id.categ_id.name
+            currency = order_id.currency_id.name
             aed_currency_id = self.env['res.currency'].sudo().search([('symbol', '=', 'AED')], limit=1)
-            rate_currency_id = aed_currency_id.rate_ids.filtered(lambda x: x.company_id == rec.company_id)
+            rate_currency_id = aed_currency_id.rate_ids.filtered(lambda x: x.company_id == order_id.company_id)
+            aed_convert_rate = 0.0
+            if rate_currency_id:
+                company_rate = rate_currency_id[0].company_rate
+                aed_convert_rate = rec["price_unit"] * company_rate
+            discount_amount = (rec["discount"] / 100) * rec["price_unit"]
+            line = self.env['pos.order.line'].browse(rec['id'])
+            tax_ids_after_fiscal_position = line.tax_ids_after_fiscal_position.filtered(lambda x: x.name == 'Labor Surcharge')
+            if tax_ids_after_fiscal_position:
+                labour_surcharge += (rec['price_subtotal'] * tax_ids_after_fiscal_position.amount)/100
+                
+            worksheet.write(row, column, index, text_format)
+            worksheet.write(
+                row, column + 1, order_id.name if order_id.name else "", text_format
+            )
+            worksheet.write(
+                row,
+                column + 2,
+                order_id.date_order if order_id.date_order else "",
+                date_format,
+            )
 
-            for line in rec.lines.filtered(lambda x: x.product_id != tip_product):
-                aed_convert_rate = 0.0
-                labour = 0.0
-                if rate_currency_id:
-                    company_rate = rate_currency_id[0].company_rate
-                    aed_convert_rate = line.price_unit * company_rate
+            worksheet.write(
+                row,
+                column + 3,
+                "%s %s" % (rec["employee_id"], employee_name)
+                if rec["employee_id"]
+                else "",
+                text_format,
+            )
+            worksheet.write(
+                row,
+                column + 4,
+                rec["full_product_name"] if rec["full_product_name"] else "",
+                text_format,
+            )
+            worksheet.write(
+                row, column + 5, product_barcode if product_barcode else "", text_format
+            )
+            worksheet.write(
+                row, column + 6, rec["qty"] if rec["qty"] else 0.0, float_format
+            )
+            worksheet.write(
+                row,
+                column + 7,
+                rec["price_unit"] if rec["price_unit"] else 0.0,
+                float_format,
+            )
+            worksheet.write(
+                row,
+                column + 8,
+                discount_amount if discount_amount else 0.0,
+                float_format,
+            )
+            worksheet.write(
+                row,
+                column + 9,
+                site,
+                text_format,
+            )
+            worksheet.write(
+                row,
+                column + 10,
+                product_cat if product_cat else '',
+                text_format,
+            )
+            worksheet.write(
+                row,
+                column + 11,
+                flight_no if flight_no else '',
+                text_format,
+            )
+            worksheet.write(
+                row,
+                column + 12,
+                '',
+                text_format,
+            )
+            worksheet.write(
+                row,
+                column + 13,
+                currency if currency else '',
+                text_format,
+            )
+            worksheet.write(
+                row,
+                column + 14,
+                aed_convert_rate,
+                float_format,
+            )
+            qty += rec["qty"] if rec["qty"] else 0.0
+            price += rec["price_unit"] if rec["price_unit"] else 0.0
+            aed_price += aed_convert_rate
+            discount += discount_amount if discount_amount else 0.0
+            row += 1
+            index += 1
 
-                # Labour charge calculation
-                tax_ids_after_fiscal_position = line.tax_ids_after_fiscal_position.filtered(lambda x: x.name == 'Labor Surcharge')
-                if tax_ids_after_fiscal_position:
-                    labour += (line['price_subtotal'] * tax_ids_after_fiscal_position.amount) / 100
-                    total_labour += labour
-
-                worksheet.write(row, column, index, text_format)
-
-                worksheet.write(row, column + 1,
-                                rec.company_id.name if rec.company_id else self.env.company.name,
-                                text_format)
-                worksheet.write(row, column + 2,
-                                site if site else '',
-                                text_format)
-
-
-                worksheet.write(row, column + 3,
-                                rec.name if rec.name else "",
-                                text_format)
-
-                worksheet.write(row, column, index, text_format)
-
-                worksheet.write(row, column + 4,
-                                rec.date_order if rec.date_order else "",
-
-                                date_format,
-                                )
-
-                employee_id = line.employee_id
-                employee_name = "[%s]  %s" % (employee_id.barcode, employee_id.name)
-                worksheet.write(row, column + 5,
-                                employee_name if employee_name else "",
-                                text_format,
-                                )
-
-                worksheet.write(row, column + 6,
-                                rec.partner_id.name if rec.partner_id else "",
-                                text_format,
-                                )
-
-                worksheet.write(row, column + 7,
-                                line.product_id.name if line.product_id else "",
-                                text_format,
-                                )
-
-                worksheet.write(row, column + 8,
-                                line.product_id.default_code if line.product_id else "",
-                                text_format,
-                                )
-
-                worksheet.write(row, column + 9,
-                                line.product_id.barcode or '',
-                                text_format,
-                                )
-
-                worksheet.write(row, column + 10,
-                                line.qty or 0.00,
-                                float_format,
-                                )
-
-                worksheet.write(row, column + 11,
-                                line.price_subtotal or 0.00,
-                                float_format,
-                                )
-                total_price += line.price_subtotal
-
-                # discount calculation
-                discount_amount = (line.discount / 100) * line.price_unit
-                total_discount += discount_amount
-                worksheet.write(row, column + 12,
-                                discount_amount,
-                                float_format,
-                                )
-
-                tip = sum(rec.cashier_tip_ids.filtered(lambda x: x.cashier_id == employee_id).mapped('tip'))
-                total_tip += tip
-                worksheet.write(row, column + 13,
-                                tip,
-                                float_format,
-                                )
-
-                worksheet.write(row, column + 14,
-                                line.product_id.detailed_type,
-                                text_format,
-                                )
-
-                worksheet.write(row, column + 15,
-                                line.product_id.categ_id.name,
-                                text_format,
-                                )
-
-                worksheet.write(row, column + 16,
-                                flight_no,
-                                text_format,
-                                )
-
-                reward = line.reward_id
-                total_reward += line.price_unit if reward else 0.00
-                worksheet.write(row, column + 17,
-                                line.price_unit if reward else 0.00,
-                                float_format,
-                                )
-
-                worksheet.write(row, column + 18,
-                                currency if currency else '',
-                                text_format,
-                                )
-
-                worksheet.write(row, column + 19,
-                                aed_convert_rate,
-                                float_format,
-                                )
-                total_aed_price += aed_convert_rate
-
-                worksheet.write(row, column + 20,
-                                rec.pos_reference or '',
-                                text_format,
-                                )
-
-                # tax calculation
-                tax = round(line.price_subtotal_incl - line.price_subtotal, 2)
-                total_tax += tax
-                worksheet.write(row, column + 21,
-                                round(line.price_subtotal_incl - line.price_subtotal, 2) or 0.00,
-                                float_format,
-                                )
-
-                total_df += line.price_subtotal
-                worksheet.write(row, column + 22,
-                                line.price_subtotal or 0.00,
-                                float_format,
-                                )
-
-                total_dp += line.price_subtotal_incl
-                worksheet.write(row, column + 23,
-                                line.price_subtotal_incl or 0.00,
-                                float_format,
-                                )
-
-                worksheet.write(row, column + 24,
-                                labour or 0.00,
-                                float_format,
-                                )
-
-                row += 1
-                index += 1
-
-
-        for order in order_ids:
-            other_currency = order.payment_ids.filtered(lambda x:x.currency_name != order.currency_id.name)
-            site = ','.join([i for i in [order.boarding_pass_ids[0].departure_id.code, order.boarding_pass_ids[0].destination] if i]) if order.boarding_pass_ids else ''
-            if other_currency:
-                payments = list(set(other_currency.mapped('currency_name')))
-                for val in payments:
-                    # index += 1
-                    amount_paid = sum(other_currency.filtered(lambda x:x.currency_name == val).mapped('account_currency'))
-
-                    worksheet.write(row, column, index, text_format)
-
-                    worksheet.write(row, column + 1,
-                                    order.company_id.name if order.company_id else self.env.company.name,
-                                    text_format)
-
-                    worksheet.write(row, column + 2,
-                                    site if site else '',
-                                    text_format)
-
-                    worksheet.write(row, column + 3,
-                                    order.name if order.name else "",
-                                    text_format)
-
-                    worksheet.write(row, column, index, text_format)
-
-                    worksheet.write(row, column + 4,
-                                    order.date_order if order.date_order else "",
-
-                                    date_format,
-                                    )
-
-                    worksheet.write(row, column + 6,
-                                    order.partner_id.name if order.partner_id.name else order.partner_id.commercial_company_name,
-                                    text_format,
-                                    )
-                    worksheet.write(row, column + 11,
-                                    amount_paid,
-                                    float_format,
-                                    )
-                    worksheet.write(row, column + 14,
-                                    'payment',
-                                    text_format,
-                                    )
-                    worksheet.write(row, column + 18,
-                                    val,
-                                    text_format,
-                                    )
-
-                    worksheet.write(row, column + 20,
-                                    order.pos_reference or '',
-                                    text_format,
-                                    )
-
-                    row += 1
-                    index += 1
-
-
-
-
-        #total amounts.
-        worksheet.write(row + 2, column + 10,
-                        'Totals:',
-                        total_format,
-                        )
-        worksheet.write(row + 2, column + 11,
-                        total_price or 0.00,
-                        total_format,
-                        )
-        worksheet.write(row + 2, column + 12,
-                        total_discount or 0.00,
-                        total_format,
-                        )
-        worksheet.write(row + 2, column + 13,
-                        total_tip or 0.00,
-                        total_format,
-                        )
-        worksheet.write(row + 2, column + 14,
-                        '',
-                        total_format,
-                        )
-        worksheet.write(row + 2, column + 15,
-                        '',
-                        total_format,
-                        )
-        worksheet.write(row + 2, column + 16,
-                        '',
-                        total_format,
-                        )
-
-        worksheet.write(row + 2, column + 17,
-                        total_reward or 0.00,
-                        total_format,
-                        )
-
-        worksheet.write(row + 2, column + 18,
-                        '',
-                        total_format,
-                        )
-
-        worksheet.write(row + 2, column + 19,
-                        total_aed_price or 0.00,
-                        total_format,
-                        )
-        worksheet.write(row + 2, column + 20,
-                        '',
-                        total_format,
-                        )
-
-        worksheet.write(row + 2, column + 21,
-                        total_tax or 0.00,
-                        total_format,
-                        )
-        worksheet.write(row + 2, column + 22,
-                        total_df or 0.00,
-                        total_format,
-                        )
-        worksheet.write(row + 2, column + 23,
-                        total_dp or 0.00,
-                        total_format,
-                        )
-        worksheet.write(row + 2, column + 24,
-                        total_labour or 0.00,
-                        total_format,
-                        )
+        total_format = workbook.add_format({
+            "bold": True,
+            "align": "right",
+            "valign": "bottom",
+            "font_name": "Calibri",
+            "font_size": "9",
+            "bg_color": "#D3D3D3",
+        })
+        worksheet.write(
+            row,
+            column + 6,
+            round(qty,2),
+            total_format,
+        )
+        worksheet.write(
+            row,
+            column + 7,
+            round(price,2),
+            total_format,
+        )
+        worksheet.write(
+            row,
+            column + 8,
+            round(discount,2),
+            total_format,
+        )
+        worksheet.write(
+            row,
+            column + 14,
+            round(aed_price,2),
+            total_format,
+        )
+        row = row+3
+        orders_list = list(order_set)
+        amount_tax = 0.0
+        amount_total = 0.0
+        for x in orders_list:
+            amount_tax += x.amount_tax
+            amount_total += x.amount_total
+        worksheet.write(row, column + 2, "Nb of Receipts", column_titles)
+        worksheet.write(row, column + 4, "DF (Duty Free)", column_titles)
+        worksheet.write(row, column + 6, "DP (Duty Paid)", column_titles)
+        worksheet.write(row, column + 8, "Labour Surcharge", column_titles)
+        worksheet.write(
+            row,
+            column + 3,
+            len(orders_list),
+            float_format,
+        )
+        worksheet.write(
+            row,
+            column + 5,
+            round(amount_total-amount_tax,2),
+            float_format,
+        )
+        worksheet.write(
+            row,
+            column + 7,
+            round(amount_total, 2),
+            float_format,
+        )
+        worksheet.write(
+            row,
+            column + 9,
+            round(labour_surcharge, 2),
+            float_format,
+        )
 
         workbook.close()
         output.seek(0)
@@ -485,6 +340,6 @@ class SalesPosReport(models.TransientModel):
         return {
             "type": "ir.actions.act_url",
             "url": "web/content/?model=sales.pos.report&field=binary_data&download=true&id=%s&filename=%s"
-                   % (self.id, filename),
+            % (self.id, filename),
             "target": "new",
         }

@@ -57,6 +57,15 @@ class ExchangeRate(models.Model):
 	account_currency = fields.Float("Amount currency")
 	currency_name = fields.Char("currency")
 
+	def _export_for_ui(self, payment):
+		res = super()._export_for_ui(payment)
+		cur = self.env['res.currency'].sudo().search([('name','=',payment.currency_name)],limit=1)
+		res.update({
+			'currency_name':payment.currency_name,
+			'currency_amount':payment.account_currency,
+			'currency_symbol': cur.symbol if cur else '',
+		})
+		return res
 
 class ExchangeRate(models.Model):
 	_inherit = "account.bank.statement.line"

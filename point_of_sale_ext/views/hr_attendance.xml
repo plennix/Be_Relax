@@ -5,18 +5,23 @@
         <field name="priority" eval="100"/>
         <field name="inherit_id" ref="hr_attendance.hr_attendance_view_form"/>
         <field name="arch" type="xml">
-            <xpath expr="//form/sheet/notebook" position="inside">
-                <page string="POS Attendance Record(s)">
-                    <field name="attendance_record_ids" readonly="0">
-                        <tree>
-                            <field name="employee_id"/>
-                            <field name="config_id"/>
-                            <field name="check_in"/>
-                            <field name="check_out"/>
-                            <field name="worked_hours"/>
-                        </tree>
-                    </field>
-                </page>
+            <xpath expr="//form/sheet" position="inside">
+                <notebook>
+                    <page name="attendance_record_ids" string="POS Attendance Record(s)">
+                        <field name="attendance_record_ids" readonly="0">
+                            <tree>
+                                <field name="employee_id"/>
+                                <field name="config_id"/>
+                                <field name="check_in"/>
+                                <field name="check_out"/>
+                                 <field name="break_time"/>
+                                 <field name="resume_time"/>
+                                 <field name="worked_hours" string="Work Hours" widget="float_time"/>
+                                <field name="break_hours" string="Break Hours" widget="float_time"/>
+                            </tree>
+                        </field>
+                    </page>
+                </notebook>
             </xpath>
         </field>
     </record>

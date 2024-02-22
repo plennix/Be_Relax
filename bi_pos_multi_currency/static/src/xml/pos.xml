@@ -140,7 +140,7 @@
 				<div style="display: inline-flex;width:100%;">
 					<span style="width:33%;" t-esc="line.name" />
 					<div style="width:33%;text-align: center;">
-						<t t-if="env.pos.currency.symbol != line.currency_symbol">
+						<t t-if="env.pos.currency.name != line.currency_name">
 							(<span t-esc="line.currency_amount"/>
 						 	<span t-esc="line.currency_symbol"/>)
 						</t>

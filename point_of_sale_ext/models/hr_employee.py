@@ -17,7 +17,7 @@ class HrEmployeeExt(models.Model):
         already_checkin_another_session = False
         session_obj = self.env['pos.session'].browse(session)
         if employee_id.pos_attendance_state == 'checked_in' and employee_id.last_pos_attendance_record and session_obj.config_id.enable_attendance:
-            if employee_id.last_pos_attendance_record.session_id != session:
+            if employee_id.last_pos_attendance_record.session_id.id != session:
                 already_checkin_another_session = True
         emp_attendance_status = False
         if employee_id and employee_id.attendance_state == 'checked_in' and employee_id.attendance_break_state != 'break':
