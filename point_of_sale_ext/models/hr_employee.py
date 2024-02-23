@@ -26,12 +26,17 @@ class HrEmployeeExt(models.Model):
         return {'already_checkin_another_session':already_checkin_another_session,'emp_attendance_status':emp_attendance_status}
 
     def pos_cashier_checkin(self, session):
-        attendance = self.env['attendance.record'].create({
-            'employee_id':self.id,
-            'session_id':session,
-            'check_in': datetime.datetime.now(),
-            'attendance_id': self.last_attendance_id.id if self.last_attendance_id else False,
-        })
+        session_obj = self.env['pos.session'].sudo().browse(session)
+        emp_session_attendance_rec = session_obj.attendance_record_ids.filtered(lambda x:x.employee_id.id == self.id and x.check_in and not x.check_out)
+        if not emp_session_attendance_rec:
+            attendance = self.env['attendance.record'].create({
+                'employee_id':self.id,
+                'session_id':session,
+                'check_in': datetime.datetime.now(),
+                'attendance_id': self.last_attendance_id.id if self.last_attendance_id else False,
+            })
+        else:
+            attendance = emp_session_attendance_rec[0]
         self.sudo().write({'pos_attendance_state':'checked_in', 'last_pos_attendance_record':attendance.id})
 
     def pos_cashier_checkout(self, session):

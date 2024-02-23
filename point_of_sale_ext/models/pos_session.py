@@ -161,28 +161,28 @@ class PosSessionExt(models.Model):
 
         cash_lst = []
         for currency_name in list(
-                set(payments.filtered(lambda p: p.payment_method_id == default_cash_payment_method_id).mapped(
+                set(payments.filtered(lambda p: p.payment_method_id == default_cash_payment_method_id and p.currency_name).mapped(
                         'currency_name'))):
-            currency_cash_payments = payments.filtered(
-                lambda p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == currency_name)
-            statement_total_amount = sum(self.sudo().statement_line_ids.filtered(lambda s: s.currency_name == currency_name).mapped('account_currency'))
-            cash_register_balance_end_real_currencywise = sum(last_session.end_real_cash_register_currency_line_ids.filtered(lambda x:x.currency_name == currency_name).mapped('account_currency'))
+                currency_cash_payments = payments.filtered(
+                    lambda p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == currency_name)
+                statement_total_amount = sum(self.sudo().statement_line_ids.filtered(lambda s: s.currency_name == currency_name).mapped('account_currency'))
+                cash_register_balance_end_real_currencywise = sum(last_session.end_real_cash_register_currency_line_ids.filtered(lambda x:x.currency_name == currency_name).mapped('account_currency'))
 
-            currency = self.env['res.currency'].sudo().search([('name','=',currency_name)],limit=1)
+                currency = self.env['res.currency'].sudo().search([('name','=',currency_name)],limit=1)
 
-            cash_lst.append({
-                'name': default_cash_payment_method_id.name + '(' + currency_name + ')',
-                'amount': cash_register_balance_end_real_currencywise
-                          + sum(currency_cash_payments.mapped('account_currency'))
-                          + statement_total_amount,
-                'opening': cash_register_balance_end_real_currencywise,
-                'payment_amount': sum(currency_cash_payments.mapped('account_currency')),
-                'amount_org': sum(currency_cash_payments.mapped('amount')),
-                'moves': cash_in_out_list,
-                'id': default_cash_payment_method_id.id,
-                'currency_name': currency_name,
-                'currency_symbol': currency.symbol if currency else currency_name,
-            })
+                cash_lst.append({
+                    'name': default_cash_payment_method_id.name + '(' + currency_name + ')',
+                    'amount': cash_register_balance_end_real_currencywise
+                              + sum(currency_cash_payments.mapped('account_currency'))
+                              + statement_total_amount,
+                    'opening': cash_register_balance_end_real_currencywise,
+                    'payment_amount': sum(currency_cash_payments.mapped('account_currency')),
+                    'amount_org': sum(currency_cash_payments.mapped('amount')),
+                    'moves': cash_in_out_list,
+                    'id': default_cash_payment_method_id.id,
+                    'currency_name': currency_name,
+                    'currency_symbol': currency.symbol if currency else currency_name,
+                })
 
         other_payment_methods_cuurency = []
         for pm in other_payment_method_ids:

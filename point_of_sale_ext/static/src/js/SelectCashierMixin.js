@@ -108,6 +108,27 @@ odoo.define('pos_hr.SelectCashierMixin', function (require) {
                     args: [[employee.id], this.env.pos.pos_session.id],
                 });
             }
+
+             if (employee && !EmpCheckIn.emp_attendance_status) {
+                this.showPopup('ErrorPopup', {
+                    title: this.env._t('Wrong value'),
+                    body: this.env._t(
+                        'This cashier has not checked in.'
+                    ),
+                });
+                return false
+            }
+
+            if (employee && EmpCheckIn.already_checkin_another_session) {
+                this.showPopup('ErrorPopup', {
+                    title: this.env._t('Wrong value'),
+                    body: this.env._t(
+                      'This Cashier Already Logged In Another Session.'
+                    ),
+                });
+                return false
+             }
+
             if (employee && employee !== this.env.pos.get_cashier() && EmpCheckIn.emp_attendance_status && !EmpCheckIn.already_checkin_another_session) {
                 if (this.env.pos.config.enable_attendance) {
                     await this.rpc({
