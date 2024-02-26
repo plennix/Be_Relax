@@ -9,7 +9,7 @@
                 <notebook>
                     <page name="attendance_record_ids" string="POS Attendance Record(s)">
                         <field name="attendance_record_ids" readonly="0">
-                            <tree>
+                            <tree create="0" edit="0">
                                 <field name="employee_id"/>
                                 <field name="config_id"/>
                                 <field name="check_in"/>

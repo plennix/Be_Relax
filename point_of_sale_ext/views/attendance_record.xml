@@ -7,7 +7,7 @@
         <field name="name">attendance.record.tree</field>
         <field name="model">attendance.record</field>
         <field name="arch" type="xml">
-            <tree string="POS Employee attendances" editable="bottom" sample="1">
+            <tree string="POS Employee attendances" editable="bottom" sample="1" create="0" edit="0">
                 <field name="employee_id"/>
                 <field name="config_id" string="Shop"/>
                 <field name="check_in"/>
@@ -24,7 +24,7 @@
         <field name="name">attendance.record.form</field>
         <field name="model">attendance.record</field>
         <field name="arch" type="xml">
-            <form string="POS Employee attendances">
+            <form string="POS Employee attendances" create="0" edit="0">
                 <sheet>
                     <group>
                         <field name="employee_id"/>
