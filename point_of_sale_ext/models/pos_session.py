@@ -12,9 +12,53 @@ class PosSessionExt(models.Model):
     attendance_record_ids = fields.One2many('attendance.record','session_id',string='Attend Record(s)')
     start_cash_register_currency_line_ids = fields.One2many('cash.register.currency.line','session_id',string="Cash Register Currency Line Start")
     end_real_cash_register_currency_line_ids = fields.One2many('cash.register.currency.line','pos_session_id',string="Cash Register Currency Line End")
+    session_amt_diff_ids = fields.One2many('session.amt.diff','session_id',string="Session Amount Difference")
+
+    def get_payment_data(self, res_id):
+        payments = {}
+        payment_ids = self.env['pos.order'].search([('session_id', '=', res_id)]).mapped('payment_ids')
+        for payment in payment_ids:
+            if payment.account_currency < 0:
+                if payment.currency_id.name not in payments.keys():
+                    payments[payment.currency_id.name] =  {'currency': payment.currency_id.name, 'account_currency': 0}
+                amount = payments[payment.currency_id.name].get('account_currency', 0)
+                payments[payment.currency_id.name].update({'account_currency': payment.amount + amount, 'amount': payment.amount + amount})
+            else:
+                if payment.currency_name not in payments.keys():
+                    payments[payment.currency_name] =  {'currency': payment.currency_name, 'account_currency': 0, 'amount': 0}
+                account_currency = payments[payment.currency_name].get('account_currency', 0)
+                amount = payments[payment.currency_name].get('amount', 0)
+                payments[payment.currency_name].update({'account_currency': payment.account_currency + account_currency, 'amount': payment.amount + amount})
+        return payments.values()
+
+    def load_pos_data(self):
+        loaded_data = super(PosSessionExt, self).load_pos_data()
+        pos_opennings = []
+        for line in self.start_cash_register_currency_line_ids:
+            currency = self.env['res.currency'].sudo().search([('name','=',line.currency_name)],limit=1)
+            if currency:
+                dict = {}
+                if self.env.company and currency == self.env.company.currency_id:
+                    dict = {
+                        'id': line.id,
+                        'currency_name': line.currency_name,
+                        'balance': line.account_currency,
+                        'cur_symbol': currency.symbol,
+                    }
+                elif line.account_currency:
+                    dict = {
+                        'id': line.id,
+                        'currency_name': line.currency_name,
+                        'balance': line.account_currency,
+                        'cur_symbol': currency.symbol,
+                    }
+                if dict:
+                    pos_opennings.append(dict)
+        loaded_data['pos_opennings'] = pos_opennings
+        return loaded_data
 
 
-    def post_closing_cash_details(self, counted_cash):
+    def post_closing_cash_details(self, counted_cash, payments):
         """
         Calling this method will try store the cash details during the session closing.
 
@@ -34,6 +78,10 @@ class PosSessionExt(models.Model):
             raise UserError(_("There is no cash register in this session."))
 
         self.cash_register_balance_end_real = counted_cash
+
+        self.write({
+            'session_amt_diff_ids' : [(0,0, {'name':payment.get('name') , 'expected':payment.get('expected'), 'counted':payment.get('counted'), 'difference': payment.get('difference')}) for payment in payments]
+        })
 
         for line in self.start_cash_register_currency_line_ids:
             default_cash_payment_method_id = self.payment_method_ids.filtered(lambda pm: pm.type == 'cash')[0]
@@ -142,6 +190,10 @@ class PosSessionExt(models.Model):
         pay_later_payments = orders.payment_ids - payments
         cash_payment_method_ids = self.payment_method_ids.filtered(lambda pm: pm.type == 'cash')
         default_cash_payment_method_id = cash_payment_method_ids[0] if cash_payment_method_ids else None
+        total_default_cash_payment_amount = sum(
+            payments.filtered(lambda p: p.payment_method_id == default_cash_payment_method_id).mapped(
+                'amount')) if default_cash_payment_method_id else 0
+        default_cash_payment_method_id = cash_payment_method_ids[0] if cash_payment_method_ids else None
         other_payment_method_ids = self.payment_method_ids - default_cash_payment_method_id if default_cash_payment_method_id else self.payment_method_ids
         last_session = self.search([('config_id', '=', self.config_id.id), ('id', '!=', self.id)], limit=1)
         cash_in_count = 0
@@ -170,19 +222,47 @@ class PosSessionExt(models.Model):
 
                 currency = self.env['res.currency'].sudo().search([('name','=',currency_name)],limit=1)
 
-                cash_lst.append({
-                    'name': default_cash_payment_method_id.name + '(' + currency_name + ')',
-                    'amount': cash_register_balance_end_real_currencywise
-                              + sum(currency_cash_payments.mapped('account_currency'))
-                              + statement_total_amount,
-                    'opening': cash_register_balance_end_real_currencywise,
-                    'payment_amount': sum(currency_cash_payments.mapped('account_currency')),
-                    'amount_org': sum(currency_cash_payments.mapped('amount')),
-                    'moves': cash_in_out_list,
-                    'id': default_cash_payment_method_id.id,
-                    'currency_name': currency_name,
-                    'currency_symbol': currency.symbol if currency else currency_name,
-                })
+
+                if self.env.company and self.env.company and self.env.company.currency_id and self.env.company.currency_id.name == currency_name:
+                    cash_lst.append({
+                        'name': default_cash_payment_method_id.name + '(' + currency_name + ')',
+                        'amount': last_session.cash_register_balance_end_real
+                          + total_default_cash_payment_amount
+                          + sum(self.sudo().statement_line_ids.mapped('amount')),
+                        'opening': last_session.cash_register_balance_end_real,
+                        'payment_amount': total_default_cash_payment_amount,
+                        'amount_org': sum(currency_cash_payments.mapped('amount')),
+                        'moves': cash_in_out_list,
+                        'id': default_cash_payment_method_id.id,
+                        'currency_name': currency_name,
+                        'currency_symbol': currency.symbol if currency else currency_name,
+                    })
+                else:
+                    cash_lst.append({
+                        'name': default_cash_payment_method_id.name + '(' + currency_name + ')',
+                        'amount': sum(currency_cash_payments.mapped('account_currency')),
+                        'opening': 0,
+                        'payment_amount': sum(currency_cash_payments.mapped('account_currency')),
+                        'amount_org': sum(currency_cash_payments.mapped('amount')),
+                        'moves': [],
+                        'id': default_cash_payment_method_id.id,
+                        'currency_name': currency_name,
+                        'currency_symbol': currency.symbol if currency else currency_name,
+                    })
+
+                # cash_lst.append({
+                #     'name': default_cash_payment_method_id.name + '(' + currency_name + ')',
+                #     'amount': cash_register_balance_end_real_currencywise
+                #               + sum(currency_cash_payments.mapped('account_currency'))
+                #               + statement_total_amount,
+                #     'opening': cash_register_balance_end_real_currencywise if self.env.company.currency_id and self.env.company.currency_id.name == currency_name else 0,
+                #     'payment_amount': sum(currency_cash_payments.mapped('account_currency')),
+                #     'amount_org': sum(currency_cash_payments.mapped('amount')),
+                #     'moves': cash_in_out_list if  self.env.company and self.env.company.currency_id and self.env.company.currency_id.name == currency_name else [],
+                #     'id': default_cash_payment_method_id.id,
+                #     'currency_name': currency_name,
+                #     'currency_symbol': currency.symbol if currency else currency_name,
+                # })
 
         other_payment_methods_cuurency = []
         for pm in other_payment_method_ids:

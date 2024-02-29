@@ -123,7 +123,7 @@ class HrEmployeeBase(models.AbstractModel):
                     elif not last_break_record:
                         return {'check_out_break': True, 'employee_id': employee.id, 'want_checkout_break': False}
                     else:
-                        return {'check_out_break': False, 'employee_id': employee.id, 'want_checkout_break':False}
+                        return {'check_out_break': True, 'employee_id': employee.id, 'want_checkout_break':False}
                 if employee.attendance_break_state == 'break':
                     return {'check_out_break': False, 'employee_id': employee.id ,'want_checkout_break':True}
                 return {'check_out_break':True,'employee_id':employee.id,'want_checkout_break':False}
@@ -203,6 +203,7 @@ class HrEmployeeBase(models.AbstractModel):
                     break_obj.create(
                         {
                             "attendance_id": attendance.id,
+                            "pos_attendance_id": employee.last_pos_attendance_record.id if employee.last_pos_attendance_record and attendance == employee.last_pos_attendance_record.attendance_id else False,
                             "employee_id": employee.id,
                             "break_time": action_date,
                             "attendance_break_state": "break",

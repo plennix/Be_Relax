@@ -41,16 +41,16 @@ import {
         }
         if (otherPaymentMethods.length > 0) {
             otherPaymentMethods.forEach(pm => {
-                if (pm.type === 'bank') {
+//                if (pm.type === 'bank') {
                     state.payments[pm.id] = {counted: this.round_decimals_currency(pm.amount), difference: 0, number: pm.number}
-                }
+//                }
             })
         }
         if (otherPaymentMethodsCurrency.length > 0) {
             otherPaymentMethodsCurrency.forEach(pm => {
-                if (pm.type === 'bank') {
+//                if (pm.type === 'bank') {
                     state.payments[pm.name] = {counted: this.round_decimals_currency(pm.amount), difference: 0, number: pm.number}
-                }
+//                }
             })
         }
         if (defaultCashList.length > 0) {

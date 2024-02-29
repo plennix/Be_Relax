@@ -1,3 +1,4 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_attendance_record,attendance.record,model_attendance_record,,1,1,1,1
 access_cash_register_currency_line,cash.register.currency.line,model_cash_register_currency_line,,1,1,1,1
+access_session_amt_diff,session.amt.diff,model_session_amt_diff,,1,1,1,1

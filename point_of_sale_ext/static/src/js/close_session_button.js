@@ -48,16 +48,24 @@ odoo.define('pos_ext.ClosePosPopup_xt', function (require) {
             var cash_counted = 0
             this.defaultCashList.forEach(pm => {
 
-                let counted_val = this.state.payments[paymentId].counted
-                for(var i=0;i<currency.length;i++){
-                    if(currency[i].name==pm.currency_name && paymentId == pm.name){
-
-
-                        let c_rate = self.env.pos.currency.rate/currency[i].rate;
-                        cash_counted = parseFloat(counted_val)*c_rate;
-//                        selected_paymentline.amount =parseFloat(tot_amount.toFixed(2));
+                    for(var i=0;i<currency.length;i++){
+                        if(currency[i].name==pm.currency_name ){
+                            let c_rate = self.env.pos.currency.rate/currency[i].rate;
+                            cash_counted += parseFloat(this.state.payments[pm.name].counted)*c_rate;
+                        }
                     }
-                }
+
+
+//                let counted_val = this.state.payments[paymentId].counted
+//                for(var i=0;i<currency.length;i++){
+////                    if(currency[i].name==pm.currency_name && paymentId == pm.name){
+//
+//
+//                        let c_rate = self.env.pos.currency.rate/currency[i].rate;
+//                        cash_counted = parseFloat(this.state.payments[paymentId].counted)*c_rate;
+////                        selected_paymentline.amount =parseFloat(tot_amount.toFixed(2));
+////                    }
+//                }
 
 //                if(this.state.payments[paymentId].difference == 0){
 //                cash_counted = cash_counted + parseFloat(cash_counted.toFixed(2))
@@ -65,7 +73,8 @@ odoo.define('pos_ext.ClosePosPopup_xt', function (require) {
             })
             this.state.payments[this.defaultCashDetails.id].counted = cash_counted
             this.state.payments[this.defaultCashDetails.id].difference =
-                this.env.pos.round_decimals_currency(this.state.payments[[this.defaultCashDetails.id]].counted - this.defaultCashDetails.amount);
+            this.env.pos.round_decimals_currency(this.state.payments[[this.defaultCashDetails.id]].counted - this.defaultCashDetails.amount);
+
         }
         handleInputChangeForCurrency(paymentId, event){
              if (event.target.classList.contains('invalid-cash-input')) return;
@@ -96,22 +105,46 @@ odoo.define('pos_ext.ClosePosPopup_xt', function (require) {
         });
         return super.confirm();
       }
-      async closePos(){
-        if(this.env.pos.config.enable_attendance){
-        await this.rpc({
-            model: 'hr.employee',
-            method: 'pos_cashier_checkout',
-            args: [[this.env.pos.cashier.id],this.env.pos.pos_session.id],
-          });
-        }
-        return super.closePos();
-      }
+//      async closePos(){
+//        if(this.env.pos.config.enable_attendance){
+//        await this.rpc({
+//            model: 'hr.employee',
+//            method: 'pos_cashier_checkout',
+//            args: [[this.env.pos.cashier.id],this.env.pos.pos_session.id],
+//          });
+//        }
+//        return super.closePos();
+//      }
       async closeSession() {
             if (!this.closeSessionClicked) {
                 this.closeSessionClicked = true;
                 let response;
                 // If there are orders in the db left unsynced, we try to sync.
                 await this.env.pos.push_orders_with_closing_popup();
+                var payments_lst = []
+
+                    this.defaultCashList.forEach(pm1 => {
+                             payments_lst.push({
+                                'name':pm1.name,
+                                'expected' : pm1.amount,
+                                'counted': this.state.payments[pm1.name].counted,
+                                'difference': this.state.payments[pm1.name].difference,
+
+                            })
+                    });
+                    this.otherPaymentMethodsCurrency.forEach(pm1 => {
+
+                        payments_lst.push({
+                            'name':pm1.name,
+                            'expected' : pm1.amount,
+                            'counted': this.state.payments[pm1.name].counted,
+                            'difference': this.state.payments[pm1.name].difference,
+
+                        })
+
+                    });
+
+                debugger;
                 if (this.cashControl) {
                      response = await this.rpc({
                         model: 'pos.session',
@@ -119,19 +152,20 @@ odoo.define('pos_ext.ClosePosPopup_xt', function (require) {
                         args: [this.env.pos.pos_session.id],
                         kwargs: {
                             counted_cash: this.state.payments[this.defaultCashDetails.id].counted,
+                            payments: payments_lst,
                         }
                     })
                     if (!response.successful) {
                         return this.handleClosingError(response);
                     }
                     else{
-                        if(this.env.pos.config.enable_attendance){
-                         await this.rpc({
-                            model: 'hr.employee',
-                            method: 'pos_cashier_checkout',
-                            args: [[this.env.pos.cashier.id],this.env.pos.pos_session.id],
-                          });
-                        }
+//                        if(this.env.pos.config.enable_attendance){
+//                         await this.rpc({
+//                            model: 'hr.employee',
+//                            method: 'pos_cashier_checkout',
+//                            args: [[this.env.pos.cashier.id],this.env.pos.pos_session.id],
+//                          });
+//                        }
                     }
                 }
                 await this.rpc({
@@ -153,13 +187,13 @@ odoo.define('pos_ext.ClosePosPopup_xt', function (require) {
                         return this.handleClosingError(response);
                     }
                     else{
-                        if(this.env.pos.config.enable_attendance){
-                         await this.rpc({
-                            model: 'hr.employee',
-                            method: 'pos_cashier_checkout',
-                            args: [[this.env.pos.cashier.id],this.env.pos.pos_session.id],
-                          });
-                         }
+//                        if(this.env.pos.config.enable_attendance){
+//                         await this.rpc({
+//                            model: 'hr.employee',
+//                            method: 'pos_cashier_checkout',
+//                            args: [[this.env.pos.cashier.id],this.env.pos.pos_session.id],
+//                          });
+//                         }
                     }
                     window.location = '/web#action=point_of_sale.action_client_pos_menu';
                 } catch (error) {
@@ -181,6 +215,9 @@ odoo.define('pos_ext.ClosePosPopup_xt', function (require) {
                 }
                 this.closeSessionClicked = false;
             }
+        }
+        _getShowDiff(pm) {
+            return pm.number !== 0;
         }
 
     };

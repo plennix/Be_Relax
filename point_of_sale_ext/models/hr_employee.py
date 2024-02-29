@@ -1,4 +1,4 @@
-from odoo import models,fields,api
+from odoo import _, exceptions, fields, models
 import datetime
 
 
@@ -15,10 +15,10 @@ class HrEmployeeExt(models.Model):
     def check_pos_cashier_checkin(self, session):
         employee_id = self
         already_checkin_another_session = False
-        session_obj = self.env['pos.session'].browse(session)
-        if employee_id.pos_attendance_state == 'checked_in' and employee_id.last_pos_attendance_record and session_obj.config_id.enable_attendance:
-            if employee_id.last_pos_attendance_record.session_id.id != session:
-                already_checkin_another_session = True
+        # session_obj = self.env['pos.session'].browse(session)
+        # if employee_id.pos_attendance_state == 'checked_in' and employee_id.last_pos_attendance_record and session_obj.config_id.enable_attendance:
+        #     if employee_id.last_pos_attendance_record.session_id.id != session:
+        #         already_checkin_another_session = True
         emp_attendance_status = False
         if employee_id and employee_id.attendance_state == 'checked_in' and employee_id.attendance_break_state != 'break':
             emp_attendance_status = True
@@ -44,6 +44,46 @@ class HrEmployeeExt(models.Model):
         if attendance:
             attendance.write({'check_out':datetime.datetime.now(), 'attendance_id': self.last_attendance_id.id if self.last_attendance_id else False})
             self.sudo().write({'pos_attendance_state': 'checked_out','last_pos_attendance_record':attendance.id})
+
+    def _attendance_action_change(self):
+        """Check In/Check Out action
+        Check In: create a new attendance record
+        Check Out: modify check_out field of appropriate attendance record
+        """
+        self.ensure_one()
+        action_date = fields.Datetime.now()
+
+        if self.attendance_state != "checked_in":
+            vals = {
+                "employee_id": self.id,
+                "check_in": action_date,
+            }
+            self.parse_param(vals)
+            return self.env["hr.attendance"].create(vals)
+        attendance = self.env["hr.attendance"].search(
+            [("employee_id", "=", self.id), ("check_out", "=", False)], limit=1
+        )
+        if attendance:
+            vals = {
+                "check_out": action_date,
+            }
+            self.parse_param(vals, "out")
+            attendance.write(vals)
+            if self.last_pos_attendance_record:
+                self.last_pos_attendance_record.write({'check_out': datetime.datetime.now()});
+                self.sudo().write({'pos_attendance_state': 'checked_out'})
+        else:
+            raise exceptions.UserError(
+                _(
+                    "Cannot perform check out on %(empl_name)s, could not find corresponding check in. "
+                    "Your attendances have probably been modified manually by human resources."
+                )
+                % {
+                    "empl_name": self.sudo().name,
+                }
+            )
+        return attendance
+
 
 class HrJobExt(models.Model):
     _inherit = 'hr.job'

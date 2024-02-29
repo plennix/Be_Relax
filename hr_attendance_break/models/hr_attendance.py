@@ -77,6 +77,13 @@ class HrAttendanceBreak(models.Model):
         store=True,
         readonly=True,
     )
+    pos_attendance_id = fields.Many2one(
+        "attendance.record",
+        ondelete="cascade",
+        store=True,
+        copy=False,
+        string="POS Attendance Reference",
+    )
 
     @api.constrains("attendance_id", "break_time", "resume_time")
     def _check_break_time(self):
@@ -150,3 +157,30 @@ class HrAttendanceBreak(models.Model):
             if rec.break_time and rec.resume_time:
                 break_hours = str(rec.resume_time - rec.break_time)
                 rec.break_hours = break_hours
+
+class AttendanceRecord(models.Model):
+    _inherit = "attendance.record"
+
+    break_ids = fields.One2many(
+        "hr.attendance.break",
+        "pos_attendance_id",
+        help="list of attendances breaks for the employee",
+        string="Break",
+    )
+    break_hours = fields.Char(
+        string="Break Hours",
+        compute="_compute_break_hours",
+        store=True,
+        readonly=True,
+    )
+
+    @api.depends("break_ids.break_time", "break_ids.resume_time")
+    def _compute_break_hours(self):
+        totalSecs = 0
+        for br in self.break_ids:
+            if br.break_hours:
+                delta = br.resume_time - br.break_time
+                totalSecs = delta.seconds
+        totalSecs, sec = divmod(totalSecs, 60)
+        hr, min = divmod(totalSecs, 60)
+        self.break_hours = "%d:%02d:%02d" % (hr, min, sec)

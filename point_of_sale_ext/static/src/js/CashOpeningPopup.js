@@ -4,6 +4,17 @@ odoo.define('point_of_sale_ext.CashOpeningPopup_xt', function (require) {
   const CashOpeningPopup = require('point_of_sale.CashOpeningPopup');
   const Registries = require('point_of_sale.Registries');
 
+  	const { PosGlobalState, Order, Orderline, Payment } = require('point_of_sale.models');
+
+
+	const PosHomePosGlobalState = (PosGlobalState) => class PosHomePosGlobalState extends PosGlobalState {
+	    async _processData(loadedData) {
+	        await super._processData(...arguments);
+            this.pos_opennings = loadedData['pos_opennings'];
+	    }
+	}
+	Registries.Model.extend(PosGlobalState, PosHomePosGlobalState);
+
   const PosCashOpeningPopupPopupExt = (CashOpeningPopup) =>
     class extends CashOpeningPopup {
       async confirm() {

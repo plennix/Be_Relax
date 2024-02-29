@@ -18,6 +18,16 @@
 <!--                                </tree>-->
 <!--                            </field>-->
 <!--                        </page>-->
+                         <page string="Session Amount Difference" name="session_amt_diff_ids">
+                            <field name="session_amt_diff_ids">
+                                <tree string="Session Amount Difference">
+                                    <field name="name"/>
+                                    <field name="expected"/>
+                                    <field name="difference"/>
+                                    <field name="counted"/>
+                                </tree>
+                            </field>
+                        </page>
                         <page string="Cash Register Currency Line Start" name="cash_register_currency_line_ids">
                             <field name="start_cash_register_currency_line_ids">
                                 <tree string="Cash Register Currency Line Start">

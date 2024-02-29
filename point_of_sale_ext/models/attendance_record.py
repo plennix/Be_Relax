@@ -3,7 +3,8 @@ from odoo import models,fields,api
 
 class AttendanceRecord(models.Model):
     _name = "attendance.record"
-    _order = "id desc"
+    _description = "POS Attendance"
+    _order = "check_in desc"
 
     employee_id = fields.Many2one('hr.employee')
     session_id = fields.Many2one('pos.session')
@@ -12,8 +13,8 @@ class AttendanceRecord(models.Model):
     break_time = fields.Datetime(string="Break Time")
     resume_time = fields.Datetime(string="Resume Time")
     worked_hours = fields.Float(string='Worked Hours', compute='_compute_worked_hours', store=True, readonly=True)
-    config_id = fields.Many2one('pos.config',related='session_id.config_id', string='Point of Sale', readonly=True, store=True)
-    company_id = fields.Many2one('res.company',related='session_id.company_id', string='Company', readonly=True, store=True)
+    config_id = fields.Many2one('pos.config', string='Point of Sale', readonly=True, store=True)
+    company_id = fields.Many2one('res.company',related='config_id.company_id', string='Company', readonly=True, store=True)
     attendance_id = fields.Many2one(
         "hr.attendance",
         ondelete="cascade",

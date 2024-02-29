@@ -1,4 +1,5 @@
 from . import attendance_record
+from . import session_amt_diff
 from . import cash_register_currency_line
 from . import pos_config
 from . import hr_employee

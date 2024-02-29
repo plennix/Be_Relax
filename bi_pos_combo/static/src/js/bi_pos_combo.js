@@ -67,7 +67,6 @@ odoo.define('bi_pos_combo.pos', function (require) {
       return orderline;
     }
     can_be_merged_with(orderline) {
-    debugger;
       var price = parseFloat(round_di(this.price || 0, this.pos.dp['Product Price']).toFixed(this.pos.dp['Product Price']));
       var order_line_price = orderline.get_product().get_price(orderline.order.pricelist, this.get_quantity());
       order_line_price = round_di(orderline.compute_fixed_price(order_line_price), this.pos.currency.decimal_places);
@@ -193,54 +192,54 @@ odoo.define('bi_pos_combo.pos', function (require) {
   Registries.Model.extend(Orderline, BiCustomOrderLine);
 
 
-  const CustomOrder = (Order) => class CustomOrder extends Order {
-    constructor(obj, options) {
-      super(...arguments);
-      this.barcode = this.barcode || "";
-    }
-    add_product(product, options){
-        if(this.pos.doNotAllowRefundAndSales() &&
-        this._isRefundAndSaleOrder() &&
-        (!options.quantity || options.quantity > 0)) {
-            Gui.showPopup('ErrorPopup', {
-                title: _t('Refund and Sales not allowed'),
-                body: _t('It is not allowed to mix refunds and sales')
-            });
-            return;
-        }
-        if(this._printed){
-            // when adding product with a barcode while being in receipt screen
-            this.pos.removeOrder(this);
-            return this.pos.add_new_order().add_product(product, options);
-        }
-        this.assert_editable();
-        options = options || {};
-        var line = Orderline.create({}, {pos: this.pos, order: this, product: product});
-        this.fix_tax_included_price(line);
+  // const CustomOrder = (Order) => class CustomOrder extends Order {
+  //   constructor(obj, options) {
+  //     super(...arguments);
+  //     this.barcode = this.barcode || "";
+  //   }
+  //   // add_product(product, options){
+  //   //     debugger
+  //   //     if(this.pos.doNotAllowRefundAndSales() &&
+  //   //     this._isRefundAndSaleOrder() &&
+  //   //     (!options.quantity || options.quantity > 0)) {
+  //   //         Gui.showPopup('ErrorPopup', {
+  //   //             title: _t('Refund and Sales not allowed'),
+  //   //             body: _t('It is not allowed to mix refunds and sales')
+  //   //         });
+  //   //         return;
+  //   //     }
+  //   //     if(this._printed){
+  //   //         // when adding product with a barcode while being in receipt screen
+  //   //         this.pos.removeOrder(this);
+  //   //         return this.pos.add_new_order().add_product(product, options);
+  //   //     }
+  //   //     this.assert_editable();
+  //   //     options = options || {};
+  //   //     var line = Orderline.create({}, {pos: this.pos, order: this, product: product});
+  //   //     this.fix_tax_included_price(line);
 
-        this.set_orderline_options(line, options);
+  //   //     this.set_orderline_options(line, options);
 
-        var to_merge_orderline;
-        for (var i = 0; i < this.orderlines.length; i++) {
-            if(this.orderlines.at(i).can_be_merged_with(line) && options.merge !== false || (this.orderlines.at(i).product.id === line.product.id && this.orderlines.at(i).employee_id ===line.employee_id)){
-                debugger;
-                to_merge_orderline = this.orderlines.at(i);
-            }
-        }
-        if (to_merge_orderline){
-            to_merge_orderline.merge(line);
-            this.select_orderline(to_merge_orderline);
-        } else {
-            this.add_orderline(line);
-            this.select_orderline(this.get_last_orderline());
-        }
+  //   //     var to_merge_orderline;
+  //   //     for (var i = 0; i < this.orderlines.length; i++) {
+  //   //         if(this.orderlines.at(i).can_be_merged_with(line) && options.merge !== false || (this.orderlines.at(i).product.id === line.product.id && this.orderlines.at(i).employee_id ===line.employee_id)){
+  //   //             to_merge_orderline = this.orderlines.at(i);
+  //   //         }
+  //   //     }
+  //   //     if (to_merge_orderline){
+  //   //         to_merge_orderline.merge(line);
+  //   //         this.select_orderline(to_merge_orderline);
+  //   //     } else {
+  //   //         this.add_orderline(line);
+  //   //         this.select_orderline(this.get_last_orderline());
+  //   //     }
 
-        if (options.draftPackLotLines) {
-            this.selected_orderline.setPackLotLines({ ...options.draftPackLotLines, setQuantity: options.quantity === undefined });
-        }
-    }
+  //   //     if (options.draftPackLotLines) {
+  //   //         this.selected_orderline.setPackLotLines({ ...options.draftPackLotLines, setQuantity: options.quantity === undefined });
+  //   //     }
+  //   // }
 
 
-  }
-  Registries.Model.extend(Order, CustomOrder);
+  // }
+  // Registries.Model.extend(Order, CustomOrder);
 });

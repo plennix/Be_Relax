@@ -13,7 +13,13 @@ odoo.define('point_of_sale_commission.ProductScreen', function (require) {
       async _barcodeProductAction(code) {
         debugger;
         const product = await this._getProductByBarcode(code);
-        const options = await this._getAddProductOptions(product, code);
+         if (!product) {
+          return;
+        }
+//         var options = {}
+//        if (product) {
+         const options = await this._getAddProductOptions(product, code);
+
         const cashier = this.env.pos.cashier
         const employeesList = this.env.pos.employees
           .map((employee) => {
@@ -40,10 +46,9 @@ odoo.define('point_of_sale_commission.ProductScreen', function (require) {
           options['employee_id'] = employee.id;
           options['line_emp_pin'] = employee.line_emp_pin || '';
         }
+//        }
 
-        if (!product) {
-          return;
-        }
+
         // Do not proceed on adding the product when no options is returned.
         // This is consistent with _clickProduct.
         if (!options) return;
