@@ -115,20 +115,54 @@ class HrEmployeeBase(models.AbstractModel):
     def employee_attendance_check(self, barcode):
         employee = self.sudo().search([('barcode', '=', barcode)], limit=1)
         if employee:
-            if employee.attendance_state == 'checked_in':
-                if employee.attendance_break_state == 'resume':
-                    last_break_record = employee.last_attendance_id.break_ids[-1] if employee.last_attendance_id and employee.last_attendance_id.break_ids else False
+            user_id = self.env['res.users'].sudo().browse(self._context.get('uid'))
+            attendance = self.env["hr.attendance"].sudo().search(
+                [("employee_id", "=", employee.id), ("check_out", "=", False), ("check_in", "!=", False),
+                 ('create_uid', '=', user_id.id)], limit=1
+            )
+
+            if attendance:
+            # if not attendance:
+
+                break_obj = self.env["hr.attendance.break"].search(
+                    [
+                        ("attendance_id", "=", attendance.id),
+                        ("break_time", "!=", False),
+                        ("resume_time", "=", False),
+                    ],
+                    limit=1,
+                    order="create_date desc",
+                )
+
+                if not break_obj:
+                    last_break_record = attendance.break_ids[-1] if attendance and attendance.break_ids else False
                     if last_break_record and not last_break_record.resume_time:
                         return {'check_out_break': True, 'employee_id': employee.id, 'want_checkout_break':False}
                     elif not last_break_record:
                         return {'check_out_break': True, 'employee_id': employee.id, 'want_checkout_break': False}
                     else:
                         return {'check_out_break': True, 'employee_id': employee.id, 'want_checkout_break':False}
-                if employee.attendance_break_state == 'break':
+                if break_obj:
                     return {'check_out_break': False, 'employee_id': employee.id ,'want_checkout_break':True}
                 return {'check_out_break':True,'employee_id':employee.id,'want_checkout_break':False}
             else:
                 return {'check_out_break':False,'employee_id':employee.id, 'want_checkout_break':False}
+
+            # if employee.attendance_state == 'checked_in':
+            # # if not attendance:
+            #     if employee.attendance_break_state == 'resume':
+            #         last_break_record = employee.last_attendance_id.break_ids[-1] if employee.last_attendance_id and employee.last_attendance_id.break_ids else False
+            #         if last_break_record and not last_break_record.resume_time:
+            #             return {'check_out_break': True, 'employee_id': employee.id, 'want_checkout_break':False}
+            #         elif not last_break_record:
+            #             return {'check_out_break': True, 'employee_id': employee.id, 'want_checkout_break': False}
+            #         else:
+            #             return {'check_out_break': True, 'employee_id': employee.id, 'want_checkout_break':False}
+            #     if employee.attendance_break_state == 'break':
+            #         return {'check_out_break': False, 'employee_id': employee.id ,'want_checkout_break':True}
+            #     return {'check_out_break':True,'employee_id':employee.id,'want_checkout_break':False}
+            # else:
+            #     return {'check_out_break':False,'employee_id':employee.id, 'want_checkout_break':False}
         return {'warning': _("No employee corresponding to Badge ID '%(barcode)s.'") % {'barcode': barcode}}
 
     def attendance_break_scan(self, next_action, barcode):
@@ -168,20 +202,28 @@ class HrEmployeeBase(models.AbstractModel):
         # action_date = action_date_utc.astimezone(local_tz)
         for employee in self:
             attendance = employee.last_attendance_id.sudo()
-            if employee.attendance_state == "checked_in":
+
+            user_id = self.env['res.users'].sudo().browse(self._context.get('uid'))
+            attendance = self.env["hr.attendance"].sudo().search(
+                [("employee_id", "=", employee.id), ("check_out", "=", False), ("check_in", "!=", False),
+                 ('create_uid', '=', user_id.id)], limit=1
+            )
+
+            # if employee.attendance_state == "checked_in":
+            if attendance:
                 break_obj = self.env["hr.attendance.break"].search(
                     [
                         ("attendance_id", "=", attendance.id),
                         ("break_time", "!=", False),
+                        ("resume_time", "=", False)
                     ],
                     limit=1,
                     order="create_date desc",
                 )
 
                 vals = {}
-                if (
-                    employee.attendance_break_state == "break"
-                    and break_obj.break_time != False
+
+                if (break_obj.break_time != False
                 ):
                     break_obj.update(
                         {
@@ -219,6 +261,47 @@ class HrEmployeeBase(models.AbstractModel):
 
                     self.parse_param(vals)
                     break_obj.write(vals)
+
+                # if (
+                #     employee.attendance_break_state == "break"
+                #     and break_obj.break_time != False
+                # ):
+                #     break_obj.update(
+                #         {
+                #             "resume_time": action_date,
+                #             "attendance_break_state": "resume",
+                #             "webcam_check_out": snap,
+                #         }
+                #     )
+                #     self.parse_param(vals, "out")
+                #     break_obj.write(vals)
+                #
+                #     if attendance.attendance_record_ids:
+                #         if attendance.attendance_record_ids[0].check_in and attendance.attendance_record_ids[0].break_time and not attendance.attendance_record_ids[
+                #             0].check_out and not attendance.attendance_record_ids[0].resume_time:
+                #             attendance.attendance_record_ids[0].write({
+                #                 "resume_time": action_date,
+                #             })
+                # else:
+                #     break_obj.create(
+                #         {
+                #             "attendance_id": attendance.id,
+                #             "pos_attendance_id": employee.last_pos_attendance_record.id if employee.last_pos_attendance_record and attendance == employee.last_pos_attendance_record.attendance_id else False,
+                #             "employee_id": employee.id,
+                #             "break_time": action_date,
+                #             "attendance_break_state": "break",
+                #             "webcam_check_in": snap,
+                #         }
+                #     )
+                #
+                #     if attendance.attendance_record_ids:
+                #         if attendance.attendance_record_ids[0].check_in and not attendance.attendance_record_ids[0].break_time and not attendance.attendance_record_ids[0].check_out and not attendance.attendance_record_ids[0].resume_time:
+                #             attendance.attendance_record_ids[0].write({
+                #                 "break_time": action_date,
+                #             })
+                #
+                #     self.parse_param(vals)
+                #     break_obj.write(vals)
 
         action_message = self.env["ir.actions.actions"]._for_xml_id(
             "hr_attendance.hr_attendance_action_greeting_message"
@@ -272,3 +355,25 @@ class HrEmployeeBase(models.AbstractModel):
             else "resume"
         )
         return {"action": action_message}
+
+
+class HrEmployeePublic(models.Model):
+    _inherit = 'hr.employee.public'
+
+    def action_employee_kiosk_confirm(self):
+        self.ensure_one()
+        user_id = self.env['res.users'].sudo().browse(self._context.get('uid'))
+        attendance = self.env["hr.attendance"].sudo().search(
+            [("employee_id", "=", self.employee_id.id), ("check_out", "=", False), ("check_in", "!=", False), ("config_id", "in", user_id.allowed_pos_configs.ids)])
+        attendance_state = "checked_in"
+        if not attendance:
+            attendance_state = "checked_out"
+        return {
+            'type': 'ir.actions.client',
+            'name': 'Confirm',
+            'tag': 'hr_attendance_kiosk_confirm',
+            'employee_id': self.id,
+            'employee_name': self.name,
+            'employee_state': attendance_state,
+            'employee_hours_today': self.hours_today,
+        }

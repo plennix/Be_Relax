@@ -52,25 +52,48 @@ class HrEmployeeExt(models.Model):
         """
         self.ensure_one()
         action_date = fields.Datetime.now()
+        user_id = self.env['res.users'].sudo().browse(self._context.get('uid'))
 
-        if self.attendance_state != "checked_in":
+        # attendance = self.env["hr.attendance"].search(
+        #     [("employee_id", "=", self.id), ("check_out", "!=", False), ("check_in", "!=", False),('create_uid','=',user_id.id)], limit=1
+        # )
+        attendance = self.env["hr.attendance"].search(
+            [("employee_id", "=", self.id), ("check_out", "=", False), ("check_in", "!=", False),
+             ('create_uid', '=', user_id.id)], limit=1
+        )
+
+        if not attendance:
             vals = {
                 "employee_id": self.id,
                 "check_in": action_date,
             }
             self.parse_param(vals)
             return self.env["hr.attendance"].create(vals)
-        attendance = self.env["hr.attendance"].search(
-            [("employee_id", "=", self.id), ("check_out", "=", False)], limit=1
-        )
+
+        # # and self.env.user != user_id
+        # if self.attendance_state != "checked_in":
+        #     vals = {
+        #         "employee_id": self.id,
+        #         "check_in": action_date,
+        #     }
+        #     self.parse_param(vals)
+        #     return self.env["hr.attendance"].create(vals)
+
+
+        # attendance = self.env["hr.attendance"].search(
+        #     [("employee_id", "=", self.id), ("check_out", "=", False),("check_in", "!=", False),('create_uid','=',user_id.id)], limit=1
+        # )
         if attendance:
             vals = {
                 "check_out": action_date,
             }
             self.parse_param(vals, "out")
             attendance.write(vals)
-            if self.last_pos_attendance_record:
-                self.last_pos_attendance_record.write({'check_out': datetime.datetime.now()});
+
+            pos_attendance = self.env['attendance.record'].sudo().search([('attendance_id','=',attendance.id)],limit=1)
+
+            if pos_attendance:
+                pos_attendance.write({'check_out': datetime.datetime.now()});
                 self.sudo().write({'pos_attendance_state': 'checked_out'})
         else:
             raise exceptions.UserError(

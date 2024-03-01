@@ -13,13 +13,13 @@ class HrAttendance(models.Model):
     @api.model
     def create(self, vals):
         newrecord = super(HrAttendance, self).create(vals)
-        if newrecord.create_uid and newrecord.create_uid.allowed_pos_configs:
-            newrecord.config_id = newrecord.create_uid.allowed_pos_configs[0].id
-
+        user_id = self.env['res.users'].sudo().browse(self._context.get('uid'))
+        if user_id and user_id.allowed_pos_configs:
+            newrecord.config_id = user_id.allowed_pos_configs[0].id
             attendance = self.env['attendance.record'].create({
                 'employee_id': newrecord.employee_id.id,
                 'check_in': newrecord.check_in,
-                'config_id': newrecord.create_uid.allowed_pos_configs[0].id,
+                'config_id': user_id.allowed_pos_configs[0].id,
                 'attendance_id': newrecord.id if newrecord else False,
             })
             if newrecord.employee_id:

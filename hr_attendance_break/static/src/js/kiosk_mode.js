@@ -34,7 +34,7 @@ odoo.define('hr_attendance_break.kiosk_mode', function (require) {
                 });
         },
         attendance_sign_in_out_icon: function(){
-            console.log(">>>>>...12")
+
             var self = this
             var barcode = $('#checkOutPopup').data('barcode')
             $('#checkOutPopup').modal('hide');

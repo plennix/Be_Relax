@@ -133,6 +133,7 @@ class HrEmployee(models.Model):
         self.ensure_one()
         action_date = fields.Datetime.now()
 
+        print("?????????????/\n\n\n", action_date)
         if self.attendance_state != "checked_in":
             vals = {
                 "employee_id": self.id,
