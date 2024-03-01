@@ -19,9 +19,16 @@ class HrEmployeeExt(models.Model):
         # if employee_id.pos_attendance_state == 'checked_in' and employee_id.last_pos_attendance_record and session_obj.config_id.enable_attendance:
         #     if employee_id.last_pos_attendance_record.session_id.id != session:
         #         already_checkin_another_session = True
+        user_id = self.env['res.users'].sudo().browse(self._context.get('uid'))
+        attendance = self.env["hr.attendance"].sudo().search(
+            [("employee_id", "=", employee_id.id), ("check_out", "=", False), ("check_in", "!=", False),
+             ('create_uid', '=', user_id.id)], limit=1
+        )
         emp_attendance_status = False
-        if employee_id and employee_id.attendance_state == 'checked_in' and employee_id.attendance_break_state != 'break':
+        if employee_id and attendance:
             emp_attendance_status = True
+        # if employee_id and employee_id.attendance_state == 'checked_in' and employee_id.attendance_break_state != 'break':
+        #     emp_attendance_status = True
 
         return {'already_checkin_another_session':already_checkin_another_session,'emp_attendance_status':emp_attendance_status}
 
