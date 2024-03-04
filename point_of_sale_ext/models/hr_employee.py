@@ -26,7 +26,17 @@ class HrEmployeeExt(models.Model):
         )
         emp_attendance_status = False
         if employee_id and attendance:
-            emp_attendance_status = True
+            break_obj = self.env["hr.attendance.break"].search(
+                [
+                    ("attendance_id", "=", attendance.id),
+                    ("break_time", "!=", False),
+                    ("resume_time", "=", False),
+                ],
+                limit=1,
+                order="create_date desc",
+            )
+            if not break_obj:
+                emp_attendance_status = True
         # if employee_id and employee_id.attendance_state == 'checked_in' and employee_id.attendance_break_state != 'break':
         #     emp_attendance_status = True
 
