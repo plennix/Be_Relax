@@ -223,6 +223,7 @@
                         <t t-foreach="doc.order_line" t-as="line">
 
                             <tr>
+                                <t t-if="not line.display_type">
                                 <td class="text-center content_text"><span t-esc="line.product_id.default_code"/></td>
                                 <td>
                                     <span t-esc="line.product_id.name"/>
@@ -243,6 +244,19 @@
                                 <td class="text-right content_text">
                                     <span t-esc="line.product_qty * line.price_unit"  t-options="{'widget': 'monetary', 'display_currency': (company_id or res_company).currency_id}"/>
                                 </td>
+                                </t>
+                                <t t-elif="line.display_type == 'line_section'">
+                                    <td name="td_section_line" colspan="99" style="text-align:center">
+                                        <span t-field="line.name" style="font-weight:bold;"/>
+                                    </td>
+                                    <t t-set="current_section" t-value="line"/>
+                                    <t t-set="current_subtotal" t-value="0"/>
+                                </t>
+                                <t t-elif="line.display_type == 'line_note'">
+                                    <td name="td_note_line" colspan="99" style="text-align:center">
+                                        <span t-field="line.name" style="font-style: italic;"/>
+                                    </td>
+                                </t>
                             </tr>
                         </t>
 
