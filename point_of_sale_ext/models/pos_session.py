@@ -18,6 +18,9 @@ class PosSessionExt(models.Model):
         payments = {}
         payment_ids = self.env['pos.order'].search([('session_id', '=', res_id)]).mapped('payment_ids')
         for payment in payment_ids:
+            is_same = False
+            if payment.currency_id.name == self.env.company.currency_id.name:
+                is_same = True
             if payment.account_currency < 0:
                 if payment.currency_id.name not in payments.keys():
                     payments[payment.currency_id.name] =  {'currency': payment.currency_id.name, 'account_currency': 0}
@@ -28,6 +31,8 @@ class PosSessionExt(models.Model):
                     payments[payment.currency_name] =  {'currency': payment.currency_name, 'account_currency': 0, 'amount': 0}
                 account_currency = payments[payment.currency_name].get('account_currency', 0)
                 amount = payments[payment.currency_name].get('amount', 0)
+                if is_same:
+                    account_currency = amount
                 payments[payment.currency_name].update({'account_currency': payment.account_currency + account_currency, 'amount': payment.amount + amount})
         return payments.values()
 
