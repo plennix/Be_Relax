@@ -226,10 +226,10 @@ class PosSessionExt(models.Model):
         cash_lst.append({
             'name': default_cash_payment_method_id.name + '(' + self.env.company.currency_id.name + ')',
             'amount': last_session.cash_register_balance_end_real
-                      + sum(currency_cash_payments.mapped('account_currency'))
+                      + sum(currency_cash_payments.mapped('amount'))
                       + sum(self.sudo().statement_line_ids.mapped('amount')) + nagetive_payments,
             'opening': last_session.cash_register_balance_end_real,
-            'payment_amount': sum(currency_cash_payments.mapped('account_currency')),
+            'payment_amount': sum(currency_cash_payments.mapped('amount')),
             'amount_org': total_default_cash_payment_amount,
             'moves': cash_in_out_list,
             'id': default_cash_payment_method_id.id,
