@@ -136,6 +136,9 @@ class PosOrder(models.Model):
 				'account_currency': -return_amount or 0.0,
 				'currency_name' : pos_order.get('currency_name',order.pricelist_id.currency_id.name),
 			}
+			if not return_payment_vals.get('currency_name', False):
+				return_payment_vals.update({'currency_name': self.env.company.currency_id.name})
+				return_payment_vals.update({'currency_id': self.env.company.currency_id.id})
 			order.add_payment(return_payment_vals)
 
 

@@ -222,7 +222,7 @@ class PosSessionExt(models.Model):
                 nagetive_payments += sum(payments.filtered(
                                     lambda p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == currency_name and p.account_currency < 0).mapped('amount'))
         currency_cash_payments = orders.payment_ids.filtered(
-                        lambda p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == self.env.company.currency_id.name)
+                        lambda p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == self.env.company.currency_id.name or not p.currency_name)
         cash_lst.append({
             'name': default_cash_payment_method_id.name + '(' + self.env.company.currency_id.name + ')',
             'amount': last_session.cash_register_balance_end_real
