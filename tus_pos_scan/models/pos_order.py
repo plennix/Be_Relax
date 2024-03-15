@@ -19,10 +19,12 @@ class PosOrder(models.Model):
                 boarding = o.get('data').get('boarding')
                 for b_pass in boarding:
                     departure = b_pass.get('departure') and self.env['iata.code'].search(
-                        [('code', '=', b_pass.get('departure'))], limit=1).id or '',
+                        [('code', '=', b_pass.get('departure'))], limit=1).id or self.env['iata.code'].search(
+                        [('code', '=', self.env.company.iata_code)], limit=1).id,
                     if type(b_pass.get('departure')) == int:
                         departure = b_pass.get('departure') and self.env['iata.code'].browse(
-                            int(b_pass.get('departure'))).id or '',
+                            int(b_pass.get('departure'))).id or self.env['iata.code'].search(
+                        [('code', '=', self.env.company.iata_code)], limit=1).id,
                     pos_boarding = self.env['boarding.pass'].sudo().create({
                         'pos_id': order.id,
                         'passenger_name': b_pass.get('passenger_name') or '',

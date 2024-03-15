@@ -16,7 +16,7 @@ class PosSessionExt(models.Model):
 
     def get_payment_data(self, res_id):
         payments = {}
-        payment_ids = self.env['pos.order'].search([('session_id', '=', res_id)]).mapped('payment_ids')
+        payment_ids = self.env['pos.order'].search([('session_id', '=', res_id)]).mapped('payment_ids').filtered(lambda l: l.payment_method_id.journal_id.type == 'cash')
         for payment in payment_ids:
             is_same = False
             if payment.currency_id.name == self.env.company.currency_id.name:

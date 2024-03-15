@@ -345,20 +345,12 @@
                                     <t t-set="payment_tip_total" t-value="0" />
                                     <t t-set="payment_total_quantity" t-value="0"/>
                                     <t t-set="payment_amount_total" t-value="0" />
-<!--                                    <t t-set="payment_tax_total" t-value="0" />-->
-<!--                                    <t t-set="payment_amount_without_tax" t-value="0" />-->
                                     <t t-foreach="env['pos.payment'].read_group([('session_id', '=', rec_id)], fields=['amount'], groupby=['payment_method_id'])"
                                         t-as="method">
                                         <t t-set="payment_total_quantity" t-value="payment_total_quantity + method.get('payment_method_id_count',0)" />
                                         <t t-set="payment_amount_total" t-value="payment_amount_total + method.get('amount', 0)" />
-<!--                                        <t t-if="method['payment_method_id'] and method['payment_method_id'][0]">-->
-<!--                                            <t t-set="payment_tip_total" t-value="payment_tip_total + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('tip_amount')), 2)" />-->
-<!--                                            <t t-set="payment_tax_total" t-value="payment_tax_total + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('amount_tax')), 2)" />-->
-<!--                                            <t t-set="payment_amount_without_tax" t-value="payment_amount_without_tax + round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal')), 2)" />-->
-<!--                                        </t>-->
                                         <tr>
                                             <td>
-<!--                                                env['pos.payment'].search_count([('session_id', '=', rec_id)])-->
                                                 <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).payment_method_id.name"/>
                                             </td>
                                             <td>
@@ -370,13 +362,10 @@
                                             </td>
                                             <td>
                                                 <span t-esc="float(method.get('payment_method_id_count', 0))" />
-<!--                                                mapped('lines').mapped('qty')-->
-<!--                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="float(len(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').ids))"/>-->
                                             </td>
                                             <td>
                                                 <span t-if="method.get('amount', False)" t-esc="round(method.get('amount'), 2) - tip_amount" />
                                                 <span t-else="" t-esc="float(0)" />
-<!--                                                <span t-if="method['payment_method_id'] and method['payment_method_id'][0]" t-esc="round(sum(env['pos.payment'].search([('payment_method_id', '=', method['payment_method_id'][0]), ('session_id', '=', rec_id)]).mapped('pos_order_id').mapped('lines').mapped('price_subtotal_incl')), 2)"/>-->
                                             </td>
                                             <td>
                                                 <span t-if="method.get('amount', False)" t-esc="round(method.get('amount'), 2)" />
@@ -395,7 +384,7 @@
                                             <b t-esc="float(payment_total_quantity)"/>
                                         </td>
                                         <td>
-                                            <b t-esc="round(payment_amount_total, 2)"/>
+                                            <b t-esc="round((payment_amount_total - payment_tip_total), 2)"/>
                                         </td>
                                         <td>
                                             <b t-esc="round(payment_amount_total, 2)"/>
