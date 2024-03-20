@@ -43,6 +43,11 @@ class AttendanceRecord(models.Model):
         for attendance in self:
             if attendance.check_out and attendance.check_in:
                 delta = attendance.check_out - attendance.check_in
-                attendance.worked_hours = delta.total_seconds() / 3600.0
+                worked_hours = delta.total_seconds() / 3600.0
+                if attendance.break_time and attendance.resume_time:
+                    delta = attendance.resume_time - attendance.break_time
+                    break_hours = delta.total_seconds() / 3600.0
+                    worked_hours = worked_hours - break_hours
+                attendance.worked_hours = worked_hours
             else:
                 attendance.worked_hours = False

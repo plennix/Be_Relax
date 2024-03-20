@@ -232,3 +232,19 @@ class AttendanceRecord(models.Model):
         totalSecs, sec = divmod(totalSecs, 60)
         hr, min = divmod(totalSecs, 60)
         self.break_hours = "%d:%02d:%02d" % (hr, min, sec)
+
+    @api.depends("check_in", "check_out", "break_hours")
+    def _compute_worked_hours(self):
+        for attendance in self:
+            if attendance.check_out and attendance.check_in:
+                delta = attendance.check_out - attendance.check_in
+                worked_hours = delta.total_seconds() / 3600.0
+                if attendance.break_hours and worked_hours:
+                    h, m, s = attendance.break_hours.split(":")
+                    worked_hours = (
+                        worked_hours
+                        - (int(h) * 3600 + int(m) * 60 + int(s)) / 3600.0
+                    )
+                attendance.worked_hours = worked_hours
+            else:
+                attendance.worked_hours = False
