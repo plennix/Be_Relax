@@ -1,6 +1,34 @@
 from odoo import models,fields,api
 from odoo.addons.base.models.res_partner import _tz_get
+from odoo.fields import Datetime
+import pytz
+import logging
+from datetime import datetime
+_logger = logging.getLogger(__name__)
 
+
+class DatetimeExtend(Datetime):
+
+    @staticmethod
+    def context_timestamp_custom(record, timestamp):
+        assert isinstance(timestamp, datetime), 'Datetime instance expected'
+        if record._name == 'attendance.record' and record.timezone:
+            tz_name = record.timezone
+        else:
+            tz_name = record._context.get('tz') or record.env.user.tz
+
+        utc_timestamp = pytz.utc.localize(timestamp, is_dst=False)  # UTC = no DST
+        if tz_name:
+            try:
+                context_tz = pytz.timezone(tz_name)
+                return utc_timestamp.astimezone(context_tz)
+            except Exception:
+                _logger.debug("failed to compute context/client-specific timestamp, "
+                              "using the UTC value",
+                              exc_info=True)
+        return utc_timestamp
+
+    Datetime.context_timestamp = context_timestamp_custom
 
 class AttendanceRecord(models.Model):
     _name = "attendance.record"
