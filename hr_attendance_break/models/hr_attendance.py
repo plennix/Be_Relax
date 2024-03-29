@@ -172,19 +172,25 @@ class HrAttendanceBreak(models.Model):
                         _("Break start time cant be empty if set resume time")
                     )
 
-    @api.depends("break_time", "resume_time")
+    @api.depends("employee_id", "employee_id.company_id", "employee_id.company_id.timezone", "break_time", "resume_time")
     def _get_rec_name(self):
         for rec in self:
             break_time = False
             resume_time = False
             local_tz = pytz.timezone(self._context.get("tz") or "UTC")
+            company_tz = rec.employee_id and rec.employee_id.company_id and rec.employee_id.company_id.timezone and pytz.timezone(rec.employee_id.company_id.timezone) or False  # Take timezone from company level
             if rec.break_time:
-                break_time = rec.break_time.replace(tzinfo=pytz.utc).astimezone(local_tz).time()
+                if company_tz:
+                    break_time = rec.break_time.replace(tzinfo=pytz.utc).astimezone(company_tz).time()
+                else:
+                    break_time = rec.break_time.replace(tzinfo=pytz.utc).astimezone(local_tz).time()
                 # break_time = rec.break_time.time()
             if rec.resume_time:
-                resume_time = rec.resume_time.replace(tzinfo=pytz.utc).astimezone(local_tz).time()
+                if company_tz:
+                    resume_time = rec.resume_time.replace(tzinfo=pytz.utc).astimezone(company_tz).time()
+                else:
+                    resume_time = rec.resume_time.replace(tzinfo=pytz.utc).astimezone(local_tz).time()
                 # resume_time = rec.resume_time.time()
-
             break_time = (
                 break_time.strftime("%H:%M:%S")
                 if break_time

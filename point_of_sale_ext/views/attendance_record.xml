@@ -9,6 +9,7 @@
         <field name="arch" type="xml">
             <tree string="POS Employee attendances" editable="bottom" sample="1" create="0" edit="0">
                 <field name="employee_id"/>
+                <field name="timezone" invisible="1"/>
                 <field name="config_id" string="Shop"/>
                 <field name="check_in"/>
                 <field name="check_out"/>
@@ -28,6 +29,7 @@
                 <sheet>
                     <group>
                         <field name="employee_id"/>
+                        <field name="timezone" invisible="1"/>
                         <field name="config_id" string="Shop"/>
                         <field name="check_in"/>
                         <field name="check_out"/>

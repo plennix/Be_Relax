@@ -1,4 +1,5 @@
 from odoo import models,fields,api
+from odoo.addons.base.models.res_partner import _tz_get
 
 
 class AttendanceRecord(models.Model):
@@ -15,6 +16,7 @@ class AttendanceRecord(models.Model):
     worked_hours = fields.Float(string='Worked Hours', compute='_compute_worked_hours', store=True, readonly=True)
     config_id = fields.Many2one('pos.config', string='Point of Sale', readonly=True, store=True)
     company_id = fields.Many2one('res.company',related='config_id.company_id', string='Company', readonly=True, store=True)
+    timezone = fields.Selection(_tz_get, string='Timezone', compute='_get_company_timezone', store=True)
     attendance_id = fields.Many2one(
         "hr.attendance",
         ondelete="cascade",
@@ -51,3 +53,11 @@ class AttendanceRecord(models.Model):
                 attendance.worked_hours = worked_hours
             else:
                 attendance.worked_hours = False
+
+    @api.depends('employee_id', 'employee_id.company_id', 'employee_id.company_id.timezone')
+    def _get_company_timezone(self):
+        for rec in self:
+            if rec.employee_id and rec.employee_id.company_id and rec.employee_id.company_id.timezone:
+                rec.timezone = rec.employee_id.company_id.timezone
+            else:
+                rec.timezone = False

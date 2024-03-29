@@ -1,10 +1,10 @@
 {
     'name': 'POS Commission',
-    'version': '16.0.1',
+    'version': '16.0.2',
     'description': '',
     'category': 'Point of Sale',
     'author': '',
-    'depends': ['pos_hr', 'pos_loyalty','point_of_sale'],
+    'depends': ['web','base', 'pos_hr', 'pos_loyalty','point_of_sale'],
     'data': [
         'security/ir.model.access.csv',
         'security/record_rules.xml',
@@ -16,10 +16,16 @@
         'views/hr_employee_views.xml',
         'views/hr_attendance.xml',
         'views/attendance_record.xml',
+        'views/res_company_views.xml',
         # 'views/iata_code.xml',
     ],
 
     'assets': {
+            'web.assets_backend': [
+                'point_of_sale_ext/static/src/js/getDateTimeCustomTZ.js',
+                'point_of_sale_ext/static/src/js/datepickerCustom.js',
+                'point_of_sale_ext/static/src/xml/datetime_field_extended.xml',
+            ],
             'point_of_sale.assets': [
                 'point_of_sale_ext/static/src/js/BarcodeReaderExt.js',
                 'point_of_sale_ext/static/src/js/close_session_button.js',
