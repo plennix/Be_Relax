@@ -24,6 +24,7 @@
             'web.assets_backend': [
                 'point_of_sale_ext/static/src/js/getDateTimeCustomTZ.js',
                 'point_of_sale_ext/static/src/js/datepickerCustom.js',
+                'point_of_sale_ext/static/src/js/datetime_field_extended.js',
                 'point_of_sale_ext/static/src/xml/datetime_field_extended.xml',
             ],
             'point_of_sale.assets': [
