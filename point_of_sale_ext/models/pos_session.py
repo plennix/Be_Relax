@@ -450,7 +450,10 @@ class PosSessionExt(models.Model):
             'payment_modes': self.env['pos.payment'].read_group([('session_id', '=', self.id)], fields=['pos_order_id'], groupby=['payment_method_id']),
             'currency_id': self.currency_id,
         }
-        return self.env.ref('point_of_sale_ext.pos_ord_session_reprt').report_action(docids=self, data=data)
+        current_datetime = fields.Datetime.now()
+        current_datetime_str = current_datetime.strftime("%d/%m/%Y-%H:%M:%S")
+        summary_report_name = f"{data.get('location')} - {current_datetime_str}"
+        return self.env.ref('point_of_sale_ext.pos_ord_session_reprt').with_context(summary_report_name=summary_report_name).report_action(docids=self, data=data)
 
     def get_print_report(self):
         data = {
