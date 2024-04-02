@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="TicketScreen" t-inherit="point_of_sale.TicketScreen" t-inherit-mode="extension" owl="1">
+        <xpath expr="//div[hasclass('buttons')]" position="inside">
+            <t t-set="orderToVoid" t-value="getSelectedSyncedOrder()"/>
+            <t t-if="orderToVoid">
+                <button class="void-order" t-on-click="() => this._voidOrder()">Void Order</button>
+            </t>
+        </xpath>
+    </t>
+</templates>

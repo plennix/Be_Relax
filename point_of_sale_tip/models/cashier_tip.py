@@ -34,4 +34,9 @@ class CashierTip(models.Model):
         store=True
     )
 
+    void_tipline_id = fields.Many2one(
+        comodel_name='cashier.tip',
+        string='Void Tip',
+        required=False
+    )
 

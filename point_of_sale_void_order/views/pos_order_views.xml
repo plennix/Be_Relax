@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<odoo>
+
+    <record id="view_pos_pos_form_void_order" model="ir.ui.view">
+        <field name="name">pos.order.form.view.inherit.void.order</field>
+        <field name="model">pos.order</field>
+        <field name="inherit_id" ref="point_of_sale.view_pos_pos_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='refund']" position="after">
+                <button name="btn_void_order" string="Void Order" type="object"
+                        attrs="{'invisible':['|', ('state','=','draft'), ('has_refundable_lines', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>
