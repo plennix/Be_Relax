@@ -1,5 +1,6 @@
 from odoo import api, fields, models, _, Command
 from itertools import groupby
+import pytz
 from operator import itemgetter
 from datetime import datetime, date
 from collections import defaultdict
@@ -451,6 +452,13 @@ class PosSessionExt(models.Model):
             'currency_id': self.currency_id,
         }
         current_datetime = fields.Datetime.now()
+        if self.company_id and self.company_id.timezone:
+            tz_name = self.company_id.timezone
+        else:
+            tz_name = self._context.get('tz') or self.env.user.tz
+        context_tz = pytz.timezone(tz_name)
+        utc_timestamp = pytz.utc.localize(current_datetime, is_dst=False)  # UTC = no DST
+        current_datetime = utc_timestamp.astimezone(context_tz)
         current_datetime_str = current_datetime.strftime("%d/%m/%Y-%H:%M:%S")
         summary_report_name = f"{data.get('location')} - {current_datetime_str}"
         return self.env.ref('point_of_sale_ext.pos_ord_session_reprt').with_context(summary_report_name=summary_report_name).report_action(docids=self, data=data)
