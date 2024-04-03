@@ -37,6 +37,9 @@ class ReportController(ReportController):
                 if 'summary_report_name' in data_context:
                     filename = data_context['summary_report_name']
 
+                else:
+                    return response
+
                 response.headers.remove('Content-Disposition')
                 response.headers.add('Content-Disposition', content_disposition(filename))
                 return response
