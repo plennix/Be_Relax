@@ -11,7 +11,8 @@ patch(DateTimeField.prototype, 'point_of_sale_ext.DateTimeField', {
      // For readonly datetime field
      get formattedValue() {
         debugger;
-        if (this.props && this.props.record && this.props.record.resModel === 'attendance.record' && this.props.record.data && this.props.record.data.timezone){
+        const modelNames = ['attendance.record', 'hr.attendance']
+        if (this.props && this.props.record && modelNames.includes(this.props.record.resModel) && this.props.record.data && this.props.record.data.timezone){
             return formatDateTimeCustom(this.props.value, {
                 timezone: this.props.record.data.timezone,
             });

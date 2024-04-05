@@ -21,16 +21,17 @@ class HrAttendance(models.Model):
         readonly=True,
     )
 
-    @api.depends("break_ids.break_time", "break_ids.resume_time")
+    @api.depends("break_ids", "break_ids.break_time", "break_ids.resume_time")
     def _compute_break_hours(self):
-        totalSecs = 0
-        for br in self.break_ids:
-            if br.break_hours:
-                delta = br.resume_time - br.break_time
-                totalSecs = delta.seconds
-        totalSecs, sec = divmod(totalSecs, 60)
-        hr, min = divmod(totalSecs, 60)
-        self.break_hours = "%d:%02d:%02d" % (hr, min, sec)
+        for rec in self:
+            totalSecs = 0
+            for br in rec.break_ids:
+                if br.break_hours:
+                    delta = br.resume_time - br.break_time
+                    totalSecs += delta.seconds
+            totalSecs, sec = divmod(totalSecs, 60)
+            hr, min = divmod(totalSecs, 60)
+            rec.break_hours = "%d:%02d:%02d" % (hr, min, sec)
 
     @api.depends("check_in", "check_out", "break_hours")
     def _compute_worked_hours(self):

@@ -24,7 +24,8 @@ patch(DatePicker.prototype, 'point_of_sale_ext.DatePicker', {
         let [formattedValue, error] = this.formatValue(value, options);
 
         // Customisation: show datetime as per timezone set at company level.
-        if (value && this.props && this.props.record && this.props.record.resModel === 'attendance.record' && this.props.record.data && this.props.record.data.timezone)
+        const modelNames = ['attendance.record', 'hr.attendance']
+        if (value && this.props && this.props.record && modelNames.includes(this.props.record.resModel) && this.props.record.data && this.props.record.data.timezone)
         {
             formattedValue = formatDateTimeCustom(value, {...options, timezone: this.props.record.data.timezone})
             this.inputRef.el.value = formattedValue;

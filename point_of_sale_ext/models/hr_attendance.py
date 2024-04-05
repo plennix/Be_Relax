@@ -2,6 +2,7 @@ import pytz
 
 from odoo import _, api, fields, models
 from odoo.exceptions import ValidationError
+from odoo.addons.base.models.res_partner import _tz_get
 
 
 class HrAttendance(models.Model):
@@ -9,6 +10,15 @@ class HrAttendance(models.Model):
 
     attendance_record_ids = fields.One2many('attendance.record', 'attendance_id', string='POS Attendance Record(s)')
     config_id = fields.Many2one('pos.config',string="Shop")
+    timezone = fields.Selection(_tz_get, string='Timezone', compute='_get_company_timezone', store=True)
+
+    @api.depends('employee_id', 'employee_id.company_id', 'employee_id.company_id.timezone')
+    def _get_company_timezone(self):
+        for rec in self:
+            if rec.employee_id and rec.employee_id.company_id and rec.employee_id.company_id.timezone:
+                rec.timezone = rec.employee_id.company_id.timezone
+            else:
+                rec.timezone = False
 
     @api.model
     def create(self, vals):
