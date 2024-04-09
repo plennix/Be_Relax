@@ -35,9 +35,18 @@ class PosOrder(models.Model):
             for tip_line in order.cashier_tip_ids:
                 tip_line.copy(tip_line._prepare_void_order_tip_data(voidOrder))
 
-            # for payment in order.payment_ids:
-            #     pos_payment = payment.copy(payment._prepare_void_order_payment_data(voidOrder))
-            #     pos_payment._create_payment_moves()
+            for payment in order.payment_ids:
+                pos_payment = payment.copy(payment._prepare_void_order_payment_data(voidOrder))
+                pos_payment._create_payment_moves()
+
+            voidOrder.amount_paid = sum(voidOrder.payment_ids.mapped('amount'))
+
+            if voidOrder._is_pos_order_paid():
+                voidOrder.action_pos_order_paid()
+                voidOrder._create_order_picking()
+                voidOrder._compute_total_cost_in_real_time()
+
+
             voided_orders |= voidOrder
 
         return voided_orders
