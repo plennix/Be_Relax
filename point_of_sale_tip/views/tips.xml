@@ -18,7 +18,10 @@
         <field name="model">cashier.tip</field>
         <field name="arch" type="xml">
             <tree>
+                <field name="company_id"/>
                 <field name="cashier_id"/>
+                <field name="employee_id"/>
+                <field name="pos_config_id"/>
                 <field name="pos_ref"/>
                 <field name="pos_date"/>
                 <field name="tip"/>
