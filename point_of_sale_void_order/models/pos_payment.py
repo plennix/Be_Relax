@@ -10,7 +10,7 @@ class PosPayment(models.Model):
             'name': self.name + _(' VOID') if self.name else False,
             'pos_order_id': void_order.id,
             'amount': -self.amount,
-            'account_currency': -self.amount,
+            'account_currency': -self.account_currency,
             'payment_method_id': self.payment_method_id.id,
             # 'card_type': self.card_type,
             # 'cardholder_name': self.cardholder_name,
