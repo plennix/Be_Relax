@@ -257,9 +257,18 @@ class PosSessionExt(models.Model):
                 set(payments.filtered(
                     lambda p: p.payment_method_id == default_cash_payment_method_id and p.currency_name).mapped(
                     'currency_name'))):
+            # nagetive_payments += sum(payments.filtered(
+            #     lambda
+            #         p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == currency_name).mapped(
+            #     'amount'))
             nagetive_payments += sum(payments.filtered(
                 lambda
-                    p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == currency_name and p.account_currency < 0).mapped(
+                    p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == currency_name and p.account_currency < 0 and not p.pos_order_id.is_void_order and not p.pos_order_id.refunded_order_ids).mapped(
+                'amount'))
+            nagetive_payments += sum(payments.filtered(
+                lambda
+                    p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == currency_name and p.account_currency > 0 and (
+                            p.pos_order_id.is_void_order or p.pos_order_id.refunded_order_ids)).mapped(
                 'amount'))
         currency_cash_payments = orders.payment_ids.filtered(
             lambda
@@ -283,7 +292,13 @@ class PosSessionExt(models.Model):
                     'currency_name'))):
             currency_cash_payments = payments.filtered(
                 lambda
-                    p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == currency_name and p.account_currency > 0)
+                    p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == currency_name and p.account_currency > 0 and not p.pos_order_id.is_void_order and not p.pos_order_id.refunded_order_ids)
+            currency_cash_payments += payments.filtered(
+                lambda
+                    p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == currency_name and p.account_currency < 0 and (p.pos_order_id.is_void_order or p.pos_order_id.refunded_order_ids))
+            # currency_cash_payments = payments.filtered(
+            #     lambda
+            #         p: p.payment_method_id == default_cash_payment_method_id and p.currency_name == currency_name)
             statement_total_amount = sum(
                 self.sudo().statement_line_ids.filtered(lambda s: s.currency_name == currency_name).mapped(
                     'account_currency'))
