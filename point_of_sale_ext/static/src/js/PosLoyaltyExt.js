@@ -134,6 +134,13 @@ const PosLoyaltyOrderExt = (Order) => class PosLoyaltyOrderExt extends Order {
             }
             return true;
         }
+    _createLineFromVals(vals) {
+         if (this.selected_orderline.employee_id)
+        {
+            vals['employee_id'] = this.selected_orderline.employee_id;
+        }
+        return super._createLineFromVals(...arguments)
+    }
 }
 
 Registries.Model.extend(Order, PosLoyaltyOrderExt);
