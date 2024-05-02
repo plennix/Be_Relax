@@ -28,10 +28,10 @@ class SalesPosReport(models.TransientModel):
             ON
                 pol.order_id = po.id
             WHERE
-                po.date_order >= %s AND po.date_order <= %s AND po.company_id = %s;
+                po.date_order >= %s AND po.date_order <= %s AND po.company_id in %s;
             """
 
-        params = (self.date_from, self.date_to, self.env.company.id)
+        params = (self.date_from, self.date_to, tuple(self.env.companies.ids))
         self.env.cr.execute(sql_q, params)
         for row in self.env.cr.dictfetchall():
             pos_lines[row.pop("id")] = row
@@ -180,7 +180,7 @@ class SalesPosReport(models.TransientModel):
         worksheet.write(row, column + 16, "Flight number", column_titles)
         worksheet.write(row, column + 17, "Promotions", column_titles)
         worksheet.write(row, column + 18, "Currency", column_titles)
-        worksheet.write(row, column + 19, "Payment in AED", column_titles)
+        worksheet.write(row, column + 19, "Amount in local currency", column_titles)
         worksheet.write(row, column + 20, "Nb of Receipts", column_titles)
         worksheet.write(row, column + 21, "Tax Amount", column_titles)
         worksheet.write(row, column + 22, "DF (Duty Free)", column_titles)
@@ -206,14 +206,18 @@ class SalesPosReport(models.TransientModel):
             new_line = True
 
             tip_product = rec.config_id.tip_product_id
-            site = ','.join([i for i in [rec.boarding_pass_ids[0].departure_id.code, rec.boarding_pass_ids[0].destination] if i]) if rec.boarding_pass_ids else ''
+            site = ','.join(
+                [i for i in [rec.boarding_pass_ids[0].departure_id.code, rec.boarding_pass_ids[0].destination] if
+                 i]) if rec.boarding_pass_ids else ''
             flight_no = rec.boarding_pass_ids[0].flight_number if rec.boarding_pass_ids else ''
             currency = rec.currency_id.name
             aed_currency_id = self.env['res.currency'].sudo().search([('symbol', '=', 'AED')], limit=1)
             rate_currency_id = aed_currency_id.rate_ids.filtered(lambda x: x.company_id == rec.company_id)
-            product_reward_id = rec.lines.reward_id.filtered(lambda x: x.reward_type == 'discount' and x.discount_applicability == 'specific')
+            product_reward_id = rec.lines.reward_id.filtered(
+                lambda x: x.reward_type == 'discount' and x.discount_applicability == 'specific')
             reward_id = rec.lines.reward_id.filtered(lambda x: x.reward_type == 'discount')
-            order_reward_id = rec.lines.reward_id.filtered(lambda x: x.reward_type == 'discount' and x.discount_applicability == 'order')
+            order_reward_id = rec.lines.reward_id.filtered(
+                lambda x: x.reward_type == 'discount' and x.discount_applicability == 'order')
             for line in rec.lines.filtered(lambda x: x.product_id != tip_product and not x.reward_id):
                 # reward = line.reward_id
 
@@ -224,7 +228,8 @@ class SalesPosReport(models.TransientModel):
                     aed_convert_rate = line.price_unit * company_rate
 
                 # Labour charge calculation
-                tax_ids_after_fiscal_position = line.tax_ids_after_fiscal_position.filtered(lambda x: x.name == 'Labor Surcharge')
+                tax_ids_after_fiscal_position = line.tax_ids_after_fiscal_position.filtered(
+                    lambda x: x.name == 'Labor Surcharge')
                 if tax_ids_after_fiscal_position:
                     labour += (line['price_subtotal'] * tax_ids_after_fiscal_position.amount) / 100
                     total_labour += labour
@@ -370,17 +375,28 @@ class SalesPosReport(models.TransientModel):
                                 )
 
                 total_df += line.price_subtotal
-                worksheet.write(row, column + 22,
-                                line.price_subtotal or 0.00,
-                                float_format,
-                                )
-
-                total_dp += line.price_subtotal_incl
-                worksheet.write(row, column + 23,
-                                line.price_subtotal_incl or 0.00,
-                                float_format,
-                                )
-
+                if discount_amount > 0:
+                    worksheet.write(row, column + 22,
+                                    line.price_subtotal - discount_amount or 0.00,
+                                    float_format,
+                                    )
+                else:
+                    worksheet.write(row, column + 22,
+                                    line.price_subtotal or 0.00,
+                                    float_format,
+                                    )
+                if discount_amount > 0:
+                    worksheet.write(row, column + 23,
+                                    line.price_subtotal_incl - discount_amount or 0.00,
+                                    float_format,
+                                    )
+                    total_dp += line.price_subtotal_incl - discount_amount
+                else:
+                    worksheet.write(row, column + 23,
+                                    line.price_subtotal_incl or 0.00,
+                                    float_format,
+                                    )
+                    total_dp += line.price_subtotal_incl
                 worksheet.write(row, column + 24,
                                 labour or 0.00,
                                 float_format,
@@ -391,7 +407,8 @@ class SalesPosReport(models.TransientModel):
             if other_currency:
                 payments = list(set(other_currency.mapped('currency_name')))
                 for val in payments:
-                    amount_paid = sum(other_currency.filtered(lambda x: x.currency_name == val).mapped('account_currency'))
+                    amount_paid = sum(
+                        other_currency.filtered(lambda x: x.currency_name == val).mapped('account_currency'))
                     if amount_paid:
                         worksheet.write(row, column + 11,
                                         amount_paid,
