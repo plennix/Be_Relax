@@ -356,7 +356,7 @@ class SalesPosReport(models.TransientModel):
                                 )
 
                 worksheet.write(row, column + 19,
-                                aed_convert_rate,
+                                line.price_unit,
                                 float_format,
                                 )
                 total_aed_price += aed_convert_rate
@@ -376,20 +376,32 @@ class SalesPosReport(models.TransientModel):
 
                 total_df += line.price_subtotal
                 if discount_amount > 0:
-                    worksheet.write(row, column + 22,
-                                    line.price_subtotal - discount_amount or 0.00,
-                                    float_format,
-                                    )
+                    if line.qty < 0.0:
+                        worksheet.write(row, column + 22,
+                                        line.price_subtotal + discount_amount or 0.00,
+                                        float_format,
+                                        )
+                    else:
+                        worksheet.write(row, column + 22,
+                                        line.price_subtotal - discount_amount or 0.00,
+                                        float_format,
+                                        )
                 else:
                     worksheet.write(row, column + 22,
                                     line.price_subtotal or 0.00,
                                     float_format,
                                     )
                 if discount_amount > 0:
-                    worksheet.write(row, column + 23,
-                                    line.price_subtotal_incl - discount_amount or 0.00,
-                                    float_format,
-                                    )
+                    if line.qty < 0.0:
+                        worksheet.write(row, column + 23,
+                                        line.price_subtotal_incl + discount_amount or 0.00,
+                                        float_format,
+                                        )
+                    else:
+                        worksheet.write(row, column + 23,
+                                        line.price_subtotal_incl - discount_amount or 0.00,
+                                        float_format,
+                                        )
                     total_dp += line.price_subtotal_incl - discount_amount
                 else:
                     worksheet.write(row, column + 23,
